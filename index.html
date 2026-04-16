@@ -21,6 +21,7 @@
     <aside class="sidebar">
       <div class="floating-box gen-completion">
         <h2>Pokédex Completion</h2>
+        <!-- Total bar removed - only Gen bars remain -->
         <div id="completion-gens" class="completion-gens"></div>
       </div>
 
@@ -49,9 +50,7 @@
       </header>
 
       <div class="centered-block">
-        <!-- ← Search bar is right here -->
         <input id="search-bar" type="text" placeholder="Search by name or number...">
-        
         <select id="sort-select">
           <option value="number">Sort by Number</option>
           <option value="name">Sort by Name</option>
@@ -59,11 +58,6 @@
         </select>
         <button id="random-btn">Random Uncaught</button>
         <button id="reset-btn">Reset Dex</button>
-
-        <div class="total-progress">
-          <strong>Total Caught: <span id="caught-count">0</span>/1025</strong>
-          <div class="progress-bar"><div id="total-progress-bar" class="progress-bar-fill"></div></div>
-        </div>
 
         <main id="grid" class="pokemon-grid"></main>
       </div>
@@ -78,7 +72,6 @@
       <img id="modal-sprite" alt="">
       <div id="modal-types" class="types"></div>
       <div id="modal-evo" class="evo-info"></div>
-      <div id="modal-switch-games" class="switch-games"></div>
     </div>
   </div>
 
