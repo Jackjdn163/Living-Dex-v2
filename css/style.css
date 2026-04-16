@@ -16,7 +16,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   position: fixed;
   bottom: 20px;
   left: 20px;
-  width: fit;
+  width: 200;
   z-index: 100;
 }
 
