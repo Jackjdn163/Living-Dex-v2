@@ -127,3 +127,11 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 @keyframes yellowFlash { from { background:#fff; } to { background:#ffeb3b; } }
 @keyframes limeFlash { 0%,100%{opacity:1} 50%{opacity:0.4} }
 .skip-btn { position:absolute; bottom:40px; right:40px; padding:12px 24px; background:#ef4036; color:white; border:none; border-radius:9999px; font-size:1rem; cursor:pointer; }
+.switch-games {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 12px;
+  text-align: left;
+  font-size: 0.95rem;
+}
