@@ -2,6 +2,10 @@ let allPokemon = [];
 let caught = new Set(JSON.parse(localStorage.getItem("caught")) || []);
 let shinyMode = false;
 
+// Persist dark mode on load and after reset
+const savedTheme = localStorage.getItem("theme") || "light";
+document.documentElement.setAttribute("data-theme", savedTheme);
+
 const typeColors = { normal:"#A8A878", fire:"#F08030", water:"#6890F0", grass:"#78C850", electric:"#F8D030", ice:"#98D8D8", fighting:"#C03028", poison:"#A040A0", ground:"#E0C068", flying:"#A890F0", psychic:"#F85888", bug:"#A8B820", rock:"#B8A038", ghost:"#705898", dragon:"#7038F8", dark:"#705848", steel:"#B8B8D0", fairy:"#EE99AC" };
 
 const genRanges = [
@@ -12,24 +16,25 @@ const genRanges = [
 
 document.addEventListener("DOMContentLoaded", () => {
   const loading = document.getElementById("loading");
-  // Exactly 5 seconds total as you wanted
+  const pokeball = document.getElementById("pokeball");
+  const text = document.getElementById("loading-text");
+
+  // 5-second clean catch animation
   setTimeout(() => {
-    const pokeball = document.getElementById("pokeball");
-    const text = document.getElementById("loading-text");
-    // Spin → shake (catching animation)
     pokeball.style.animation = "shake 0.6s 3";
     text.textContent = "Catching...";
     setTimeout(() => {
-      // Green success flash
+      // Turn green + success
       pokeball.style.background = "radial-gradient(circle,#fff 50%,#22c55e 50%)";
       text.style.display = "none";
       document.getElementById("success-flash").classList.remove("hidden");
       setTimeout(() => {
+        loading.style.transition = "opacity 0.8s";
         loading.style.opacity = "0";
         setTimeout(() => { loading.remove(); initApp(); }, 800);
       }, 1100);
-    }, 1800);
-  }, 3200); // total = 5 seconds
+    }, 1700);
+  }, 3200);
 });
 
 async function initApp() {
@@ -101,7 +106,6 @@ async function showDetail(p) {
   const evoDiv = document.getElementById("modal-evo");
   typesDiv.innerHTML = "<strong>Types:</strong><br>";
 
-  // Types
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
   data.types.forEach(t => {
@@ -113,13 +117,12 @@ async function showDetail(p) {
     typesDiv.appendChild(badge);
   });
 
-  // Full evolution chain with sprites + methods
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
   if (species.evolution_chain) {
     const chainRes = await fetch(species.evolution_chain.url);
     const chainData = await chainRes.json();
-    evoDiv.innerHTML = await buildEvolutionHTML(chainData.chain, p.id);
+    evoDiv.innerHTML = await buildOneStageEvoHTML(chainData.chain, p.id);
   } else {
     evoDiv.innerHTML = "No evolution data";
   }
@@ -128,47 +131,43 @@ async function showDetail(p) {
   modal.classList.remove("hidden");
 }
 
-async function buildEvolutionHTML(chain, currentId) {
+// NEW: Only immediate pre-evo and next-evo (one stage away)
+async function buildOneStageEvoHTML(chain, currentId) {
   let html = `<strong>Evolution Chain:</strong><br>`;
-  let current = chain;
 
-  // Find pre-evolution
-  // (For simplicity we walk backwards, but PokeAPI chains are forward-only, so we build forward)
-  while (current) {
-    const id = parseInt(current.species.url.split("/")[6]);
-    const name = current.species.name.charAt(0).toUpperCase() + current.species.name.slice(1);
-    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
-
-    if (id === currentId) {
-      // Current Pokémon – we show pre and post around it
+  // Find immediate previous (pre-evo)
+  let preNode = chain;
+  while (preNode.evolves_to && preNode.evolves_to.length > 0) {
+    const nextId = parseInt(preNode.evolves_to[0].species.url.split("/")[6]);
+    if (nextId === currentId) {
+      const preId = parseInt(preNode.species.url.split("/")[6]);
+      const preName = preNode.species.name.charAt(0).toUpperCase() + preNode.species.name.slice(1);
+      const preSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${preId}.png`;
+      const details = preNode.evolves_to[0].evolution_details[0] || {};
+      const method = getEvolutionMethod(details);
+      html += `<div class="evo-row"><img src="${preSprite}" alt="${preName}"> <span><strong>Evolved from</strong> ${preName}<br><span class="evo-method">${method}</span></span></div>`;
       break;
     }
-    if (id < currentId) {
-      // Pre-evo
-      const details = current.evolves_to[0] ? current.evolves_to[0].evolution_details[0] : {};
-      let method = getEvolutionMethod(details);
-      html += `<div class="evo-row"><img src="${spriteUrl}" alt="${name}"> <span><strong>Evolved from</strong> ${name}<br><span class="evo-method">${method}</span></span></div>`;
-    }
-    current = current.evolves_to[0] ? current.evolves_to[0] : null;
+    preNode = preNode.evolves_to[0];
   }
 
-  // Now show the next evolution
-  const next = chain.evolves_to && chain.evolves_to.length > 0 ? chain.evolves_to[0] : null;
-  if (next) {
-    let nextNode = next;
-    while (nextNode) {
-      const id = parseInt(nextNode.species.url.split("/")[6]);
-      if (id > currentId) {
-        const name = nextNode.species.name.charAt(0).toUpperCase() + nextNode.species.name.slice(1);
-        const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
-        const details = nextNode.evolution_details[0] || {};
-        let method = getEvolutionMethod(details);
-        html += `<div class="evo-row"><img src="${spriteUrl}" alt="${name}"> <span><strong>Evolves into</strong> ${name}<br><span class="evo-method">${method}</span></span></div>`;
-        break;
-      }
-      nextNode = nextNode.evolves_to[0] ? nextNode.evolves_to[0] : null;
+  // Find immediate next (post-evo)
+  let currentNode = chain;
+  while (currentNode) {
+    const id = parseInt(currentNode.species.url.split("/")[6]);
+    if (id === currentId && currentNode.evolves_to && currentNode.evolves_to.length > 0) {
+      const next = currentNode.evolves_to[0];
+      const nextId = parseInt(next.species.url.split("/")[6]);
+      const nextName = next.species.name.charAt(0).toUpperCase() + next.species.name.slice(1);
+      const nextSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png`;
+      const details = next.evolution_details[0] || {};
+      const method = getEvolutionMethod(details);
+      html += `<div class="evo-row"><img src="${nextSprite}" alt="${nextName}"> <span><strong>Evolves into</strong> ${nextName}<br><span class="evo-method">${method}</span></span></div>`;
+      break;
     }
+    currentNode = currentNode.evolves_to && currentNode.evolves_to.length > 0 ? currentNode.evolves_to[0] : null;
   }
+
   return html || "No evolution data";
 }
 
@@ -221,8 +220,10 @@ function setupEventListeners() {
 
   document.getElementById("theme-btn").addEventListener("click", () => {
     const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-    document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark");
+    const newTheme = isDark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
     document.getElementById("theme-btn").textContent = isDark ? "☀️ Light" : "🌙 Dark";
+    localStorage.setItem("theme", newTheme);
   });
 
   document.getElementById("sort-select").addEventListener("change", renderGrid);
@@ -241,12 +242,14 @@ function setupEventListeners() {
   document.getElementById("close-modal").addEventListener("click", closeModal);
   document.getElementById("modal-close-btn").addEventListener("click", closeModal);
 
+  // Reset now also respects saved dark mode
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Reset entire Living Dex?")) {
       caught.clear();
       localStorage.removeItem("caught");
       renderGrid();
       renderGenProgress();
+      // Dark mode stays saved
     }
   });
 }
