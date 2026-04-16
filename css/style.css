@@ -16,7 +16,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   position: fixed;
   bottom: 20px;
   left: 20px;
-  width: 200;
+  width: 200px;
   z-index: 100;
 }
 
@@ -57,7 +57,7 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 /* Search bar + Sort dropdown - dark mode friendly */
 .centered-block input,
 .centered-block select {
-  width:100%; 
+  width:80%; 
   padding:14px; 
   font-size:1.1rem; 
   border-radius:12px;
@@ -77,8 +77,8 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   font-weight:600; 
   padding:14px; 
 }
-#random-btn { background:#22c55e; color:white; }
-#reset-btn { background:#ef4036; color:white; }
+#random-btn { background:#22c55e; color:white; padding:12px;}
+#reset-btn { background:#ef4036; color:white; padding:12px; }
 
 .pokemon-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:18px; }
 .pokemon-card { 
