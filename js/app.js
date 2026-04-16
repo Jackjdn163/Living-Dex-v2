@@ -2,7 +2,6 @@ let allPokemon = [];
 let caught = new Set(JSON.parse(localStorage.getItem("caught")) || []);
 let shinyMode = false;
 
-// Persist dark mode on load and after reset
 const savedTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", savedTheme);
 
@@ -15,36 +14,15 @@ const genRanges = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+  preloadAllAssets();
+});
+
+async function preloadAllAssets() {
   const loading = document.getElementById("loading");
   const pokeball = document.getElementById("pokeball");
   const text = document.getElementById("loading-text");
 
-  // 5-second clean catch animation
-  setTimeout(() => {
-    pokeball.style.animation = "shake 0.6s 3";
-    text.textContent = "Catching...";
-    setTimeout(() => {
-      // Turn green + success
-      pokeball.style.background = "radial-gradient(circle,#fff 50%,#22c55e 50%)";
-      text.style.display = "none";
-      document.getElementById("success-flash").classList.remove("hidden");
-      setTimeout(() => {
-        loading.style.transition = "opacity 0.8s";
-        loading.style.opacity = "0";
-        setTimeout(() => { loading.remove(); initApp(); }, 800);
-      }, 1100);
-    }, 1700);
-  }, 3200);
-});
-
-async function initApp() {
-  await fetchPokemon();
-  setupEventListeners();
-  renderGrid();
-  renderGenProgress();
-}
-
-async function fetchPokemon() {
+  // Start fetching the list
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1025");
   const data = await res.json();
   allPokemon = data.results.map((p, i) => ({
@@ -53,25 +31,71 @@ async function fetchPokemon() {
     sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i+1}.png`,
     shiny: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${i+1}.png`
   }));
+
+  // Preload every sprite + shiny
+  const preloadPromises = allPokemon.flatMap(p => [
+    new Promise(resolve => { const img = new Image(); img.src = p.sprite; img.onload = resolve; }),
+    new Promise(resolve => { const img = new Image(); img.src = p.shiny; img.onload = resolve; })
+  ]);
+
+  // Run the classic catch animation while preloading
+  setTimeout(() => {
+    pokeball.style.animation = "shake 0.6s 3";
+    text.textContent = "Catching...";
+  }, 800);
+
+  // Wait for both 5-second timer AND all images to finish loading
+  await Promise.all([
+    new Promise(r => setTimeout(r, 5000)), // minimum 5 seconds
+    Promise.all(preloadPromises)
+  ]);
+
+  // Show Gotcha only now
+  pokeball.style.background = "linear-gradient(#ef4036 50%, #fff 50%)"; // keep classic look
+  text.style.display = "none";
+  document.getElementById("success-flash").classList.remove("hidden");
+
+  setTimeout(() => {
+    loading.style.transition = "opacity 0.8s";
+    loading.style.opacity = "0";
+    setTimeout(() => {
+      loading.remove();
+      initApp();
+    }, 800);
+  }, 1100);
+}
+
+async function initApp() {
+  setupEventListeners();
+  renderGrid();
+  renderGenProgress();
 }
 
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
 
-function renderGrid() {
+function renderGrid(filterTerm = "") {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
-  let sorted = [...allPokemon];
-  const sortType = document.getElementById("sort-select").value;
+  let filtered = [...allPokemon];
 
-  if (sortType === "name") sorted.sort((a,b) => a.name.localeCompare(b.name));
+  if (filterTerm) {
+    const term = filterTerm.toLowerCase();
+    filtered = filtered.filter(p => 
+      p.name.toLowerCase().includes(term) || 
+      p.id.toString().padStart(4, "0").includes(term)
+    );
+  }
+
+  const sortType = document.getElementById("sort-select").value;
+  if (sortType === "name") filtered.sort((a,b) => a.name.localeCompare(b.name));
   else if (sortType === "uncaught") {
-    sorted.sort((a,b) => {
+    filtered.sort((a,b) => {
       const aC = caught.has(a.id), bC = caught.has(b.id);
       return aC === bC ? a.id - b.id : aC ? 1 : -1;
     });
   }
 
-  sorted.forEach(p => {
+  filtered.forEach(p => {
     const isCaught = caught.has(p.id);
     const card = document.createElement("div");
     card.className = `pokemon-card ${isCaught ? "caught" : ""}`;
@@ -97,7 +121,8 @@ function renderGrid() {
   updateTotalProgress();
 }
 
-async function showDetail(p) {
+async function showDetail(p) { /* same as before - no changes needed */ 
+  // (keeping the same evolution + types code from last version for brevity)
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
@@ -131,11 +156,9 @@ async function showDetail(p) {
   modal.classList.remove("hidden");
 }
 
-// NEW: Only immediate pre-evo and next-evo (one stage away)
 async function buildOneStageEvoHTML(chain, currentId) {
   let html = `<strong>Evolution Chain:</strong><br>`;
-
-  // Find immediate previous (pre-evo)
+  // (same one-stage logic as last version - unchanged)
   let preNode = chain;
   while (preNode.evolves_to && preNode.evolves_to.length > 0) {
     const nextId = parseInt(preNode.evolves_to[0].species.url.split("/")[6]);
@@ -151,7 +174,6 @@ async function buildOneStageEvoHTML(chain, currentId) {
     preNode = preNode.evolves_to[0];
   }
 
-  // Find immediate next (post-evo)
   let currentNode = chain;
   while (currentNode) {
     const id = parseInt(currentNode.species.url.split("/")[6]);
@@ -167,7 +189,6 @@ async function buildOneStageEvoHTML(chain, currentId) {
     }
     currentNode = currentNode.evolves_to && currentNode.evolves_to.length > 0 ? currentNode.evolves_to[0] : null;
   }
-
   return html || "No evolution data";
 }
 
@@ -182,7 +203,7 @@ function toggleCaught(id) {
   if (caught.has(id)) caught.delete(id);
   else caught.add(id);
   localStorage.setItem("caught", JSON.stringify([...caught]));
-  renderGrid();
+  renderGrid(document.getElementById("search-bar").value);
   renderGenProgress();
 
   const gen = genRanges.find(g => id >= g.start && id <= g.end).gen;
@@ -212,10 +233,13 @@ function renderGenProgress() {
 }
 
 function setupEventListeners() {
+  const searchBar = document.getElementById("search-bar");
+  searchBar.addEventListener("input", () => renderGrid(searchBar.value));
+
   document.getElementById("shiny-btn").addEventListener("click", () => {
     shinyMode = !shinyMode;
     document.getElementById("shiny-btn").textContent = shinyMode ? "✨ Shiny ON" : "✨ Shiny OFF";
-    renderGrid();
+    renderGrid(searchBar.value);
   });
 
   document.getElementById("theme-btn").addEventListener("click", () => {
@@ -226,7 +250,7 @@ function setupEventListeners() {
     localStorage.setItem("theme", newTheme);
   });
 
-  document.getElementById("sort-select").addEventListener("change", renderGrid);
+  document.getElementById("sort-select").addEventListener("change", () => renderGrid(searchBar.value));
 
   document.getElementById("random-btn").addEventListener("click", () => {
     const uncaught = allPokemon.filter(p => !caught.has(p.id));
@@ -242,14 +266,12 @@ function setupEventListeners() {
   document.getElementById("close-modal").addEventListener("click", closeModal);
   document.getElementById("modal-close-btn").addEventListener("click", closeModal);
 
-  // Reset now also respects saved dark mode
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Reset entire Living Dex?")) {
       caught.clear();
       localStorage.removeItem("caught");
-      renderGrid();
+      renderGrid(document.getElementById("search-bar").value);
       renderGenProgress();
-      // Dark mode stays saved
     }
   });
 }
