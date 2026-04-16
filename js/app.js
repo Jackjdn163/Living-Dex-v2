@@ -13,8 +13,6 @@ const genRanges = [
 
 document.addEventListener("DOMContentLoaded", () => {
   const loading = document.getElementById("loading");
-
-  // 5-second loading with shake + "Gotcha!"
   setTimeout(() => {
     const pokeball = document.getElementById("pokeball");
     const text = document.getElementById("loading-text");
@@ -66,11 +64,24 @@ function renderGrid() {
     const card = document.createElement("div");
     card.className = `pokemon-card ${isCaught ? "caught" : ""}`;
     card.innerHTML = `
+      <button class="menu-btn">⋮</button>
       <img src="${getSprite(p)}" alt="${p.name}">
       <strong>#${p.id.toString().padStart(4,"0")}</strong><br>
       <span>${p.name}</span>
     `;
-    card.addEventListener("click", () => showDetail(p));
+
+    // Click anywhere except the 3-dots → toggle caught
+    card.addEventListener("click", (e) => {
+      if (e.target.classList.contains("menu-btn")) return;
+      toggleCaught(p.id);
+    });
+
+    // 3-dots opens the detailed popup
+    card.querySelector(".menu-btn").addEventListener("click", (e) => {
+      e.stopImmediatePropagation();
+      showDetail(p);
+    });
+
     grid.appendChild(card);
   });
   updateTotalProgress();
@@ -87,7 +98,6 @@ async function showDetail(p) {
   typesDiv.innerHTML = "<strong>Types:</strong><br>";
   evoDiv.innerHTML = "<strong>Evolution:</strong><br>Loading...";
 
-  // Fetch types + evolution
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
   data.types.forEach(t => {
@@ -99,7 +109,6 @@ async function showDetail(p) {
     typesDiv.appendChild(badge);
   });
 
-  // Simple evo info (pre / post + method)
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
   if (species.evolution_chain) {
@@ -108,7 +117,6 @@ async function showDetail(p) {
     evoDiv.innerHTML = parseSimpleEvo(chainData.chain, p.id);
   }
 
-  // Update toggle button text
   const toggleBtn = document.getElementById("toggle-caught-btn");
   toggleBtn.textContent = caught.has(p.id) ? "Mark as Uncaught" : "Mark as Caught";
 
@@ -118,12 +126,24 @@ async function showDetail(p) {
 
 function parseSimpleEvo(chain, currentId) {
   let html = "";
-  // Basic pre/post display (can be expanded later)
   const id = parseInt(chain.species.url.split("/")[6]);
   const name = chain.species.name.charAt(0).toUpperCase() + chain.species.name.slice(1);
   if (id < currentId) html += `⬅️ Pre-evolution: ${name}<br>`;
   else if (id > currentId) html += `➡️ Evolves to: ${name}<br>`;
   return html || "No evolution data";
+}
+
+function toggleCaught(id) {
+  if (caught.has(id)) caught.delete(id);
+  else caught.add(id);
+  localStorage.setItem("caught", JSON.stringify([...caught]));
+  renderGrid();
+  renderGenProgress();
+
+  const gen = genRanges.find(g => id >= g.start && id <= g.end).gen;
+  const genCaught = [...caught].filter(i => i >= genRanges[gen-1].start && i <= genRanges[gen-1].end).length;
+  const genTotal = genRanges[gen-1].end - genRanges[gen-1].start + 1;
+  if (genCaught === genTotal) alert(`🎉 You completed Generation ${gen}!`);
 }
 
 function updateTotalProgress() {
@@ -149,55 +169,35 @@ function renderGenProgress() {
   });
 }
 
-function toggleCaught(id) {
-  if (caught.has(id)) caught.delete(id);
-  else caught.add(id);
-  localStorage.setItem("caught", JSON.stringify([...caught]));
-  renderGrid();
-  renderGenProgress();
-  // Check if a generation was just completed
-  const gen = genRanges.find(g => id >= g.start && id <= g.end).gen;
-  const genCaught = [...caught].filter(i => i >= genRanges[gen-1].start && i <= genRanges[gen-1].end).length;
-  const genTotal = genRanges[gen-1].end - genRanges[gen-1].start + 1;
-  if (genCaught === genTotal) alert(`🎉 You completed Generation ${gen}!`);
-}
-
 function setupEventListeners() {
-  // Shiny
   document.getElementById("shiny-btn").addEventListener("click", () => {
     shinyMode = !shinyMode;
     document.getElementById("shiny-btn").textContent = shinyMode ? "✨ Shiny ON" : "✨ Shiny OFF";
     renderGrid();
   });
 
-  // Dark/Light
   document.getElementById("theme-btn").addEventListener("click", () => {
     const isDark = document.documentElement.getAttribute("data-theme") === "dark";
     document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark");
     document.getElementById("theme-btn").textContent = isDark ? "☀️ Light" : "🌙 Dark";
   });
 
-  // Sort
   document.getElementById("sort-select").addEventListener("change", renderGrid);
 
-  // Random uncaught
   document.getElementById("random-btn").addEventListener("click", () => {
     const uncaught = allPokemon.filter(p => !caught.has(p.id));
     if (uncaught.length === 0) return alert("You caught them all! 🔥");
     showDetail(uncaught[Math.floor(Math.random() * uncaught.length)]);
   });
 
-  // Modal toggle caught
-  document.getElementById("toggle-caught-btn").addEventListener("click", () => {
+  const toggleBtn = document.getElementById("toggle-caught-btn");
+  toggleBtn.addEventListener("click", () => {
     if (currentPokemonId) {
       toggleCaught(currentPokemonId);
-      // Update button text instantly
-      const btn = document.getElementById("toggle-caught-btn");
-      btn.textContent = caught.has(currentPokemonId) ? "Mark as Uncaught" : "Mark as Caught";
+      toggleBtn.textContent = caught.has(currentPokemonId) ? "Mark as Uncaught" : "Mark as Caught";
     }
   });
 
-  // Close modal
   const closeModal = () => {
     const modal = document.getElementById("modal");
     modal.style.display = "none";
@@ -206,7 +206,6 @@ function setupEventListeners() {
   document.getElementById("close-modal").addEventListener("click", closeModal);
   document.getElementById("modal-close-btn").addEventListener("click", closeModal);
 
-  // Reset
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Reset entire Living Dex?")) {
       caught.clear();
