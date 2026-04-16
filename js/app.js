@@ -15,10 +15,11 @@ const genRanges = [
 
 document.addEventListener("DOMContentLoaded", () => { preloadAllAssets(); });
 
-async function preloadAllAssets() { /* same perfect loading as before - unchanged */ 
+async function preloadAllAssets() {
   const loading = document.getElementById("loading");
   const pokeball = document.getElementById("pokeball");
   const text = document.getElementById("loading-text");
+  const skipBtn = document.getElementById("skip-loading");
 
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1025");
   const data = await res.json();
@@ -36,14 +37,21 @@ async function preloadAllAssets() { /* same perfect loading as before - unchange
 
   setTimeout(() => { pokeball.classList.add("shaking"); pokeball.style.animation = "shake 0.6s 3"; }, 800);
 
+  skipBtn.addEventListener("click", () => {
+    pokeball.classList.remove("shaking");
+    pokeball.classList.add("success");
+    finishLoading(loading);
+  });
+
   await Promise.all([new Promise(r => setTimeout(r, 5000)), Promise.all(preloadPromises)]);
 
   pokeball.classList.remove("shaking");
   pokeball.classList.add("success");
-  text.textContent = "✓ Gotcha!";
+  finishLoading(loading);
+}
 
+function finishLoading(loading) {
   initApp();
-
   setTimeout(() => {
     loading.style.transition = "opacity 0.8s";
     loading.style.opacity = "0";
@@ -59,19 +67,35 @@ async function initApp() {
 
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
 
-function renderGrid(filterTerm = "") { /* unchanged - 5-col grid is now in CSS */ 
+// Debounce helper to stop lag
+function debounce(func, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+}
+
+function renderGrid(filterTerm = "") {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   let filtered = [...allPokemon];
 
   if (filterTerm) {
     const term = filterTerm.toLowerCase();
-    filtered = filtered.filter(p => p.name.toLowerCase().includes(term) || p.id.toString().padStart(4,"0").includes(term));
+    filtered = filtered.filter(p => 
+      p.name.toLowerCase().includes(term) || p.id.toString().padStart(4,"0").includes(term)
+    );
   }
 
   const sortType = document.getElementById("sort-select").value;
   if (sortType === "name") filtered.sort((a,b) => a.name.localeCompare(b.name));
-  else if (sortType === "uncaught") filtered.sort((a,b) => (caught.has(a.id) === caught.has(b.id) ? a.id - b.id : caught.has(a.id) ? 1 : -1));
+  else if (sortType === "uncaught") {
+    filtered.sort((a,b) => {
+      const aC = caught.has(a.id), bC = caught.has(b.id);
+      return aC === bC ? a.id - b.id : aC ? 1 : -1;
+    });
+  }
 
   filtered.forEach(p => {
     const isCaught = caught.has(p.id);
@@ -93,7 +117,6 @@ function renderGrid(filterTerm = "") { /* unchanged - 5-col grid is now in CSS *
 function renderCompletionBars() {
   const totalDiv = document.getElementById("completion-total");
   const gensDiv = document.getElementById("completion-gens");
-
   const totalCaught = caught.size;
   const totalPercent = Math.round((totalCaught / 1025) * 100);
   totalDiv.innerHTML = `
@@ -120,7 +143,7 @@ function renderCompletionBars() {
   });
 }
 
-async function showDetail(p) { /* unchanged - full evo support stays */ 
+async function showDetail(p) { /* unchanged */ 
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
@@ -154,7 +177,7 @@ async function showDetail(p) { /* unchanged - full evo support stays */
   modal.classList.remove("hidden");
 }
 
-async function buildFullEvoHTML(chain, currentId) { /* same full split evo logic as last version */ 
+async function buildFullEvoHTML(chain, currentId) { /* unchanged */ 
   let html = `<strong>Evolution Chain:</strong><br>`;
   let preNode = chain;
   while (preNode.evolves_to && preNode.evolves_to.length > 0) {
@@ -221,7 +244,8 @@ function updateTotalProgress() {
 
 function setupEventListeners() {
   const searchBar = document.getElementById("search-bar");
-  searchBar.addEventListener("input", () => renderGrid(searchBar.value));
+  const debouncedRender = debounce(() => renderGrid(searchBar.value), 150);
+  searchBar.addEventListener("input", debouncedRender);
 
   document.getElementById("sort-select").addEventListener("change", () => renderGrid(searchBar.value));
 
@@ -231,7 +255,6 @@ function setupEventListeners() {
     showDetail(uncaught[Math.floor(Math.random() * uncaught.length)]);
   });
 
-  // Dark toggle switch
   const darkToggle = document.getElementById("dark-toggle");
   darkToggle.checked = document.documentElement.getAttribute("data-theme") === "dark";
   darkToggle.addEventListener("change", () => {
@@ -240,7 +263,6 @@ function setupEventListeners() {
     localStorage.setItem("theme", newTheme);
   });
 
-  // Shiny toggle switch
   const shinyToggle = document.getElementById("shiny-toggle");
   shinyToggle.checked = shinyMode;
   shinyToggle.addEventListener("change", () => {
@@ -256,6 +278,7 @@ function setupEventListeners() {
   document.getElementById("close-modal").addEventListener("click", closeModal);
   document.getElementById("modal-close-btn").addEventListener("click", closeModal);
 
+  // Reset button (red, with confirmation)
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Reset entire Living Dex?")) {
       caught.clear();
@@ -265,4 +288,13 @@ function setupEventListeners() {
       updateTotalProgress();
     }
   });
+}
+
+// Debounce helper
+function debounce(func, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
 }
