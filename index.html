@@ -13,20 +13,18 @@
       <div class="pokeball" id="pokeball"></div>
     </div>
     <p id="loading-text">Catching them all...</p>
-    <div id="success-flash" class="success-flash hidden">✓ Gotcha!</div>
+    <button id="skip-loading" class="skip-btn">Skip Loading</button>
   </div>
 
   <div class="main-layout">
     <!-- Left Sidebar -->
     <aside class="sidebar">
-      <!-- Gen Completion Box (top left) -->
       <div class="floating-box gen-completion">
         <h2>Pokédex Completion</h2>
         <div id="completion-total" class="completion-row"></div>
         <div id="completion-gens" class="completion-gens"></div>
       </div>
 
-      <!-- Toggles Box (bottom left) -->
       <div class="floating-box toggles-box">
         <div class="toggle-row">
           <label class="switch-label">Dark Mode</label>
@@ -45,13 +43,12 @@
       </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <div class="content-area">
       <header>
         <h1>Living Dex</h1>
       </header>
 
-      <!-- Centered Controls (stacked, full grid width) -->
       <div class="centered-controls">
         <input id="search-bar" type="text" placeholder="Search by name or number...">
         <select id="sort-select">
@@ -60,9 +57,9 @@
           <option value="uncaught">Uncaught First</option>
         </select>
         <button id="random-btn">Random Uncaught</button>
+        <button id="reset-btn">Reset Dex</button>
       </div>
 
-      <!-- Total Progress -->
       <div class="total-progress">
         <strong>Total Caught: <span id="caught-count">0</span>/1025</strong>
         <div class="progress-bar"><div id="total-progress-bar" class="progress-bar-fill"></div></div>
