@@ -142,6 +142,8 @@ async function showDetail(p) {
 
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
+
+  // Types
   data.types.forEach(t => {
     const color = typeColors[t.type.name] || "#777";
     const badge = document.createElement("span");
@@ -151,6 +153,7 @@ async function showDetail(p) {
     typesDiv.appendChild(badge);
   });
 
+  // Evolution
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
   if (species.evolution_chain) {
@@ -159,6 +162,28 @@ async function showDetail(p) {
     evoDiv.innerHTML = await buildFullEvoHTML(chainData.chain, p.id);
   } else {
     evoDiv.innerHTML = "No evolution data";
+  }
+
+  // NEW: Switch Games availability
+  const switchGamesMap = {
+    "sword": "Sword",
+    "shield": "Shield",
+    "brilliant-diamond": "Brilliant Diamond",
+    "shining-pearl": "Shining Pearl",
+    "legends-arceus": "Legends: Arceus",
+    "scarlet": "Scarlet",
+    "violet": "Violet"
+  };
+
+  const switchList = data.game_indices
+    .filter(g => Object.keys(switchGamesMap).includes(g.version.name))
+    .map(g => switchGamesMap[g.version.name]);
+
+  const switchDiv = document.getElementById("modal-switch-games");
+  if (switchList.length > 0) {
+    switchDiv.innerHTML = `<strong>Available in Switch Games:</strong><br>${switchList.join(", ")}`;
+  } else {
+    switchDiv.innerHTML = `<strong>Available in Switch Games:</strong><br>None`;
   }
 
   modal.style.display = "flex";
