@@ -36,10 +36,10 @@ async function preloadAllAssets() {
     new Promise(r => { const img = new Image(); img.src = p.shiny; img.onload = r; })
   ]);
 
-  // Start animation early
+  // Start animation
   setTimeout(() => {
+    pokeball.classList.add("shaking");
     pokeball.style.animation = "shake 0.6s 3";
-    text.textContent = "Catching...";
   }, 800);
 
   await Promise.all([
@@ -47,12 +47,11 @@ async function preloadAllAssets() {
     Promise.all(preloadPromises)
   ]);
 
-  // Classic Poké Ball turns green for Gotcha
-  pokeball.style.background = "linear-gradient(#22c55e 50%, #fff 50%)";
-  text.style.display = "none";
-  document.getElementById("success-flash").classList.remove("hidden");
+  // Success: stop shaking, turn green, show Gotcha!
+  pokeball.classList.remove("shaking");
+  pokeball.classList.add("success");
+  text.textContent = "✓ Gotcha!";
 
-  // Render the entire dex WHILE loading is still visible (no blank flash)
   initApp();
 
   setTimeout(() => {
@@ -70,7 +69,7 @@ async function initApp() {
 
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
 
-function renderGrid(filterTerm = "") {
+function renderGrid(filterTerm = "") { /* unchanged from last version */ 
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   let filtered = [...allPokemon];
@@ -118,7 +117,6 @@ function renderGrid(filterTerm = "") {
   updateTotalProgress();
 }
 
-// (showDetail, buildOneStageEvoHTML, getEvolutionMethod, toggleCaught, updateTotalProgress, renderGenProgress, setupEventListeners stay exactly the same as last version)
 async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
@@ -144,7 +142,7 @@ async function showDetail(p) {
   if (species.evolution_chain) {
     const chainRes = await fetch(species.evolution_chain.url);
     const chainData = await chainRes.json();
-    evoDiv.innerHTML = await buildOneStageEvoHTML(chainData.chain, p.id);
+    evoDiv.innerHTML = await buildFullEvoHTML(chainData.chain, p.id);
   } else {
     evoDiv.innerHTML = "No evolution data";
   }
@@ -153,8 +151,11 @@ async function showDetail(p) {
   modal.classList.remove("hidden");
 }
 
-async function buildOneStageEvoHTML(chain, currentId) {
+// NEW: Full split evolution support (Eevee shows every evolution)
+async function buildFullEvoHTML(chain, currentId) {
   let html = `<strong>Evolution Chain:</strong><br>`;
+
+  // Find pre-evolution (if any)
   let preNode = chain;
   while (preNode.evolves_to && preNode.evolves_to.length > 0) {
     const nextId = parseInt(preNode.evolves_to[0].species.url.split("/")[6]);
@@ -170,21 +171,29 @@ async function buildOneStageEvoHTML(chain, currentId) {
     preNode = preNode.evolves_to[0];
   }
 
+  // Find current node and show ALL direct evolutions (handles splits like Eevee)
   let currentNode = chain;
-  while (currentNode) {
+  let found = false;
+  while (currentNode && !found) {
     const id = parseInt(currentNode.species.url.split("/")[6]);
-    if (id === currentId && currentNode.evolves_to && currentNode.evolves_to.length > 0) {
-      const next = currentNode.evolves_to[0];
-      const nextId = parseInt(next.species.url.split("/")[6]);
-      const nextName = next.species.name.charAt(0).toUpperCase() + next.species.name.slice(1);
-      const nextSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png`;
-      const details = next.evolution_details[0] || {};
-      const method = getEvolutionMethod(details);
-      html += `<div class="evo-row"><img src="${nextSprite}" alt="${nextName}"> <span><strong>Evolves into</strong> ${nextName}<br><span class="evo-method">${method}</span></span></div>`;
+    if (id === currentId) {
+      found = true;
+      if (currentNode.evolves_to && currentNode.evolves_to.length > 0) {
+        html += `<strong>Evolves into:</strong><br>`;
+        for (let evo of currentNode.evolves_to) {
+          const nextId = parseInt(evo.species.url.split("/")[6]);
+          const nextName = evo.species.name.charAt(0).toUpperCase() + evo.species.name.slice(1);
+          const nextSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png`;
+          const details = evo.evolution_details[0] || {};
+          const method = getEvolutionMethod(details);
+          html += `<div class="evo-row"><img src="${nextSprite}" alt="${nextName}"> <span>${nextName}<br><span class="evo-method">${method}</span></span></div>`;
+        }
+      }
       break;
     }
     currentNode = currentNode.evolves_to && currentNode.evolves_to.length > 0 ? currentNode.evolves_to[0] : null;
   }
+
   return html || "No evolution data";
 }
 
@@ -195,7 +204,7 @@ function getEvolutionMethod(details) {
   return "???";
 }
 
-function toggleCaught(id) {
+function toggleCaught(id) { /* unchanged */ 
   if (caught.has(id)) caught.delete(id);
   else caught.add(id);
   localStorage.setItem("caught", JSON.stringify([...caught]));
@@ -209,13 +218,13 @@ function toggleCaught(id) {
   if (genCaught === genTotal) alert(`🎉 You completed Generation ${gen}!`);
 }
 
-function updateTotalProgress() {
+function updateTotalProgress() { /* unchanged */ 
   const count = caught.size;
   document.getElementById("caught-count").textContent = count;
   document.getElementById("total-progress-bar").style.width = `${(count / 1025) * 100}%`;
 }
 
-function renderGenProgress() {
+function renderGenProgress() { /* unchanged */ 
   const container = document.getElementById("gen-progress");
   container.innerHTML = "";
   genRanges.forEach(g => {
@@ -229,7 +238,7 @@ function renderGenProgress() {
   });
 }
 
-function setupEventListeners() {
+function setupEventListeners() { /* unchanged */ 
   const searchBar = document.getElementById("search-bar");
   searchBar.addEventListener("input", () => renderGrid(searchBar.value));
 
