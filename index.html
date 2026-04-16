@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- Loading Screen - now clean Poké Ball catch -->
+  <!-- Loading Screen - Classic Poké Ball -->
   <div id="loading" class="loading">
     <div class="pokeball-container">
       <div class="pokeball" id="pokeball"></div>
@@ -17,8 +17,9 @@
   </div>
 
   <header>
-    <h1> Living Dex</h1>
+    <h1>🟥 Living Dex</h1>
     <div class="controls">
+      <input id="search-bar" type="text" placeholder="Search by name or #...">
       <button id="theme-btn">🌙 Dark</button>
       <button id="shiny-btn">✨ Shiny OFF</button>
       <select id="sort-select">
@@ -40,7 +41,7 @@
 
   <main id="grid" class="pokemon-grid"></main>
 
-  <!-- Detailed Modal (3-dots only) -->
+  <!-- Detailed Modal -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
