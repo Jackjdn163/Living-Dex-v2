@@ -67,7 +67,6 @@ async function initApp() {
 
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
 
-// Debounce helper to stop lag
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
@@ -143,7 +142,7 @@ function renderCompletionBars() {
   });
 }
 
-async function showDetail(p) { /* unchanged */ 
+async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
@@ -177,7 +176,7 @@ async function showDetail(p) { /* unchanged */
   modal.classList.remove("hidden");
 }
 
-async function buildFullEvoHTML(chain, currentId) { /* unchanged */ 
+async function buildFullEvoHTML(chain, currentId) {
   let html = `<strong>Evolution Chain:</strong><br>`;
   let preNode = chain;
   while (preNode.evolves_to && preNode.evolves_to.length > 0) {
@@ -278,7 +277,6 @@ function setupEventListeners() {
   document.getElementById("close-modal").addEventListener("click", closeModal);
   document.getElementById("modal-close-btn").addEventListener("click", closeModal);
 
-  // Reset button (red, with confirmation)
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Reset entire Living Dex?")) {
       caught.clear();
@@ -290,7 +288,6 @@ function setupEventListeners() {
   });
 }
 
-// Debounce helper
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
