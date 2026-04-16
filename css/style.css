@@ -16,7 +16,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   position: fixed;
   bottom: 20px;
   left: 20px;
-  width: 340px;
+  width: fit;
   z-index: 100;
 }
 
@@ -89,12 +89,13 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 .pokemon-card.caught { opacity:0.65; filter:grayscale(1); }
 .pokemon-card img { width:110px; height:110px; image-rendering:pixelated; }
 
-/* 3-dots in bottom-right corner */
 .menu-btn { 
-  position:absolute; bottom:0px; right:-60px; 
+  position:absolute; bottom:8px; right:8px; 
   background:none; border:none; font-size:1.8rem; cursor:pointer; color:var(--text); opacity:0.6; 
 }
 .menu-btn:hover { opacity:1; transform:scale(1.2); }
+
+.total-progress { margin-top:10px; }
 
 /* Modal and Loading Screen */
 .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; z-index:10000; }
