@@ -9,8 +9,11 @@
 <body>
   <!-- Loading Screen -->
   <div id="loading" class="loading">
-    <div class="pokeball" id="pokeball"></div>
+    <div class="pokeball-container">
+      <div class="pokeball" id="pokeball"></div>
+    </div>
     <p id="loading-text">Catching them all...</p>
+    <div id="success-flash" class="hidden">✓ Gotcha!</div>
   </div>
 
   <header>
@@ -37,7 +40,7 @@
 
   <main id="grid" class="pokemon-grid"></main>
 
-  <!-- Detailed Modal (opened only by 3-dots) -->
+  <!-- Detailed Modal (3-dots) - now pure info, no toggle button -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
@@ -45,8 +48,6 @@
       <img id="modal-sprite" alt="">
       <div id="modal-types" class="types"></div>
       <div id="modal-evo" class="evo-info"></div>
-      
-      <button id="toggle-caught-btn" class="toggle-btn">Mark as Caught</button>
       <button id="modal-close-btn">Close</button>
     </div>
   </div>
