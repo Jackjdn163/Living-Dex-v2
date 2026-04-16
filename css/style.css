@@ -57,7 +57,7 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 /* FORCE search bar and sort to correct width */
 .centered-block input {
   width: 100% !important;
-  max-width: 780px !important;
+  max-width: 790px !important;
   margin: 0 auto !important;
   padding: 14px;
   font-size: 1.1rem;
