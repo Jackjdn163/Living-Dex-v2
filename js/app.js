@@ -1,7 +1,6 @@
 let allPokemon = [];
 let caught = new Set(JSON.parse(localStorage.getItem("caught")) || []);
 let shinyMode = false;
-let currentPokemonId = null;
 
 const typeColors = { normal:"#A8A878", fire:"#F08030", water:"#6890F0", grass:"#78C850", electric:"#F8D030", ice:"#98D8D8", fighting:"#C03028", poison:"#A040A0", ground:"#E0C068", flying:"#A890F0", psychic:"#F85888", bug:"#A8B820", rock:"#B8A038", ghost:"#705898", dragon:"#7038F8", dark:"#705848", steel:"#B8B8D0", fairy:"#EE99AC" };
 
@@ -13,16 +12,24 @@ const genRanges = [
 
 document.addEventListener("DOMContentLoaded", () => {
   const loading = document.getElementById("loading");
+  // Exactly 5 seconds total as you wanted
   setTimeout(() => {
     const pokeball = document.getElementById("pokeball");
     const text = document.getElementById("loading-text");
-    pokeball.style.animation = "shake 0.5s 4";
-    text.textContent = "Gotcha!";
+    // Spin → shake (catching animation)
+    pokeball.style.animation = "shake 0.6s 3";
+    text.textContent = "Catching...";
     setTimeout(() => {
-      loading.style.opacity = "0";
-      setTimeout(() => { loading.remove(); initApp(); }, 800);
-    }, 1600);
-  }, 3200);
+      // Green success flash
+      pokeball.style.background = "radial-gradient(circle,#fff 50%,#22c55e 50%)";
+      text.style.display = "none";
+      document.getElementById("success-flash").classList.remove("hidden");
+      setTimeout(() => {
+        loading.style.opacity = "0";
+        setTimeout(() => { loading.remove(); initApp(); }, 800);
+      }, 1100);
+    }, 1800);
+  }, 3200); // total = 5 seconds
 });
 
 async function initApp() {
@@ -70,13 +77,11 @@ function renderGrid() {
       <span>${p.name}</span>
     `;
 
-    // Click anywhere except the 3-dots → toggle caught
     card.addEventListener("click", (e) => {
       if (e.target.classList.contains("menu-btn")) return;
       toggleCaught(p.id);
     });
 
-    // 3-dots opens the detailed popup
     card.querySelector(".menu-btn").addEventListener("click", (e) => {
       e.stopImmediatePropagation();
       showDetail(p);
@@ -88,7 +93,6 @@ function renderGrid() {
 }
 
 async function showDetail(p) {
-  currentPokemonId = p.id;
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
@@ -96,8 +100,8 @@ async function showDetail(p) {
   const typesDiv = document.getElementById("modal-types");
   const evoDiv = document.getElementById("modal-evo");
   typesDiv.innerHTML = "<strong>Types:</strong><br>";
-  evoDiv.innerHTML = "<strong>Evolution:</strong><br>Loading...";
 
+  // Types
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
   data.types.forEach(t => {
@@ -109,28 +113,70 @@ async function showDetail(p) {
     typesDiv.appendChild(badge);
   });
 
+  // Full evolution chain with sprites + methods
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
   if (species.evolution_chain) {
     const chainRes = await fetch(species.evolution_chain.url);
     const chainData = await chainRes.json();
-    evoDiv.innerHTML = parseSimpleEvo(chainData.chain, p.id);
+    evoDiv.innerHTML = await buildEvolutionHTML(chainData.chain, p.id);
+  } else {
+    evoDiv.innerHTML = "No evolution data";
   }
-
-  const toggleBtn = document.getElementById("toggle-caught-btn");
-  toggleBtn.textContent = caught.has(p.id) ? "Mark as Uncaught" : "Mark as Caught";
 
   modal.style.display = "flex";
   modal.classList.remove("hidden");
 }
 
-function parseSimpleEvo(chain, currentId) {
-  let html = "";
-  const id = parseInt(chain.species.url.split("/")[6]);
-  const name = chain.species.name.charAt(0).toUpperCase() + chain.species.name.slice(1);
-  if (id < currentId) html += `⬅️ Pre-evolution: ${name}<br>`;
-  else if (id > currentId) html += `➡️ Evolves to: ${name}<br>`;
+async function buildEvolutionHTML(chain, currentId) {
+  let html = `<strong>Evolution Chain:</strong><br>`;
+  let current = chain;
+
+  // Find pre-evolution
+  // (For simplicity we walk backwards, but PokeAPI chains are forward-only, so we build forward)
+  while (current) {
+    const id = parseInt(current.species.url.split("/")[6]);
+    const name = current.species.name.charAt(0).toUpperCase() + current.species.name.slice(1);
+    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+
+    if (id === currentId) {
+      // Current Pokémon – we show pre and post around it
+      break;
+    }
+    if (id < currentId) {
+      // Pre-evo
+      const details = current.evolves_to[0] ? current.evolves_to[0].evolution_details[0] : {};
+      let method = getEvolutionMethod(details);
+      html += `<div class="evo-row"><img src="${spriteUrl}" alt="${name}"> <span><strong>Evolved from</strong> ${name}<br><span class="evo-method">${method}</span></span></div>`;
+    }
+    current = current.evolves_to[0] ? current.evolves_to[0] : null;
+  }
+
+  // Now show the next evolution
+  const next = chain.evolves_to && chain.evolves_to.length > 0 ? chain.evolves_to[0] : null;
+  if (next) {
+    let nextNode = next;
+    while (nextNode) {
+      const id = parseInt(nextNode.species.url.split("/")[6]);
+      if (id > currentId) {
+        const name = nextNode.species.name.charAt(0).toUpperCase() + nextNode.species.name.slice(1);
+        const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+        const details = nextNode.evolution_details[0] || {};
+        let method = getEvolutionMethod(details);
+        html += `<div class="evo-row"><img src="${spriteUrl}" alt="${name}"> <span><strong>Evolves into</strong> ${name}<br><span class="evo-method">${method}</span></span></div>`;
+        break;
+      }
+      nextNode = nextNode.evolves_to[0] ? nextNode.evolves_to[0] : null;
+    }
+  }
   return html || "No evolution data";
+}
+
+function getEvolutionMethod(details) {
+  if (details.min_level) return `Level ${details.min_level}`;
+  if (details.item) return details.item.name.replace(/-/g, " ");
+  if (details.trigger) return details.trigger.name;
+  return "???";
 }
 
 function toggleCaught(id) {
@@ -161,10 +207,7 @@ function renderGenProgress() {
     const percent = Math.round((genCaught / total) * 100);
     const div = document.createElement("div");
     div.className = "gen-card";
-    div.innerHTML = `
-      <strong>Gen ${g.gen}</strong> ${genCaught}/${total} (${percent}%)
-      <div class="progress-bar"><div class="progress-bar-fill" style="width:${percent}%"></div></div>
-    `;
+    div.innerHTML = `<strong>Gen ${g.gen}</strong> ${genCaught}/${total} (${percent}%)<div class="progress-bar"><div class="progress-bar-fill" style="width:${percent}%"></div></div>`;
     container.appendChild(div);
   });
 }
@@ -188,14 +231,6 @@ function setupEventListeners() {
     const uncaught = allPokemon.filter(p => !caught.has(p.id));
     if (uncaught.length === 0) return alert("You caught them all! 🔥");
     showDetail(uncaught[Math.floor(Math.random() * uncaught.length)]);
-  });
-
-  const toggleBtn = document.getElementById("toggle-caught-btn");
-  toggleBtn.addEventListener("click", () => {
-    if (currentPokemonId) {
-      toggleCaught(currentPokemonId);
-      toggleBtn.textContent = caught.has(currentPokemonId) ? "Mark as Uncaught" : "Mark as Caught";
-    }
   });
 
   const closeModal = () => {
