@@ -115,16 +115,8 @@ function renderGrid(filterTerm = "") {
 
 function renderCompletionBars() {
   const gensDiv = document.getElementById("completion-gens");
-  const totalCaught = caught.size;
-  totalDiv.innerHTML = `
-    <div class="completion-bar">
-      <span>Total</span>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width:${totalPercent}%; background:#22c55e"></div></div>
-      <span>${totalPercent}%</span>
-    </div>
-  `;
-
   gensDiv.innerHTML = "";
+
   genRanges.forEach(g => {
     const genCaught = [...caught].filter(id => id >= g.start && id <= g.end).length;
     const percent = Math.round((genCaught / (g.end - g.start + 1)) * 100);
@@ -139,7 +131,6 @@ function renderCompletionBars() {
     gensDiv.appendChild(div);
   });
 }
-
 async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
