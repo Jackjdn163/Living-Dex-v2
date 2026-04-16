@@ -1,1 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Living Dex • 1025 Pokémon</title>
+  <style>
+    :root { --bg: #f0f0f0; --text: #222; --card: #fff; }
+    [data-theme="dark"] { --bg: #1a1a1a; --text: #eee; --card: #2a2a2a; }
+    body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-family:system-ui; }
+    header { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:20px; }
+    button, select { padding:10px 16px; font-size:1rem; border-radius:8px; cursor:pointer; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:16px; }
+    .pokemon-card {
+      background:var(--card); border-radius:16px; padding:12px; text-align:center;
+      box-shadow:0 4px 15px rgba(0,0,0,0.1); transition:all 0.3s ease; cursor:pointer;
+    }
+    .pokemon-card:hover { transform:scale(1.08); box-shadow:0 10px 25px rgba(0,0,0,0.2); }
+    .pokemon-card.caught { opacity:0.65; filter:grayscale(1); }
+    .pokemon-card img { width:110px; height:110px; image-rendering:pixelated; transition:transform 0.4s; }
+    .pokemon-card.caught img { animation:catchPop 0.6s ease; }
+    @keyframes catchPop { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)} }
+    .loading {
+      position:fixed; top:0; left:0; width:100%; height:100%; background:#000;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      z-index:9999; color:white; font-size:2rem;
+    }
+    .pokeball {
+      width:120px; height:120px; background:radial-gradient(circle,#fff 50%,#ff0000 50%);
+      border:12px solid #222; border-radius:50%; position:relative; animation:spin 1s linear infinite;
+    }
+    .pokeball::after {
+      content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      width:30px; height:30px; background:#222; border:4px solid #fff; border-radius:50%;
+    }
+    .progress-bar {
+      height:20px; background:#333; border-radius:9999px; overflow:hidden; margin:10px 0;
+    }
+    .progress-bar-fill { height:100%; background:#ffcb05; width:0%; transition:width 0.6s ease; }
+    .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8);
+      display:none; align-items:center; justify-content:center; z-index:10000; }
+    .modal-content { background:var(--card); padding:25px; border-radius:20px; max-width:400px; text-align:center; }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading" class="loading">
+    <div class="pokeball"></div>
+    <p style="margin-top:30px">Catching them all...</p>
+  </div>
 
+  <header>
+    <h1 style="margin:0">🟥 Living Dex</h1>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button id="theme-btn">🌙 Dark</button>
+      <button id="shiny-btn">✨ Shiny OFF</button>
+      <select id="sort-select">
+        <option value="number">Sort by #</option>
+        <option value="name">Sort by Name</option>
+        <option value="uncaught">Uncaught First</option>
+      </select>
+      <button id="random-btn">🎲 Random Uncaught</button>
+      <button id="reset-btn">Reset Dex</button>
+    </div>
+  </header>
+
+  <div style="margin:15px 0;">
+    <strong>Total Caught: <span id="caught-count">0</span>/1025</strong>
+    <div class="progress-bar"><div id="total-progress" class="progress-bar-fill"></div></div>
+  </div>
+
+  <main id="grid" class="grid"></main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2 id="modal-name"></h2>
+      <img id="modal-sprite" style="width:200px;" alt="">
+      <p id="modal-info"></p>
+      <button id="close-modal">Close</button>
+    </div>
+  </div>
+
+  <script>
+    let allPokemon = [];
+    let caught = new Set(JSON.parse(localStorage.getItem("caught")) || []);
+    let shinyMode = false;
+
+    const loading = document.getElementById("loading");
+    const grid = document.getElementById("grid");
+
+    // 5-second loading with pokeball
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        loading.style.opacity = "0";
+        setTimeout(() => loading.remove(), 800);
+        fetchPokemon();
+      }, 5000);
+    });
+
+    async function fetchPokemon() {
+      const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1025");
+      const data = await res.json();
+      
+      allPokemon = data.results.map((p, i) => {
+        const id = i + 1;
+        return {
+          id: id,
+          name: p.name.charAt(0).toUpperCase() + p.name.slice(1),
+          sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+          shiny: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${id}.png`
+        };
+      });
+      
+      renderGrid();
+    }
+
+    function getSprite(p) {
+      return shinyMode ? p.shiny : p.sprite;
+    }
+
+    function renderGrid() {
+      grid.innerHTML = "";
+      let sorted = [...allPokemon];
+
+      const sortType = document.getElementById("sort-select").value;
+      if (sortType === "name") {
+        sorted.sort((a,b) => a.name.localeCompare(b.name));
+      } else if (sortType === "uncaught") {
+        sorted.sort((a,b) => {
+          const aCaught = caught.has(a.id);
+          const bCaught = caught.has(b.id);
+          return aCaught === bCaught ? a.id - b.id : aCaught ? 1 : -1;
+        });
+      } // default = number order
+
+      sorted.forEach(p => {
+        const isCaught = caught.has(p.id);
+        const card = document.createElement("div");
+        card.className = `pokemon-card ${isCaught ? "caught" : ""}`;
+        card.innerHTML = `
+          <img src="${getSprite(p)}" alt="${p.name}">
+          <strong>#${p.id.toString().padStart(4,"0")}</strong><br>
+          <span>${p.name}</span>
+        `;
+        card.addEventListener("click", () => toggleCaught(p.id, card));
+        grid.appendChild(card);
+      });
+
+      updateProgress();
+    }
+
+    function toggleCaught(id, cardEl) {
+      if (caught.has(id)) {
+        caught.delete(id);
+        cardEl.classList.remove("caught");
+      } else {
+        caught.add(id);
+        cardEl.classList.add("caught");
+      }
+      localStorage.setItem("caught", JSON.stringify([...caught]));
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const count = caught.size;
+      document.getElementById("caught-count").textContent = count;
+      document.getElementById("total-progress").style.width = `${(count / 1025) * 100}%`;
+    }
+
+    // Shiny toggle
+    document.getElementById("shiny-btn").addEventListener("click", () => {
+      shinyMode = !shinyMode;
+      document.getElementById("shiny-btn").textContent = shinyMode ? "✨ Shiny ON" : "✨ Shiny OFF";
+      renderGrid();
+    });
+
+    // Dark/Light toggle
+    document.getElementById("theme-btn").addEventListener("click", () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark");
+      document.getElementById("theme-btn").textContent = isDark ? "☀️ Light" : "🌙 Dark";
+    });
+
+    // Sort change
+    document.getElementById("sort-select").addEventListener("change", renderGrid);
+
+    // Random uncaught
+    document.getElementById("random-btn").addEventListener("click", () => {
+      const uncaught = allPokemon.filter(p => !caught.has(p.id));
+      if (uncaught.length === 0) return alert("You caught them all! 🔥");
+      const random = uncaught[Math.floor(Math.random() * uncaught.length)];
+      const modal = document.getElementById("modal");
+      document.getElementById("modal-name").textContent = `#${random.id} ${random.name}`;
+      document.getElementById("modal-sprite").src = getSprite(random);
+      document.getElementById("modal-info").innerHTML = `<strong>Status:</strong> Uncaught`;
+      modal.style.display = "flex";
+    });
+
+    // Modal close
+    document.getElementById("close-modal").addEventListener("click", () => {
+      document.getElementById("modal").style.display = "none";
+    });
+
+    // Reset
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      if (confirm("Reset entire Living Dex?")) {
+        caught.clear();
+        localStorage.removeItem("caught");
+        renderGrid();
+      }
+    });
+  </script>
+</body>
+</html>
