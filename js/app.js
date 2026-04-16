@@ -62,7 +62,7 @@ function finishLoading(loading) {
 async function initApp() {
   setupEventListeners();
   renderGrid();
-  renderCompletionBars();
+  renderCompletionBars();   // ← This is what shows the percentages
 }
 
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
@@ -114,22 +114,9 @@ function renderGrid(filterTerm = "") {
 }
 
 function renderCompletionBars() {
-  const totalDiv = document.getElementById("completion-total");
   const gensDiv = document.getElementById("completion-gens");
-  const totalCaught = caught.size;
-  const totalPercent = Math.round((totalCaught / 1025) * 100);
-
-  // Total bar
-  totalDiv.innerHTML = `
-    <div class="completion-bar">
-      <span>Total</span>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width:${totalPercent}%; background:#22c55e"></div></div>
-      <span>${totalPercent}%</span>
-    </div>
-  `;
-
-  // Gen bars
   gensDiv.innerHTML = "";
+
   genRanges.forEach(g => {
     const genCaught = [...caught].filter(id => id >= g.start && id <= g.end).length;
     const percent = Math.round((genCaught / (g.end - g.start + 1)) * 100);
@@ -156,7 +143,6 @@ async function showDetail(p) {
 
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
-
   data.types.forEach(t => {
     const color = typeColors[t.type.name] || "#777";
     const badge = document.createElement("span");
@@ -242,7 +228,6 @@ function toggleCaught(id) {
 function updateTotalProgress() {
   const count = caught.size;
   document.getElementById("caught-count").textContent = count;
-  document.getElementById("total-progress-bar").style.width = `${(count / 1025) * 100}%`;
 }
 
 function setupEventListeners() {
