@@ -10,6 +10,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   left: 20px;
   width: 340px;
   z-index: 100;
+  max-height: 500px:
 }
 
 .toggles-box {
@@ -71,7 +72,7 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 
 /* 3-dots in bottom-right corner */
 .menu-btn { 
-  position:absolute; bottom:8px; right:-30px; 
+  position:absolute; bottom:0px; right:-60px; 
   background:none; border:none; font-size:1.8rem; cursor:pointer; color:var(--text); opacity:0.6; 
 }
 .menu-btn:hover { opacity:1; transform:scale(1.2); }
