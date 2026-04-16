@@ -13,11 +13,9 @@ const genRanges = [
   {gen:7, start:722, end:809}, {gen:8, start:810, end:905}, {gen:9, start:906, end:1025}
 ];
 
-document.addEventListener("DOMContentLoaded", () => {
-  preloadAllAssets();
-});
+document.addEventListener("DOMContentLoaded", () => { preloadAllAssets(); });
 
-async function preloadAllAssets() {
+async function preloadAllAssets() { /* same perfect loading as before - unchanged */ 
   const loading = document.getElementById("loading");
   const pokeball = document.getElementById("pokeball");
   const text = document.getElementById("loading-text");
@@ -36,18 +34,10 @@ async function preloadAllAssets() {
     new Promise(r => { const img = new Image(); img.src = p.shiny; img.onload = r; })
   ]);
 
-  // Start animation
-  setTimeout(() => {
-    pokeball.classList.add("shaking");
-    pokeball.style.animation = "shake 0.6s 3";
-  }, 800);
+  setTimeout(() => { pokeball.classList.add("shaking"); pokeball.style.animation = "shake 0.6s 3"; }, 800);
 
-  await Promise.all([
-    new Promise(r => setTimeout(r, 5000)),
-    Promise.all(preloadPromises)
-  ]);
+  await Promise.all([new Promise(r => setTimeout(r, 5000)), Promise.all(preloadPromises)]);
 
-  // Success: stop shaking, turn green, show Gotcha!
   pokeball.classList.remove("shaking");
   pokeball.classList.add("success");
   text.textContent = "✓ Gotcha!";
@@ -64,32 +54,24 @@ async function preloadAllAssets() {
 async function initApp() {
   setupEventListeners();
   renderGrid();
-  renderGenProgress();
+  renderCompletionBars();
 }
 
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
 
-function renderGrid(filterTerm = "") { /* unchanged from last version */ 
+function renderGrid(filterTerm = "") { /* unchanged - 5-col grid is now in CSS */ 
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   let filtered = [...allPokemon];
 
   if (filterTerm) {
     const term = filterTerm.toLowerCase();
-    filtered = filtered.filter(p => 
-      p.name.toLowerCase().includes(term) || 
-      p.id.toString().padStart(4, "0").includes(term)
-    );
+    filtered = filtered.filter(p => p.name.toLowerCase().includes(term) || p.id.toString().padStart(4,"0").includes(term));
   }
 
   const sortType = document.getElementById("sort-select").value;
   if (sortType === "name") filtered.sort((a,b) => a.name.localeCompare(b.name));
-  else if (sortType === "uncaught") {
-    filtered.sort((a,b) => {
-      const aC = caught.has(a.id), bC = caught.has(b.id);
-      return aC === bC ? a.id - b.id : aC ? 1 : -1;
-    });
-  }
+  else if (sortType === "uncaught") filtered.sort((a,b) => (caught.has(a.id) === caught.has(b.id) ? a.id - b.id : caught.has(a.id) ? 1 : -1));
 
   filtered.forEach(p => {
     const isCaught = caught.has(p.id);
@@ -101,23 +83,44 @@ function renderGrid(filterTerm = "") { /* unchanged from last version */
       <strong>#${p.id.toString().padStart(4,"0")}</strong><br>
       <span>${p.name}</span>
     `;
-
-    card.addEventListener("click", (e) => {
-      if (e.target.classList.contains("menu-btn")) return;
-      toggleCaught(p.id);
-    });
-
-    card.querySelector(".menu-btn").addEventListener("click", (e) => {
-      e.stopImmediatePropagation();
-      showDetail(p);
-    });
-
+    card.addEventListener("click", e => { if (!e.target.classList.contains("menu-btn")) toggleCaught(p.id); });
+    card.querySelector(".menu-btn").addEventListener("click", e => { e.stopImmediatePropagation(); showDetail(p); });
     grid.appendChild(card);
   });
   updateTotalProgress();
 }
 
-async function showDetail(p) {
+function renderCompletionBars() {
+  const totalDiv = document.getElementById("completion-total");
+  const gensDiv = document.getElementById("completion-gens");
+
+  const totalCaught = caught.size;
+  const totalPercent = Math.round((totalCaught / 1025) * 100);
+  totalDiv.innerHTML = `
+    <div class="completion-bar">
+      <span>Total</span>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:${totalPercent}%; background:#22c55e"></div></div>
+      <span>${totalPercent}%</span>
+    </div>
+  `;
+
+  gensDiv.innerHTML = "";
+  genRanges.forEach(g => {
+    const genCaught = [...caught].filter(id => id >= g.start && id <= g.end).length;
+    const percent = Math.round((genCaught / (g.end - g.start + 1)) * 100);
+    const colors = ["#ef4036","#f4a261","#f2c94c","#7ed321","#4a90e2","#9b59b6","#e74c3c","#f1c40f","#8e44ad"];
+    const div = document.createElement("div");
+    div.className = "completion-bar";
+    div.innerHTML = `
+      <span>Gen ${g.gen}</span>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:${percent}%; background:${colors[g.gen-1]}"></div></div>
+      <span>${percent}%</span>
+    `;
+    gensDiv.appendChild(div);
+  });
+}
+
+async function showDetail(p) { /* unchanged - full evo support stays */ 
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
@@ -151,11 +154,8 @@ async function showDetail(p) {
   modal.classList.remove("hidden");
 }
 
-// NEW: Full split evolution support (Eevee shows every evolution)
-async function buildFullEvoHTML(chain, currentId) {
+async function buildFullEvoHTML(chain, currentId) { /* same full split evo logic as last version */ 
   let html = `<strong>Evolution Chain:</strong><br>`;
-
-  // Find pre-evolution (if any)
   let preNode = chain;
   while (preNode.evolves_to && preNode.evolves_to.length > 0) {
     const nextId = parseInt(preNode.evolves_to[0].species.url.split("/")[6]);
@@ -171,29 +171,23 @@ async function buildFullEvoHTML(chain, currentId) {
     preNode = preNode.evolves_to[0];
   }
 
-  // Find current node and show ALL direct evolutions (handles splits like Eevee)
   let currentNode = chain;
-  let found = false;
-  while (currentNode && !found) {
+  while (currentNode) {
     const id = parseInt(currentNode.species.url.split("/")[6]);
-    if (id === currentId) {
-      found = true;
-      if (currentNode.evolves_to && currentNode.evolves_to.length > 0) {
-        html += `<strong>Evolves into:</strong><br>`;
-        for (let evo of currentNode.evolves_to) {
-          const nextId = parseInt(evo.species.url.split("/")[6]);
-          const nextName = evo.species.name.charAt(0).toUpperCase() + evo.species.name.slice(1);
-          const nextSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png`;
-          const details = evo.evolution_details[0] || {};
-          const method = getEvolutionMethod(details);
-          html += `<div class="evo-row"><img src="${nextSprite}" alt="${nextName}"> <span>${nextName}<br><span class="evo-method">${method}</span></span></div>`;
-        }
+    if (id === currentId && currentNode.evolves_to && currentNode.evolves_to.length > 0) {
+      html += `<strong>Evolves into:</strong><br>`;
+      for (let evo of currentNode.evolves_to) {
+        const nextId = parseInt(evo.species.url.split("/")[6]);
+        const nextName = evo.species.name.charAt(0).toUpperCase() + evo.species.name.slice(1);
+        const nextSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png`;
+        const details = evo.evolution_details[0] || {};
+        const method = getEvolutionMethod(details);
+        html += `<div class="evo-row"><img src="${nextSprite}" alt="${nextName}"> <span>${nextName}<br><span class="evo-method">${method}</span></span></div>`;
       }
       break;
     }
     currentNode = currentNode.evolves_to && currentNode.evolves_to.length > 0 ? currentNode.evolves_to[0] : null;
   }
-
   return html || "No evolution data";
 }
 
@@ -204,64 +198,54 @@ function getEvolutionMethod(details) {
   return "???";
 }
 
-function toggleCaught(id) { /* unchanged */ 
+function toggleCaught(id) {
   if (caught.has(id)) caught.delete(id);
   else caught.add(id);
   localStorage.setItem("caught", JSON.stringify([...caught]));
   const searchTerm = document.getElementById("search-bar").value;
   renderGrid(searchTerm);
-  renderGenProgress();
+  renderCompletionBars();
+  updateTotalProgress();
 
   const gen = genRanges.find(g => id >= g.start && id <= g.end).gen;
   const genCaught = [...caught].filter(i => i >= genRanges[gen-1].start && i <= genRanges[gen-1].end).length;
   const genTotal = genRanges[gen-1].end - genRanges[gen-1].start + 1;
-  if (genCaught === genTotal) alert(`🎉 You completed Generation ${gen}!`);
+  if (genCaught === genTotal) alert(`You completed Generation ${gen}!`);
 }
 
-function updateTotalProgress() { /* unchanged */ 
+function updateTotalProgress() {
   const count = caught.size;
   document.getElementById("caught-count").textContent = count;
   document.getElementById("total-progress-bar").style.width = `${(count / 1025) * 100}%`;
 }
 
-function renderGenProgress() { /* unchanged */ 
-  const container = document.getElementById("gen-progress");
-  container.innerHTML = "";
-  genRanges.forEach(g => {
-    const genCaught = [...caught].filter(id => id >= g.start && id <= g.end).length;
-    const total = g.end - g.start + 1;
-    const percent = Math.round((genCaught / total) * 100);
-    const div = document.createElement("div");
-    div.className = "gen-card";
-    div.innerHTML = `<strong>Gen ${g.gen}</strong> ${genCaught}/${total} (${percent}%)<div class="progress-bar"><div class="progress-bar-fill" style="width:${percent}%"></div></div>`;
-    container.appendChild(div);
-  });
-}
-
-function setupEventListeners() { /* unchanged */ 
+function setupEventListeners() {
   const searchBar = document.getElementById("search-bar");
   searchBar.addEventListener("input", () => renderGrid(searchBar.value));
-
-  document.getElementById("shiny-btn").addEventListener("click", () => {
-    shinyMode = !shinyMode;
-    document.getElementById("shiny-btn").textContent = shinyMode ? "✨ Shiny ON" : "✨ Shiny OFF";
-    renderGrid(searchBar.value);
-  });
-
-  document.getElementById("theme-btn").addEventListener("click", () => {
-    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-    const newTheme = isDark ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    document.getElementById("theme-btn").textContent = isDark ? "☀️ Light" : "🌙 Dark";
-    localStorage.setItem("theme", newTheme);
-  });
 
   document.getElementById("sort-select").addEventListener("change", () => renderGrid(searchBar.value));
 
   document.getElementById("random-btn").addEventListener("click", () => {
     const uncaught = allPokemon.filter(p => !caught.has(p.id));
-    if (uncaught.length === 0) return alert("You caught them all! 🔥");
+    if (uncaught.length === 0) return alert("You caught them all!");
     showDetail(uncaught[Math.floor(Math.random() * uncaught.length)]);
+  });
+
+  // Dark toggle switch
+  const darkToggle = document.getElementById("dark-toggle");
+  darkToggle.checked = document.documentElement.getAttribute("data-theme") === "dark";
+  darkToggle.addEventListener("change", () => {
+    const newTheme = darkToggle.checked ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  });
+
+  // Shiny toggle switch
+  const shinyToggle = document.getElementById("shiny-toggle");
+  shinyToggle.checked = shinyMode;
+  shinyToggle.addEventListener("change", () => {
+    shinyMode = shinyToggle.checked;
+    renderGrid(document.getElementById("search-bar").value);
   });
 
   const closeModal = () => {
@@ -277,7 +261,8 @@ function setupEventListeners() { /* unchanged */
       caught.clear();
       localStorage.removeItem("caught");
       renderGrid(document.getElementById("search-bar").value);
-      renderGenProgress();
+      renderCompletionBars();
+      updateTotalProgress();
     }
   });
 }
