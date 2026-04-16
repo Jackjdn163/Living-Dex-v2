@@ -27,11 +27,19 @@ button, select {
 .pokemon-card {
   background: var(--card); border-radius: 16px; padding: 12px; text-align: center;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;
+  position: relative; /* needed for 3-dots */
 }
 .pokemon-card:hover { transform: scale(1.08); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 .pokemon-card.caught { opacity: 0.65; filter: grayscale(1); }
 .pokemon-card img { width: 110px; height: 110px; image-rendering: pixelated; transition: transform 0.4s; }
 .pokemon-card.caught img { animation: catchPop 0.6s ease; }
+
+.menu-btn {
+  position: absolute; top: 8px; right: 8px;
+  background: none; border: none; font-size: 1.8rem; line-height: 1;
+  cursor: pointer; color: var(--text); opacity: 0.6;
+}
+.menu-btn:hover { opacity: 1; transform: scale(1.2); }
 
 @keyframes catchPop { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)} }
 
