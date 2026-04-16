@@ -114,9 +114,22 @@ function renderGrid(filterTerm = "") {
 }
 
 function renderCompletionBars() {
+  const totalDiv = document.getElementById("completion-total");
   const gensDiv = document.getElementById("completion-gens");
-  gensDiv.innerHTML = "";
+  const totalCaught = caught.size;
+  const totalPercent = Math.round((totalCaught / 1025) * 100);
 
+  // Total bar
+  totalDiv.innerHTML = `
+    <div class="completion-bar">
+      <span>Total</span>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:${totalPercent}%; background:#22c55e"></div></div>
+      <span>${totalPercent}%</span>
+    </div>
+  `;
+
+  // Gen bars
+  gensDiv.innerHTML = "";
   genRanges.forEach(g => {
     const genCaught = [...caught].filter(id => id >= g.start && id <= g.end).length;
     const percent = Math.round((genCaught / (g.end - g.start + 1)) * 100);
@@ -131,6 +144,7 @@ function renderCompletionBars() {
     gensDiv.appendChild(div);
   });
 }
+
 async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
@@ -143,7 +157,6 @@ async function showDetail(p) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
 
-  // Types
   data.types.forEach(t => {
     const color = typeColors[t.type.name] || "#777";
     const badge = document.createElement("span");
@@ -153,7 +166,6 @@ async function showDetail(p) {
     typesDiv.appendChild(badge);
   });
 
-  // Evolution
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
   if (species.evolution_chain) {
@@ -162,28 +174,6 @@ async function showDetail(p) {
     evoDiv.innerHTML = await buildFullEvoHTML(chainData.chain, p.id);
   } else {
     evoDiv.innerHTML = "No evolution data";
-  }
-
-  // NEW: Switch Games availability
-  const switchGamesMap = {
-    "sword": "Sword",
-    "shield": "Shield",
-    "brilliant-diamond": "Brilliant Diamond",
-    "shining-pearl": "Shining Pearl",
-    "legends-arceus": "Legends: Arceus",
-    "scarlet": "Scarlet",
-    "violet": "Violet"
-  };
-
-  const switchList = data.game_indices
-    .filter(g => Object.keys(switchGamesMap).includes(g.version.name))
-    .map(g => switchGamesMap[g.version.name]);
-
-  const switchDiv = document.getElementById("modal-switch-games");
-  if (switchList.length > 0) {
-    switchDiv.innerHTML = `<strong>Available in Switch Games:</strong><br>${switchList.join(", ")}`;
-  } else {
-    switchDiv.innerHTML = `<strong>Available in Switch Games:</strong><br>None`;
   }
 
   modal.style.display = "flex";
@@ -289,7 +279,6 @@ function setupEventListeners() {
     modal.classList.add("hidden");
   };
   document.getElementById("close-modal").addEventListener("click", closeModal);
-  document.getElementById("modal-close-btn").addEventListener("click", closeModal);
 
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Reset entire Living Dex?")) {
