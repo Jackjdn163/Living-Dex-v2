@@ -22,7 +22,6 @@ async function preloadAllAssets() {
   const pokeball = document.getElementById("pokeball");
   const text = document.getElementById("loading-text");
 
-  // Start fetching the list
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1025");
   const data = await res.json();
   allPokemon = data.results.map((p, i) => ({
@@ -32,36 +31,34 @@ async function preloadAllAssets() {
     shiny: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${i+1}.png`
   }));
 
-  // Preload every sprite + shiny
   const preloadPromises = allPokemon.flatMap(p => [
-    new Promise(resolve => { const img = new Image(); img.src = p.sprite; img.onload = resolve; }),
-    new Promise(resolve => { const img = new Image(); img.src = p.shiny; img.onload = resolve; })
+    new Promise(r => { const img = new Image(); img.src = p.sprite; img.onload = r; }),
+    new Promise(r => { const img = new Image(); img.src = p.shiny; img.onload = r; })
   ]);
 
-  // Run the classic catch animation while preloading
+  // Start animation early
   setTimeout(() => {
     pokeball.style.animation = "shake 0.6s 3";
     text.textContent = "Catching...";
   }, 800);
 
-  // Wait for both 5-second timer AND all images to finish loading
   await Promise.all([
-    new Promise(r => setTimeout(r, 5000)), // minimum 5 seconds
+    new Promise(r => setTimeout(r, 5000)),
     Promise.all(preloadPromises)
   ]);
 
-  // Show Gotcha only now
-  pokeball.style.background = "linear-gradient(#ef4036 50%, #fff 50%)"; // keep classic look
+  // Classic Poké Ball turns green for Gotcha
+  pokeball.style.background = "linear-gradient(#22c55e 50%, #fff 50%)";
   text.style.display = "none";
   document.getElementById("success-flash").classList.remove("hidden");
+
+  // Render the entire dex WHILE loading is still visible (no blank flash)
+  initApp();
 
   setTimeout(() => {
     loading.style.transition = "opacity 0.8s";
     loading.style.opacity = "0";
-    setTimeout(() => {
-      loading.remove();
-      initApp();
-    }, 800);
+    setTimeout(() => loading.remove(), 800);
   }, 1100);
 }
 
@@ -121,8 +118,8 @@ function renderGrid(filterTerm = "") {
   updateTotalProgress();
 }
 
-async function showDetail(p) { /* same as before - no changes needed */ 
-  // (keeping the same evolution + types code from last version for brevity)
+// (showDetail, buildOneStageEvoHTML, getEvolutionMethod, toggleCaught, updateTotalProgress, renderGenProgress, setupEventListeners stay exactly the same as last version)
+async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
@@ -158,7 +155,6 @@ async function showDetail(p) { /* same as before - no changes needed */
 
 async function buildOneStageEvoHTML(chain, currentId) {
   let html = `<strong>Evolution Chain:</strong><br>`;
-  // (same one-stage logic as last version - unchanged)
   let preNode = chain;
   while (preNode.evolves_to && preNode.evolves_to.length > 0) {
     const nextId = parseInt(preNode.evolves_to[0].species.url.split("/")[6]);
@@ -203,7 +199,8 @@ function toggleCaught(id) {
   if (caught.has(id)) caught.delete(id);
   else caught.add(id);
   localStorage.setItem("caught", JSON.stringify([...caught]));
-  renderGrid(document.getElementById("search-bar").value);
+  const searchTerm = document.getElementById("search-bar").value;
+  renderGrid(searchTerm);
   renderGenProgress();
 
   const gen = genRanges.find(g => id >= g.start && id <= g.end).gen;
