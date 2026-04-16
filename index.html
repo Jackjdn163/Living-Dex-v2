@@ -7,17 +7,17 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- Loading Screen -->
+  <!-- Loading Screen - now clean Poké Ball catch -->
   <div id="loading" class="loading">
     <div class="pokeball-container">
       <div class="pokeball" id="pokeball"></div>
     </div>
     <p id="loading-text">Catching them all...</p>
-    <div id="success-flash" class="hidden">✓ Gotcha!</div>
+    <div id="success-flash" class="success-flash hidden">✓ Gotcha!</div>
   </div>
 
   <header>
-    <h1>🟥 Living Dex</h1>
+    <h1> Living Dex</h1>
     <div class="controls">
       <button id="theme-btn">🌙 Dark</button>
       <button id="shiny-btn">✨ Shiny OFF</button>
@@ -40,7 +40,7 @@
 
   <main id="grid" class="pokemon-grid"></main>
 
-  <!-- Detailed Modal (3-dots) - now pure info, no toggle button -->
+  <!-- Detailed Modal (3-dots only) -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
