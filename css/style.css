@@ -27,14 +27,14 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   padding:20px; 
 }
 
-.gen-completion h2 { margin:0 0 20px 0; font-size:1.3rem; } /* extra space for total bar */
-.completion-row, .completion-gens { display:flex; flex-direction:column; gap:14px; } /* more breathing room */
+.gen-completion h2 { margin:0 0 15px 0; font-size:1.3rem; }
+.completion-row, .completion-gens { display:flex; flex-direction:column; gap:12px; }
 .completion-bar { display:flex; align-items:center; gap:10px; font-size:0.95rem; }
 .completion-bar span { width:50px; font-weight:600; }
-.progress-bar { height:14px; background:#333; border-radius:9999px; flex:1; overflow:hidden; } /* slightly taller */
+.progress-bar { height:12px; background:#333; border-radius:9999px; flex:1; overflow:hidden; }
 .progress-bar-fill { height:100%; transition:width 0.6s ease; }
 
-.toggles-box .toggle-row { display:flex; justify-content:space-between; align-items:center; margin:12px 0; }
+.toggles-box .toggle-row { display:flex; justify-content:space-between; align-items:center; margin:15px 0; }
 .switch { position:relative; display:inline-block; width:58px; height:32px; }
 .switch input { opacity:0; width:0; height:0; }
 .slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#ccc; transition:.4s; border-radius:9999px; }
@@ -69,7 +69,6 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 .pokemon-card.caught { opacity:0.65; filter:grayscale(1); }
 .pokemon-card img { width:110px; height:110px; image-rendering:pixelated; }
 
-/* 3-dots back in bottom-right corner */
 .menu-btn { 
   position:absolute; bottom:8px; right:8px; 
   background:none; border:none; font-size:1.8rem; cursor:pointer; color:var(--text); opacity:0.6; 
@@ -78,23 +77,35 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 
 .total-progress { margin-top:10px; }
 
-/* Modal and Loading Screen unchanged */
-.modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; z-index:10000; }
-.modal-content { background:var(--card); padding:25px; border-radius:20px; max-width:460px; width:90%; text-align:center; position:relative; }
-.close { position:absolute; top:15px; right:20px; font-size:2rem; cursor:pointer; }
-.type-badge { display:inline-block; padding:6px 14px; margin:4px; border-radius:9999px; color:white; font-weight:bold; font-size:0.95rem; }
-.evo-info { text-align:left; background:rgba(0,0,0,0.05); padding:18px; border-radius:12px; margin:20px 0; line-height:1.6; }
-.evo-row { display:flex; align-items:center; gap:12px; margin:14px 0; }
-.evo-row img { width:60px; height:60px; image-rendering:pixelated; }
-.evo-method { font-size:0.9rem; color:#666; font-style:italic; }
-
-.loading { position:fixed; top:0; left:0; width:100%; height:100%; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; color:white; font-size:1.8rem; }
+/* Loading Screen - Poké Ball shakes again */
+.loading { 
+  position:fixed; top:0; left:0; width:100%; height:100%; background:#000; 
+  display:flex; flex-direction:column; align-items:center; justify-content:center; 
+  z-index:9999; color:white; font-size:1.8rem; 
+}
 .pokeball-container { position:relative; }
-.pokeball { width:130px; height:130px; background:linear-gradient(#ef4036 50%, #fff 50%); border:12px solid #222; border-radius:50%; position:relative; animation:spin 1s linear infinite; box-shadow:0 0 0 8px #222; }
+.pokeball { 
+  width:130px; height:130px; 
+  background:linear-gradient(#ef4036 50%, #fff 50%); 
+  border:12px solid #222; border-radius:50%; position:relative; 
+  animation:spin 1s linear infinite; box-shadow:0 0 0 8px #222; 
+}
 .pokeball::before { content:""; position:absolute; top:50%; left:0; right:0; height:14px; background:#222; transform:translateY(-50%); }
 .pokeball::after { content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:36px; height:36px; background:#fff; border:6px solid #222; border-radius:50%; }
+
+/* Strong shake animation on the whole ball */
+.pokeball.shaking {
+  animation: shake 0.6s 3 ease-in-out !important;
+}
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-18deg); }
+  75% { transform: rotate(18deg); }
+}
+
 .pokeball.shaking::after { animation:yellowFlash 0.4s infinite alternate; }
 .pokeball.success::after { background:#39ff14; animation:limeFlash 0.8s 2; }
 @keyframes yellowFlash { from { background:#fff; } to { background:#ffeb3b; } }
 @keyframes limeFlash { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
 .skip-btn { position:absolute; bottom:40px; right:40px; padding:12px 24px; background:#ef4036; color:white; border:none; border-radius:9999px; font-size:1rem; cursor:pointer; }
