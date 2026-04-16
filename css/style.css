@@ -3,7 +3,7 @@
 
 body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-family:system-ui,sans-serif; }
 
-/* Fixed left boxes - always visible on scroll */
+/* Fixed left boxes */
 .gen-completion {
   position: fixed;
   top: 20px;
@@ -42,11 +42,8 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 input:checked + .slider { background:#22c55e; }
 input:checked + .slider:before { transform:translateX(26px); }
 
-/* Main content shifted right to make space for fixed left boxes */
-.content-area { 
-  flex:1; 
-  margin-left: 380px; 
-}
+/* Main content - perfectly centered */
+.content-area { flex:1; }
 header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 
 .centered-block { 
@@ -72,6 +69,7 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 .pokemon-card.caught { opacity:0.65; filter:grayscale(1); }
 .pokemon-card img { width:110px; height:110px; image-rendering:pixelated; }
 
+/* 3-dots back in bottom-right corner */
 .menu-btn { 
   position:absolute; bottom:8px; right:8px; 
   background:none; border:none; font-size:1.8rem; cursor:pointer; color:var(--text); opacity:0.6; 
@@ -80,7 +78,7 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 
 .total-progress { margin-top:10px; }
 
-/* Modal and Loading Screen (unchanged) */
+/* Modal and Loading Screen unchanged */
 .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; z-index:10000; }
 .modal-content { background:var(--card); padding:25px; border-radius:20px; max-width:460px; width:90%; text-align:center; position:relative; }
 .close { position:absolute; top:15px; right:20px; font-size:2rem; cursor:pointer; }
