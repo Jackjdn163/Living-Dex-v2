@@ -28,7 +28,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 }
 
 .gen-completion h2 { margin:0 0 15px 0; font-size:1.3rem; }
-.completion-row, .completion-gens { display:flex; flex-direction:column; gap:12px; }
+.completion-gens { display:flex; flex-direction:column; gap:12px; }
 .completion-bar { display:flex; align-items:center; gap:10px; font-size:0.95rem; }
 .completion-bar span { width:50px; font-weight:600; }
 .progress-bar { height:12px; background:#333; border-radius:9999px; flex:1; overflow:hidden; }
