@@ -114,10 +114,8 @@ function renderGrid(filterTerm = "") {
 }
 
 function renderCompletionBars() {
-  const totalDiv = document.getElementById("completion-total");
   const gensDiv = document.getElementById("completion-gens");
   const totalCaught = caught.size;
-  const totalPercent = Math.round((totalCaught / 1025) * 100);
   totalDiv.innerHTML = `
     <div class="completion-bar">
       <span>Total</span>
