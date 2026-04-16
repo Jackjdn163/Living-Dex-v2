@@ -53,6 +53,19 @@ button, select { padding:10px 16px; font-size:1rem; border-radius:8px; cursor:po
   width:36px; height:36px; background:#fff; border:6px solid #222;
   border-radius:50%;
 }
+/* Yellow flash on center button while shaking */
+.pokeball.shaking::after {
+  animation: yellowFlash 0.4s infinite alternate;
+}
+@keyframes yellowFlash {
+  from { background:#fff; }
+  to { background:#ffeb3b; }
+}
+/* Green success */
+.pokeball.success::after {
+  background:#22c55e;
+}
+
 .success-flash { margin-top:25px; font-size:2.8rem; color:#22c55e; animation:flash 1s; }
 
 @keyframes spin { to { transform:rotate(360deg); } }
