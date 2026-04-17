@@ -114,11 +114,14 @@ function renderGrid(filterTerm = "") {
 }
 
 function renderCompletionBars() {
+  console.log("✅ renderCompletionBars() started"); // ← debug log
+
   const gensDiv = document.getElementById("completion-gens");
   if (!gensDiv) {
-    console.warn("completion-gens element not found!");
+    console.error("❌ #completion-gens element NOT FOUND in the DOM!");
     return;
   }
+  console.log("✅ Found #completion-gens, clearing it...");
 
   gensDiv.innerHTML = "";
 
@@ -134,14 +137,15 @@ function renderCompletionBars() {
     div.innerHTML = `
       <span>Gen ${g.gen}</span>
       <div class="progress-bar">
-        <div class="progress-bar-fill" 
-             style="width: ${percent}%; background-color: ${colors[g.gen-1]};">
-        </div>
+        <div class="progress-bar-fill" style="width: ${percent}%; background-color: ${colors[g.gen-1]};"></div>
       </div>
       <span>${genCaught}/${total} — ${percent}%</span>
     `;
     gensDiv.appendChild(div);
+    console.log(`   Gen ${g.gen}: ${genCaught}/${total} (${percent}%)`); // ← debug log
   });
+
+  console.log("✅ All generation bars added successfully!");
 }
 async function showDetail(p) {
   const modal = document.getElementById("modal");
