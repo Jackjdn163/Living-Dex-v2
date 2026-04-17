@@ -115,26 +115,34 @@ function renderGrid(filterTerm = "") {
 
 function renderCompletionBars() {
   const gensDiv = document.getElementById("completion-gens");
+  if (!gensDiv) {
+    console.warn("completion-gens element not found!");
+    return;
+  }
+
   gensDiv.innerHTML = "";
+
+  const colors = ["#ef4036","#f4a261","#f2c94c","#7ed321","#4a90e2","#9b59b6","#e74c3c","#f1c40f","#8e44ad"];
 
   genRanges.forEach(g => {
     const genCaught = [...caught].filter(id => id >= g.start && id <= g.end).length;
-    const percent = Math.round((genCaught / (g.end - g.start + 1)) * 100);
-    const colors = ["#ef4036","#f4a261","#f2c94c","#7ed321","#4a90e2","#9b59b6","#e74c3c","#f1c40f","#8e44ad"];
+    const total = g.end - g.start + 1;
+    const percent = Math.round((genCaught / total) * 100);
 
     const div = document.createElement("div");
     div.className = "completion-bar";
     div.innerHTML = `
       <span>Gen ${g.gen}</span>
       <div class="progress-bar">
-        <div class="progress-bar-fill" style="width:${percent}%; background:${colors[g.gen-1]}"></div>
+        <div class="progress-bar-fill" 
+             style="width: ${percent}%; background-color: ${colors[g.gen-1]};">
+        </div>
       </div>
-      <span>${percent}%</span>
+      <span>${genCaught}/${total} — ${percent}%</span>
     `;
     gensDiv.appendChild(div);
   });
 }
-
 async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
