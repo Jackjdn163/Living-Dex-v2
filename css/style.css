@@ -26,7 +26,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 .gen-completion h2 { margin:0 0 15px 0; font-size:1.3rem; }
 .completion-gens { display:flex; flex-direction:column; gap:12px; }
 
-/* === IMPROVED POKÉDEX COMPLETION BARS (this is the fix!) === */
+/* === FIXED & IMPROVED COMPLETION BARS === */
 .completion-bar {
   display: flex;
   align-items: center;
@@ -58,10 +58,10 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 .progress-bar-fill {
   height: 100%;
   transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-  min-width: 4px; /* even 0% shows a tiny sliver */
+  min-width: 6px; /* even 0% shows a tiny sliver so you know it's there */
 }
 
-/* Rest of your original CSS (unchanged) */
+/* (rest of your CSS unchanged — keep everything below this line) */
 .toggles-box .toggle-row { display:flex; justify-content:space-between; align-items:center; margin:15px 0; }
 .switch { position:relative; display:inline-block; width:58px; height:32px; }
 .switch input { opacity:0; width:0; height:0; }
@@ -69,6 +69,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 .slider:before { position:absolute; content:""; height:24px; width:24px; left:4px; bottom:4px; background:white; transition:.4s; border-radius:50%; }
 input:checked + .slider { background:#22c55e; }
 input:checked + .slider:before { transform:translateX(26px); }
+/* ... all your other styles (search bar, grid, modal, loading, etc.) stay exactly the same */
 /* Centered main content */
 .content-area { flex:1; }
 header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
