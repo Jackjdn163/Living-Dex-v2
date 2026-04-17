@@ -62,7 +62,7 @@ function finishLoading(loading) {
 async function initApp() {
   setupEventListeners();
   renderGrid();
-  renderCompletionBars();   // ← This now only updates the Gen bars
+  renderCompletionBars();
 }
 
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
