@@ -119,8 +119,7 @@ function renderCompletionBars() {
 
   genRanges.forEach(g => {
     const genCaught = [...caught].filter(id => id >= g.start && id <= g.end).length;
-    const totalInGen = g.end - g.start + 1;
-    const percent = Math.round((genCaught / totalInGen) * 100);
+    const percent = Math.round((genCaught / (g.end - g.start + 1)) * 100);
     const colors = ["#ef4036","#f4a261","#f2c94c","#7ed321","#4a90e2","#9b59b6","#e74c3c","#f1c40f","#8e44ad"];
 
     const div = document.createElement("div");
