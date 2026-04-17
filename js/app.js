@@ -62,7 +62,7 @@ function finishLoading(loading) {
 async function initApp() {
   setupEventListeners();
   renderGrid();
-  renderCompletionBars();   // ← This is what shows the percentages
+  renderCompletionBars();   // ← This now only updates the Gen bars
 }
 
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
