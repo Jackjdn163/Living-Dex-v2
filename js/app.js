@@ -119,13 +119,17 @@ function renderCompletionBars() {
 
   genRanges.forEach(g => {
     const genCaught = [...caught].filter(id => id >= g.start && id <= g.end).length;
-    const percent = Math.round((genCaught / (g.end - g.start + 1)) * 100);
+    const totalInGen = g.end - g.start + 1;
+    const percent = Math.round((genCaught / totalInGen) * 100);
     const colors = ["#ef4036","#f4a261","#f2c94c","#7ed321","#4a90e2","#9b59b6","#e74c3c","#f1c40f","#8e44ad"];
+
     const div = document.createElement("div");
     div.className = "completion-bar";
     div.innerHTML = `
       <span>Gen ${g.gen}</span>
-      <div class="progress-bar"><div class="progress-bar-fill" style="width:${percent}%; background:${colors[g.gen-1]}"></div></div>
+      <div class="progress-bar">
+        <div class="progress-bar-fill" style="width:${percent}%; background:${colors[g.gen-1]}"></div>
+      </div>
       <span>${percent}%</span>
     `;
     gensDiv.appendChild(div);
