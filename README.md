@@ -1,8 +1,5 @@
 # Living Dex • 1025 Pokémon
 
-![Living Dex Banner](https://raw.githubusercontent.com/jackjdn163/Living-Dex-v2/main/preview.jpg)  
-*(Add a nice screenshot here once you take one!)*
-
 **A beautiful, fully interactive Living Pokédex built for tracking your complete collection of all 1025 Pokémon.**
 
 Live Demo → **[https://jackjdn163.github.io/Living-Dex-v2/](https://jackjdn163.github.io/Living-Dex-v2/)**
