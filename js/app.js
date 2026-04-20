@@ -1,26 +1,20 @@
 let allPokemon = [];
 let caught = new Set(JSON.parse(localStorage.getItem("caught")) || []);
 let shinyMode = false;
-
 const savedTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", savedTheme);
-
 const typeColors = { normal:"#A8A878", fire:"#F08030", water:"#6890F0", grass:"#78C850", electric:"#F8D030", ice:"#98D8D8", fighting:"#C03028", poison:"#A040A0", ground:"#E0C068", flying:"#A890F0", psychic:"#F85888", bug:"#A8B820", rock:"#B8A038", ghost:"#705898", dragon:"#7038F8", dark:"#705848", steel:"#B8B8D0", fairy:"#EE99AC" };
-
 const genRanges = [
   {gen:1, start:1, end:151}, {gen:2, start:152, end:251}, {gen:3, start:252, end:386},
   {gen:4, start:387, end:493}, {gen:5, start:494, end:649}, {gen:6, start:650, end:721},
   {gen:7, start:722, end:809}, {gen:8, start:810, end:905}, {gen:9, start:906, end:1025}
 ];
-
 document.addEventListener("DOMContentLoaded", () => { preloadAllAssets(); });
-
 async function preloadAllAssets() {
   const loading = document.getElementById("loading");
   const pokeball = document.getElementById("pokeball");
   const text = document.getElementById("loading-text");
   const skipBtn = document.getElementById("skip-loading");
-
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1025");
   const data = await res.json();
   allPokemon = data.results.map((p, i) => ({
@@ -29,27 +23,21 @@ async function preloadAllAssets() {
     sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i+1}.png`,
     shiny: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${i+1}.png`
   }));
-
   const preloadPromises = allPokemon.flatMap(p => [
     new Promise(r => { const img = new Image(); img.src = p.sprite; img.onload = r; }),
     new Promise(r => { const img = new Image(); img.src = p.shiny; img.onload = r; })
   ]);
-
   setTimeout(() => { pokeball.classList.add("shaking"); pokeball.style.animation = "shake 0.6s 3"; }, 800);
-
   skipBtn.addEventListener("click", () => {
     pokeball.classList.remove("shaking");
     pokeball.classList.add("success");
     finishLoading(loading);
   });
-
   await Promise.all([new Promise(r => setTimeout(r, 5000)), Promise.all(preloadPromises)]);
-
   pokeball.classList.remove("shaking");
   pokeball.classList.add("success");
   finishLoading(loading);
 }
-
 function finishLoading(loading) {
   initApp();
   setTimeout(() => {
@@ -58,15 +46,12 @@ function finishLoading(loading) {
     setTimeout(() => loading.remove(), 800);
   }, 1100);
 }
-
 async function initApp() {
   setupEventListeners();
   renderGrid();
   renderCompletionBars();
 }
-
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
-
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
@@ -74,19 +59,16 @@ function debounce(func, delay) {
     timeout = setTimeout(() => func(...args), delay);
   };
 }
-
 function renderGrid(filterTerm = "") {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   let filtered = [...allPokemon];
-
   if (filterTerm) {
     const term = filterTerm.toLowerCase();
-    filtered = filtered.filter(p => 
+    filtered = filtered.filter(p =>
       p.name.toLowerCase().includes(term) || p.id.toString().padStart(4,"0").includes(term)
     );
   }
-
   const sortType = document.getElementById("sort-select").value;
   if (sortType === "name") filtered.sort((a,b) => a.name.localeCompare(b.name));
   else if (sortType === "uncaught") {
@@ -95,7 +77,6 @@ function renderGrid(filterTerm = "") {
       return aC === bC ? a.id - b.id : aC ? 1 : -1;
     });
   }
-
   filtered.forEach(p => {
     const isCaught = caught.has(p.id);
     const card = document.createElement("div");
@@ -112,26 +93,20 @@ function renderGrid(filterTerm = "") {
   });
   updateTotalProgress();
 }
-
 function renderCompletionBars() {
   console.log("✅ renderCompletionBars() started"); // ← debug log
-
   const gensDiv = document.getElementById("completion-gens");
   if (!gensDiv) {
     console.error("❌ #completion-gens element NOT FOUND in the DOM!");
     return;
   }
   console.log("✅ Found #completion-gens, clearing it...");
-
   gensDiv.innerHTML = "";
-
   const colors = ["#ef4036","#f4a261","#f2c94c","#7ed321","#4a90e2","#9b59b6","#e74c3c","#f1c40f","#8e44ad"];
-
   genRanges.forEach(g => {
     const genCaught = [...caught].filter(id => id >= g.start && id <= g.end).length;
     const total = g.end - g.start + 1;
     const percent = Math.round((genCaught / total) * 100);
-
     const div = document.createElement("div");
     div.className = "completion-bar";
     div.innerHTML = `
@@ -142,20 +117,17 @@ function renderCompletionBars() {
       <span>${genCaught}/${total} — ${percent}%</span>
     `;
     gensDiv.appendChild(div);
-    console.log(`   Gen ${g.gen}: ${genCaught}/${total} (${percent}%)`); // ← debug log
+    console.log(` Gen ${g.gen}: ${genCaught}/${total} (${percent}%)`); // ← debug log
   });
-
   console.log("✅ All generation bars added successfully!");
 }
 async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
-
   const typesDiv = document.getElementById("modal-types");
   const evoDiv = document.getElementById("modal-evo");
   typesDiv.innerHTML = "<strong>Types:</strong><br>";
-
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
   data.types.forEach(t => {
@@ -166,7 +138,6 @@ async function showDetail(p) {
     badge.textContent = t.type.name.toUpperCase();
     typesDiv.appendChild(badge);
   });
-
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
   if (species.evolution_chain) {
@@ -176,11 +147,9 @@ async function showDetail(p) {
   } else {
     evoDiv.innerHTML = "No evolution data";
   }
-
   modal.style.display = "flex";
   modal.classList.remove("hidden");
 }
-
 async function buildFullEvoHTML(chain, currentId) {
   let html = `<strong>Evolution Chain:</strong><br>`;
   let preNode = chain;
@@ -197,7 +166,6 @@ async function buildFullEvoHTML(chain, currentId) {
     }
     preNode = preNode.evolves_to[0];
   }
-
   let currentNode = chain;
   while (currentNode) {
     const id = parseInt(currentNode.species.url.split("/")[6]);
@@ -217,14 +185,12 @@ async function buildFullEvoHTML(chain, currentId) {
   }
   return html || "No evolution data";
 }
-
 function getEvolutionMethod(details) {
   if (details.min_level) return `Level ${details.min_level}`;
   if (details.item) return details.item.name.replace(/-/g, " ");
   if (details.trigger) return details.trigger.name;
   return "???";
 }
-
 function toggleCaught(id) {
   if (caught.has(id)) caught.delete(id);
   else caught.add(id);
@@ -233,31 +199,40 @@ function toggleCaught(id) {
   renderGrid(searchTerm);
   renderCompletionBars();
   updateTotalProgress();
-
   const gen = genRanges.find(g => id >= g.start && id <= g.end).gen;
   const genCaught = [...caught].filter(i => i >= genRanges[gen-1].start && i <= genRanges[gen-1].end).length;
   const genTotal = genRanges[gen-1].end - genRanges[gen-1].start + 1;
   if (genCaught === genTotal) alert(`You completed Generation ${gen}!`);
 }
-
 function updateTotalProgress() {
+  const total = 1025;
   const count = caught.size;
-  document.getElementById("caught-count").textContent = count;
-}
+  const percent = Math.round((count / total) * 100);
 
+  const percentEl = document.getElementById("total-percentage");
+  const fillEl = document.getElementById("total-bar-fill");
+  const countEl = document.getElementById("caught-count");
+
+  if (percentEl) percentEl.textContent = `${percent}%`;
+  if (fillEl) fillEl.style.width = `${percent}%`;
+  if (countEl) countEl.textContent = `${count} / ${total}`;
+
+  // Completion animation (exactly like you asked for!)
+  if (percent === 100 && fillEl) {
+    fillEl.classList.add("complete-flash");
+    setTimeout(() => fillEl.classList.remove("complete-flash"), 1500);
+  }
+}
 function setupEventListeners() {
   const searchBar = document.getElementById("search-bar");
   const debouncedRender = debounce(() => renderGrid(searchBar.value), 150);
   searchBar.addEventListener("input", debouncedRender);
-
   document.getElementById("sort-select").addEventListener("change", () => renderGrid(searchBar.value));
-
   document.getElementById("random-btn").addEventListener("click", () => {
     const uncaught = allPokemon.filter(p => !caught.has(p.id));
     if (uncaught.length === 0) return alert("You caught them all!");
     showDetail(uncaught[Math.floor(Math.random() * uncaught.length)]);
   });
-
   const darkToggle = document.getElementById("dark-toggle");
   darkToggle.checked = document.documentElement.getAttribute("data-theme") === "dark";
   darkToggle.addEventListener("change", () => {
@@ -265,21 +240,18 @@ function setupEventListeners() {
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
   });
-
   const shinyToggle = document.getElementById("shiny-toggle");
   shinyToggle.checked = shinyMode;
   shinyToggle.addEventListener("change", () => {
     shinyMode = shinyToggle.checked;
     renderGrid(document.getElementById("search-bar").value);
   });
-
   const closeModal = () => {
     const modal = document.getElementById("modal");
     modal.style.display = "none";
     modal.classList.add("hidden");
   };
   document.getElementById("close-modal").addEventListener("click", closeModal);
-
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Reset entire Living Dex?")) {
       caught.clear();
@@ -290,7 +262,6 @@ function setupEventListeners() {
     }
   });
 }
-
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
