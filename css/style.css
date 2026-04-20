@@ -130,7 +130,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 .tools-menu {
   position: fixed !important;
   top: 0 !important;
-  right: -380px !important;   /* ← completely hidden by default */
+  right: -600px !important;   /* ← completely hidden by default */
   width: 360px;
   height: 100vh;
   background: var(--card);
@@ -182,7 +182,7 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 }
 .centered-block input {
  width:100%;
-  max-width:790px;
+  max-width:680px;
   padding:14px;
   font-size:1.1rem;
   border-radius:12px;
