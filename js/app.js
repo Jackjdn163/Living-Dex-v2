@@ -94,7 +94,7 @@ function renderGrid(filterTerm = "") {
   updateTotalProgress();
 }
 function renderCompletionBars() {
-  console.log("✅ renderCompletionBars() started"); // ← debug log
+  console.log("✅ renderCompletionBars() started");
   const gensDiv = document.getElementById("completion-gens");
   if (!gensDiv) {
     console.error("❌ #completion-gens element NOT FOUND in the DOM!");
@@ -117,7 +117,7 @@ function renderCompletionBars() {
       <span>${genCaught}/${total} — ${percent}%</span>
     `;
     gensDiv.appendChild(div);
-    console.log(` Gen ${g.gen}: ${genCaught}/${total} (${percent}%)`); // ← debug log
+    console.log(` Gen ${g.gen}: ${genCaught}/${total} (${percent}%)`);
   });
   console.log("✅ All generation bars added successfully!");
 }
@@ -217,7 +217,6 @@ function updateTotalProgress() {
   if (fillEl) fillEl.style.width = `${percent}%`;
   if (countEl) countEl.textContent = `${count} / ${total}`;
 
-  // Completion animation (exactly like you asked for!)
   if (percent === 100 && fillEl) {
     fillEl.classList.add("complete-flash");
     setTimeout(() => fillEl.classList.remove("complete-flash"), 1500);
@@ -259,6 +258,26 @@ function setupEventListeners() {
       renderGrid(document.getElementById("search-bar").value);
       renderCompletionBars();
       updateTotalProgress();
+    }
+  });
+
+  /* ===================== NEW: TOOLS MENU TOGGLE ===================== */
+  const toolsBtn = document.getElementById("tools-btn");
+  const toolsMenu = document.getElementById("tools-menu");
+  const closeTools = document.getElementById("close-tools");
+
+  toolsBtn.addEventListener("click", () => {
+    toolsMenu.classList.toggle("open");
+  });
+  closeTools.addEventListener("click", () => {
+    toolsMenu.classList.remove("open");
+  });
+  // Click outside the menu to close
+  document.addEventListener("click", (e) => {
+    if (toolsMenu.classList.contains("open") && 
+        !toolsMenu.contains(e.target) && 
+        !toolsBtn.contains(e.target)) {
+      toolsMenu.classList.remove("open");
     }
   });
 }
