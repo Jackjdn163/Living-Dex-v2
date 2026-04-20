@@ -50,7 +50,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   min-width: 6px;
 }
 
-/* ===================== TOTAL BAR ===================== */
+/* ===================== TOTAL LIVING DEX BAR – MULTICOLOR GRADIENT RESTORED ===================== */
 .total-completion {
   margin: 20px 0 25px 0;
   padding: 18px 20px;
@@ -75,10 +75,8 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
 }
 [data-theme="dark"] .progress-bar-bg { background: #444; }
-.progress-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #ef4036, #f4a261);
-  transition: width 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+.total-completion .progress-bar-fill {
+  background: linear-gradient(90deg, #ef4036, #f4a261) !important; /* ← MULTICOLOR RESTORED */
   box-shadow: 0 0 10px rgba(239, 64, 54, 0.6);
 }
 .complete-flash { animation: completeAnim 1.5s ease; }
@@ -96,7 +94,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   opacity: 0.9;
 }
 
-/* ===================== FIXED TOOLS MENU (TOP-RIGHT) ===================== */
+/* ===================== TOOLS MENU – NOW HIDDEN UNTIL CLICKED ===================== */
 .tools-btn {
   position: fixed !important;
   top: 20px !important;
@@ -132,7 +130,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 .tools-menu {
   position: fixed !important;
   top: 0 !important;
-  right: -380px !important;
+  right: -380px !important;   /* ← completely hidden by default */
   width: 360px;
   height: 100vh;
   background: var(--card);
@@ -142,7 +140,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   padding: 30px 25px;
   overflow-y: auto;
 }
-.tools-menu.open { right: 0 !important; }
+.tools-menu.open { right: 0 !important; }   /* ← only appears when clicked */
 .tools-header {
   display: flex;
   justify-content: space-between;
@@ -165,7 +163,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 .close-tools:hover { opacity: 1; color: #ef4036; }
 .tools-content p { line-height: 1.7; margin-bottom: 20px; }
 
-/* (rest of your CSS — everything below is unchanged) */
+/* (everything below is your original CSS – unchanged) */
 .toggles-box .toggle-row { display:flex; justify-content:space-between; align-items:center; margin:15px 0; }
 .switch { position:relative; display:inline-block; width:58px; height:32px; }
 .switch input { opacity:0; width:0; height:0; }
@@ -173,7 +171,6 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 .slider:before { position:absolute; content:""; height:24px; width:24px; left:4px; bottom:4px; background:white; transition:.4s; border-radius:50%; }
 input:checked + .slider { background:#22c55e; }
 input:checked + .slider:before { transform:translateX(26px); }
-/* Centered main content */
 .content-area { flex:1; }
 header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 .centered-block {
@@ -183,7 +180,17 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   flex-direction:column;
   gap:15px;
 }
-.centered-block input, .centered-block select {
+.centered-block input {
+ width:100%;
+  max-width:790px;
+  padding:14px;
+  font-size:1.1rem;
+  border-radius:12px;
+  background: var(--card);
+  color: var(--text);
+  border: 2px solid #ccc;
+}
+.centered-block select {
   width:100%;
   max-width:820px;
   padding:14px;
