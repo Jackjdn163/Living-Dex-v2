@@ -15,6 +15,14 @@ async function preloadAllAssets() {
   const pokeball = document.getElementById("pokeball");
   const skipBtn = document.getElementById("skip-loading");
 
+  // ←←← SKIP BUTTON WORKS IMMEDIATELY (fixed)
+  skipBtn.addEventListener("click", () => {
+    pokeball.classList.remove("shaking");
+    pokeball.classList.add("success");
+    finishLoading(loading);
+  });
+
+  // Fetch Pokémon list
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1025");
   const data = await res.json();
   allPokemon = data.results.map((p, i) => ({
@@ -24,27 +32,25 @@ async function preloadAllAssets() {
     shiny: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${i+1}.png`
   }));
 
-  // Preload images in background (won't hang the loading screen)
-  allPokemon.flatMap(p => [
-    (() => { const img = new Image(); img.src = p.sprite; })(),
-    (() => { const img = new Image(); img.src = p.shiny; })()
+  // Proper preloading (so sprites are ready when grid appears)
+  const preloadPromises = allPokemon.flatMap(p => [
+    new Promise(r => { const img = new Image(); img.src = p.sprite; img.onload = r; }),
+    new Promise(r => { const img = new Image(); img.src = p.shiny; img.onload = r; })
   ]);
 
+  // Start the shake animation after a short delay
   setTimeout(() => { 
     pokeball.classList.add("shaking"); 
     pokeball.style.animation = "shake 0.6s 3"; 
   }, 800);
 
-  skipBtn.addEventListener("click", () => finishLoading(loading));
+  // Wait for BOTH the 5-second timer AND all images to preload
+  await Promise.all([
+    new Promise(r => setTimeout(r, 5000)), 
+    Promise.all(preloadPromises)
+  ]);
 
-  // Loading screen now ALWAYS ends after 5 seconds (no more hanging!)
-  await new Promise(r => setTimeout(r, 5000));
-
-  pokeball.classList.remove("shaking");
-  pokeball.classList.add("success");
-  finishLoading(loading);
-}
-  await Promise.all([new Promise(r => setTimeout(r, 5000)), Promise.all(preloadPromises)]);
+  // Finish loading
   pokeball.classList.remove("shaking");
   pokeball.classList.add("success");
   finishLoading(loading);
