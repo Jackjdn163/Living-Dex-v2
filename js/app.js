@@ -142,11 +142,21 @@ async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
+
   const typesDiv = document.getElementById("modal-types");
   const evoDiv = document.getElementById("modal-evo");
+  const gamesDiv = document.getElementById("modal-games");   // ← NEW
+
+  // Clear previous content
   typesDiv.innerHTML = "<strong>Types:</strong><br>";
+  evoDiv.innerHTML = "";
+  gamesDiv.innerHTML = "<strong>Switch Games:</strong><br>";
+
+  // Fetch Pokémon data (already doing this)
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
+
+  // === TYPES (unchanged) ===
   data.types.forEach(t => {
     const color = typeColors[t.type.name] || "#777";
     const badge = document.createElement("span");
@@ -155,6 +165,8 @@ async function showDetail(p) {
     badge.textContent = t.type.name.toUpperCase();
     typesDiv.appendChild(badge);
   });
+
+  // === EVOLUTION CHAIN (unchanged) ===
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
   if (species.evolution_chain) {
@@ -164,6 +176,43 @@ async function showDetail(p) {
   } else {
     evoDiv.innerHTML = "No evolution data";
   }
+
+  // === NEW: SWITCH GAMES (using moves data) ===
+  const switchGameMap = {
+    "lets-go-pikachu-lets-go-eevee": "Let's Go, Pikachu! / Let's Go, Eevee!",
+    "sword-shield": "Sword / Shield",
+    "brilliant-diamond-shining-pearl": "Brilliant Diamond / Shining Pearl",
+    "legends-arceus": "Legends: Arceus",
+    "scarlet-violet": "Scarlet / Violet"
+  };
+
+  const gamesSet = new Set();
+
+  data.moves.forEach(move => {
+    move.version_group_details.forEach(detail => {
+      const vgName = detail.version_group.name;
+      if (switchGameMap[vgName]) {
+        gamesSet.add(vgName);
+      }
+    });
+  });
+
+  if (gamesSet.size > 0) {
+    gamesSet.forEach(vgName => {
+      const badge = document.createElement("span");
+      badge.className = "game-badge";
+      badge.textContent = switchGameMap[vgName];
+      gamesDiv.appendChild(badge);
+    });
+  } else {
+    const none = document.createElement("span");
+    none.style.opacity = "0.6";
+    none.style.fontStyle = "italic";
+    none.textContent = "Not available in any Switch games";
+    gamesDiv.appendChild(none);
+  }
+
+  // Show modal
   modal.style.display = "flex";
   modal.classList.remove("hidden");
 }
