@@ -145,14 +145,14 @@ async function showDetail(p) {
 
   const typesDiv = document.getElementById("modal-types");
   const evoDiv = document.getElementById("modal-evo");
-  const gamesDiv = document.getElementById("modal-games");   // ← NEW
+  const gamesDiv = document.getElementById("modal-games");
 
   // Clear previous content
   typesDiv.innerHTML = "<strong>Types:</strong><br>";
   evoDiv.innerHTML = "";
   gamesDiv.innerHTML = "<strong>Switch Games:</strong><br>";
 
-  // Fetch Pokémon data (already doing this)
+  // Fetch Pokémon data
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
 
@@ -177,13 +177,14 @@ async function showDetail(p) {
     evoDiv.innerHTML = "No evolution data";
   }
 
-  // === NEW: SWITCH GAMES (using moves data) ===
+  // === SWITCH GAMES (now includes Legends: Z-A) ===
   const switchGameMap = {
     "lets-go-pikachu-lets-go-eevee": "Let's Go, Pikachu! / Let's Go, Eevee!",
     "sword-shield": "Sword / Shield",
     "brilliant-diamond-shining-pearl": "Brilliant Diamond / Shining Pearl",
     "legends-arceus": "Legends: Arceus",
-    "scarlet-violet": "Scarlet / Violet"
+    "scarlet-violet": "Scarlet / Violet",
+    "legends-z-a": "Legends: Z-A"          // ← NEW!
   };
 
   const gamesSet = new Set();
