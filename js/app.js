@@ -235,12 +235,12 @@ order.forEach(key => {
     badge.textContent = switchGameMap[key];
 
     // === UPDATED COLORS ===
-    if (key === "lets-go-pikachu-lets-go-eevee") badge.style.background = "linear-gradient(90deg, #fb923c, #f97316)";           // warm orange (no blue, no yellow)
+   if (key === "lets-go-pikachu-lets-go-eevee") badge.style.background = "linear-gradient(90deg, #fefce8, #fde047)";           // really light yellow (as requested)
     else if (key === "sword-shield") badge.style.background = "linear-gradient(90deg, #3b82f6, #1e40af)";                    // blue (kept)
     else if (key === "brilliant-diamond-shining-pearl") badge.style.background = "linear-gradient(90deg, #a5b4fc, #6366f1)";   // blue-purple (kept)
-    else if (key === "legends-arceus") badge.style.background = "linear-gradient(90deg, #c084fc, #a855f7)";                  // vibrant purple (no blue/teal)
+    else if (key === "legends-arceus") badge.style.background = "linear-gradient(90deg, #c084fc, #a855f7)";                  // vibrant purple
     else if (key === "scarlet-violet") badge.style.background = "linear-gradient(90deg, #f43f5e, #9f1239)";
-    else if (key === "legends-z-a") badge.style.background = "linear-gradient(90deg, #4ade80, #15803d)";                    // darker emerald green (as requested)
+    else if (key === "legends-z-a") badge.style.background = "linear-gradient(90deg, #4ade80, #15803d)";                    // darker emerald green
     else if (["mega-dimension","isle-of-armor","crown-tundra","teal-mask","indigo-disk"].includes(key)) {
       badge.style.background = "linear-gradient(90deg, #f59e0b, #d97706)"; // gold for all DLCs
     }
