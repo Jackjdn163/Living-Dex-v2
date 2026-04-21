@@ -231,8 +231,18 @@ if (indigoDiskDLC.has(p.id)) {
       const badge = document.createElement("span");
       badge.className = "game-badge";
       badge.textContent = switchGameMap[key];
-      if (key === "legends-z-a") badge.style.background = "linear-gradient(90deg, #a78bfa, #7c3aed)";
-      if (["mega-dimension","isle-of-armor","crown-tundra","teal-mask","indigo-disk"].includes(key)) badge.style.background = "linear-gradient(90deg, #f59e0b, #d97706)"; // orange for DLC
+     // === UNIQUE COLORS FOR BASE GAMES ===
+    if (key === "lets-go-pikachu-lets-go-eevee") badge.style.background = "linear-gradient(90deg, #facc15, #eab308)";           // bright Pikachu yellow
+    else if (key === "sword-shield") badge.style.background = "linear-gradient(90deg, #3b82f6, #1e40af)";                    // Galar blue
+    else if (key === "brilliant-diamond-shining-pearl") badge.style.background = "linear-gradient(90deg, #a5b4fc, #6366f1)";   // diamond/purple-blue
+    else if (key === "legends-arceus") badge.style.background = "linear-gradient(90deg, #14b8a6, #0f766e)";                  // Hisui teal
+    else if (key === "scarlet-violet") badge.style.background = "linear-gradient(90deg, #f43f5e, #9f1239)";                  // Paldea scarlet-pink
+    else if (key === "legends-z-a") badge.style.background = "linear-gradient(90deg, #a78bfa, #7c3aed)";                    // Legends Z-A purple (kept your original)
+
+    // === ALL DLCs STAY GOLD (as requested) ===
+    else if (["mega-dimension","isle-of-armor","crown-tundra","teal-mask","indigo-disk"].includes(key)) {
+      badge.style.background = "linear-gradient(90deg, #f59e0b, #d97706)";
+    }
       gamesDiv.appendChild(badge);
     }
   });
