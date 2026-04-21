@@ -152,11 +152,11 @@ async function showDetail(p) {
   evoDiv.innerHTML = "";
   gamesDiv.innerHTML = "<strong>Switch Games:</strong><br>";
 
-  // Fetch Pokémon data
+  // Fetch Pokémon data (for types + moves + evo)
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
 
-  // === TYPES (unchanged) ===
+  // === TYPES ===
   data.types.forEach(t => {
     const color = typeColors[t.type.name] || "#777";
     const badge = document.createElement("span");
@@ -166,7 +166,7 @@ async function showDetail(p) {
     typesDiv.appendChild(badge);
   });
 
-  // === EVOLUTION CHAIN (unchanged) ===
+  // === EVOLUTION CHAIN ===
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
   if (species.evolution_chain) {
@@ -177,14 +177,13 @@ async function showDetail(p) {
     evoDiv.innerHTML = "No evolution data";
   }
 
-  // === SWITCH GAMES (now includes Legends: Z-A) ===
+  // === SWITCH GAMES (PokéAPI for the first 5 games) ===
   const switchGameMap = {
     "lets-go-pikachu-lets-go-eevee": "Let's Go, Pikachu! / Let's Go, Eevee!",
     "sword-shield": "Sword / Shield",
     "brilliant-diamond-shining-pearl": "Brilliant Diamond / Shining Pearl",
     "legends-arceus": "Legends: Arceus",
-    "scarlet-violet": "Scarlet / Violet",
-    "legends-z-a": "Legends: Z-A"          // ← NEW!
+    "scarlet-violet": "Scarlet / Violet"
   };
 
   const gamesSet = new Set();
@@ -192,18 +191,42 @@ async function showDetail(p) {
   data.moves.forEach(move => {
     move.version_group_details.forEach(detail => {
       const vgName = detail.version_group.name;
-      if (switchGameMap[vgName]) {
-        gamesSet.add(vgName);
-      }
+      if (switchGameMap[vgName]) gamesSet.add(vgName);
     });
   });
 
+  // === LEGENDS: Z-A (full 230 Pokémon - National Dex IDs) ===
+  const legendsZA = new Set([
+    152,153,154,498,499,500,158,159,160,661,662,663,659,660,664,665,666,
+    13,14,15,16,17,18,19,20,21,22,23,179,180,181,504,505,406,315,407,
+    129,130,688,689,120,121,669,670,671,672,673,133,34,35,36,37,38,39,
+    40,41,42,43,44,45,46,47,48,49,50,172,25,26,173,35,36,37,167,168,
+    23,24,63,64,65,92,93,94,543,544,545,679,680,681,69,70,71,511,512,
+    513,514,515,516,382,383,384,307,308,309,310,280,281,282,475,228,229,
+    333,334,441,685,686,684,682,133,134,135,136,196,197,470,471,700,
+    427,428,353,354,582,583,584,322,323,449,450,529,530,551,552,553,
+    66,67,68,443,444,445,703,302,303,359,447,448,79,80,199,318,319,
+    602,603,604,147,148,149,1,2,3,4,5,6,7,8,9,618,676,686,687,690,691,
+    692,693,704,705,706,225,361,362,478,459,460,712,713,123,212,214,127,
+    214,215,227,653,654,655,371,372,373,115,780,374,375,376,716,717,718
+  ]);
+
+  if (legendsZA.has(p.id)) {
+    gamesSet.add("legends-z-a");
+  }
+
+  // === Display all games ===
   if (gamesSet.size > 0) {
-    gamesSet.forEach(vgName => {
-      const badge = document.createElement("span");
-      badge.className = "game-badge";
-      badge.textContent = switchGameMap[vgName];
-      gamesDiv.appendChild(badge);
+    // Optional: sort them in a nice order
+    const order = ["lets-go-pikachu-lets-go-eevee", "sword-shield", "brilliant-diamond-shining-pearl", "legends-arceus", "scarlet-violet", "legends-z-a"];
+    order.forEach(key => {
+      if (gamesSet.has(key)) {
+        const badge = document.createElement("span");
+        badge.className = "game-badge";
+        badge.textContent = switchGameMap[key] || "Legends: Z-A";
+        if (key === "legends-z-a") badge.style.background = "linear-gradient(90deg, #a78bfa, #7c3aed)"; // nice purple for Z-A
+        gamesDiv.appendChild(badge);
+      }
     });
   } else {
     const none = document.createElement("span");
@@ -213,7 +236,6 @@ async function showDetail(p) {
     gamesDiv.appendChild(none);
   }
 
-  // Show modal
   modal.style.display = "flex";
   modal.classList.remove("hidden");
 }
