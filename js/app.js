@@ -235,14 +235,14 @@ order.forEach(key => {
     badge.textContent = switchGameMap[key];
 
     // === UPDATED COLORS ===
-    if (key === "lets-go-pikachu-lets-go-eevee") badge.style.background = "linear-gradient(90deg, #22d3ee, #06b67f)";           // Bright cyan/teal (no yellow!)
-    else if (key === "sword-shield") badge.style.background = "linear-gradient(90deg, #3b82f6, #1e40af)";                    // Galar blue
-    else if (key === "brilliant-diamond-shining-pearl") badge.style.background = "linear-gradient(90deg, #a5b4fc, #6366f1)";
-    else if (key === "legends-arceus") badge.style.background = "linear-gradient(90deg, #14b8a6, #0f766e)";
+    if (key === "lets-go-pikachu-lets-go-eevee") badge.style.background = "linear-gradient(90deg, #fb923c, #f97316)";           // warm orange (no blue, no yellow)
+    else if (key === "sword-shield") badge.style.background = "linear-gradient(90deg, #3b82f6, #1e40af)";                    // blue (kept)
+    else if (key === "brilliant-diamond-shining-pearl") badge.style.background = "linear-gradient(90deg, #a5b4fc, #6366f1)";   // blue-purple (kept)
+    else if (key === "legends-arceus") badge.style.background = "linear-gradient(90deg, #c084fc, #a855f7)";                  // vibrant purple (no blue/teal)
     else if (key === "scarlet-violet") badge.style.background = "linear-gradient(90deg, #f43f5e, #9f1239)";
-    else if (key === "legends-z-a") badge.style.background = "linear-gradient(90deg, #4ade80, #16a34a)";                    // Vibrant emerald green (as requested)
+    else if (key === "legends-z-a") badge.style.background = "linear-gradient(90deg, #4ade80, #15803d)";                    // darker emerald green (as requested)
     else if (["mega-dimension","isle-of-armor","crown-tundra","teal-mask","indigo-disk"].includes(key)) {
-      badge.style.background = "linear-gradient(90deg, #f59e0b, #d97706)"; // Gold for all DLCs
+      badge.style.background = "linear-gradient(90deg, #f59e0b, #d97706)"; // gold for all DLCs
     }
       gamesDiv.appendChild(badge);
     }
