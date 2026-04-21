@@ -195,10 +195,22 @@ const crownTundraDLC = new Set([872,873,220,221,473,439,122,866,238,124,239,125,
 const tealMaskDLC = new Set([167,168,193,469,195,261,262,313,314,341,342,540,541,542,742,743,23,24,69,70,71,161,162,1011,37,38,60,61,62,186,163,164,190,424,220,221,473,273,274,275,708,709,1012,1013,74,75,76,532,533,534,877,446,143,270,271,272,299,476,736,737,738,27,28,207,472,629,630,782,783,784,109,110,619,620,355,356,477,433,358,218,219,607,608,609,173,35,36,349,350,703,580,581,845,902,901,1014,1015,1016,1017]);
 const indigoDiskDLC = new Set([84,85,102,103,111,112,464,239,125,466,240,126,467,900,522,523,629,630,235,868,869,328,329,330,731,732,733,72,73,116,117,230,546,547,764,43,44,45,182,170,171,686,687,751,752,236,106,107,237,74,75,76,529,530,677,678,774,408,409,410,411,572,573,227,311,312,559,560,622,623,137,233,474,595,596,374,375,376,86,87,131,904,577,578,579,209,210,27,28,37,38,884,1018,1019,1,2,3,4,5,6,7,8,9,152,153,154,155,156,157,158,159,160,252,253,254,255,256,257,258,259,260,387,388,389,390,391,392,393,394,395,495,496,497,498,499,500,501,502,503,650,651,652,653,654,655,656,657,658,722,723,724,725,726,727,728,729,730,810,811,812,813,814,815,816,817,818,1020,1021,1023,1022,1024,1009,1010,1025]);
 
-  if (isleOfArmorDLC.has(p.id)) gamesSet.add("isle-of-armor") gameSet.delete("sword-shield");      // added for completeness
-  if (crownTundraDLC.has(p.id)) gamesSet.add("crown-tundra") gameSet.delete("sword-shield");
-  if (tealMaskDLC.has(p.id))    gamesSet.add("teal-mask") gameSet.delete("scarlet-violet");
-  if (indigoDiskDLC.has(p.id))  gamesSet.add("indigo-disk") gameSet.delete("scarlet-violet");
+ if (isleOfArmorDLC.has(p.id)) {
+  gamesSet.add("isle-of-armor");
+  gamesSet.delete("sword-shield");
+}
+if (crownTundraDLC.has(p.id)) {
+  gamesSet.add("crown-tundra");
+  gamesSet.delete("sword-shield");
+}
+if (tealMaskDLC.has(p.id)) {
+  gamesSet.add("teal-mask");
+  gamesSet.delete("scarlet-violet");
+}
+if (indigoDiskDLC.has(p.id)) {
+  gamesSet.add("indigo-disk");
+  gamesSet.delete("scarlet-violet");
+}
   // Legends: Z-A (already in your code)
   const legendsZA = new Set([
     152,153,154,498,499,500,158,159,160,661,662,663,659,660,664,665,666,
