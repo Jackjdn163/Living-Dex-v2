@@ -302,3 +302,42 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   top: 15px !important;
   z-index: 10 !important;
 }
+/* ===================== QUICK NOTES ===================== */
+.tools-section {
+  margin-bottom: 30px;
+}
+.tools-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.3rem;
+  color: var(--text);
+}
+#quick-notes {
+  width: 100%;
+  min-height: 220px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 2px solid #ccc;
+  background: var(--card);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+[data-theme="dark"] #quick-notes {
+  border-color: #555;
+}
+.notes-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+.saved-indicator {
+  color: #22c55e;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.saved-indicator.show { opacity: 1; }
