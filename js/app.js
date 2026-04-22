@@ -87,7 +87,7 @@ async function initApp() {
     });
   }
 
-  // ===================== EXP CALCULATOR =====================
+   // ===================== EXP CALCULATOR =====================
   const expSearch = document.getElementById("exp-search");
   const datalist = document.getElementById("exp-pokemon-list");
   const calculatorDiv = document.getElementById("exp-calculator");
@@ -124,13 +124,10 @@ async function initApp() {
     const n = level;
     switch (growthRate) {
       case "fast": return Math.floor(0.8 * n * n * n);
-      case "medium-fast":        // ← This is the "MEDIUM" group (Rattata, etc.)
-      case "medium":             // ← fallback in case API ever returns "medium"
-        return Math.floor(n * n * n);
-      case "medium-slow":
-        return Math.floor(1.25 * n * n * n - 30 * n * n + 300 * n);
-      case "slow":
-        return Math.floor(1.25 * n * n * n);
+      case "medium-fast":
+      case "medium": return Math.floor(n * n * n);
+      case "medium-slow": return Math.floor(1.25 * n * n * n - 30 * n * n + 300 * n);
+      case "slow": return Math.floor(1.25 * n * n * n);
       case "erratic":
         if (n < 50) return Math.floor(n * n * n * (100 - n) / 50);
         else if (n < 68) return Math.floor(n * n * n * (150 - n) / 100);
@@ -147,12 +144,14 @@ async function initApp() {
   }
 
   let currentGrowthRate = null;
+  let nextEvoLevel = null;   // ← this was missing
 
   expSearch.addEventListener("input", async () => {
     const term = expSearch.value.trim().toLowerCase();
     if (!term) {
       calculatorDiv.style.display = "none";
       currentGrowthRate = null;
+      nextEvoLevel = null;
       return;
     }
 
@@ -172,7 +171,25 @@ async function initApp() {
 
     groupEl.textContent = currentGrowthRate.replace(/-/g, " ").toUpperCase();
 
-    updateExpDisplay();   // initial calculation
+    // === Find next level-up evolution ===
+    nextEvoLevel = null;
+    if (species.evolution_chain) {
+      const chainRes = await fetch(species.evolution_chain.url);
+      const chain = await chainRes.json();
+      let node = chain.chain;
+      while (node) {
+        if (node.species.name === selected.name.toLowerCase() && node.evolves_to && node.evolves_to.length > 0) {
+          const evoDetail = node.evolves_to[0].evolution_details[0];
+          if (evoDetail && evoDetail.min_level) {
+            nextEvoLevel = evoDetail.min_level;
+          }
+          break;
+        }
+        node = node.evolves_to && node.evolves_to.length ? node.evolves_to[0] : null;
+      }
+    }
+
+    updateExpDisplay();
   });
 
   function updateExpDisplay() {
@@ -185,18 +202,26 @@ async function initApp() {
     const expToNextLevel = Math.max(0, expAtNext - expAtCurrent);
     const expTo100 = Math.max(0, getCumulativeExp(100, currentGrowthRate) - expAtCurrent);
 
-    // Next evolution (level-based only)
-    let expToEvo = "N/A (no level evolution)";
+    // Next evolution
+    let expToEvoText = "N/A (no level evolution)";
+    let expToEvo = 0;
+    if (nextEvoLevel && nextEvoLevel > currentLevel) {
+      const expAtEvo = getCumulativeExp(nextEvoLevel, currentGrowthRate);
+      expToEvo = Math.max(0, expAtEvo - expAtCurrent);
+      expToEvoText = expToEvo.toLocaleString();
+    } else if (nextEvoLevel && nextEvoLevel <= currentLevel) {
+      expToEvoText = "Already evolved";
+    }
 
     resultsDiv.innerHTML = `
       <p><strong>EXP to next level:</strong> <span style="color:#22c55e;">${expToNextLevel.toLocaleString()}</span></p>
-      <p><strong>EXP until next evolution:</strong> <span style="color:#eab308;">${expToEvo}</span></p>
+      <p><strong>EXP until next evolution:</strong> <span style="color:#eab308;">${expToEvoText}</span></p>
       <p><strong>EXP until level 100:</strong> <span style="color:#a78bfa;">${expTo100.toLocaleString()}</span></p>
     `;
 
     candyDiv.innerHTML = `
       <div class="candy-row"><strong>Next Level</strong><br>${formatCandy(calculateCandies(expToNextLevel))}</div>
-      <div class="candy-row"><strong>Next Evolution</strong><br>N/A</div>
+      <div class="candy-row"><strong>Next Evolution</strong><br>${expToEvo > 0 ? formatCandy(calculateCandies(expToEvo)) : "N/A"}</div>
       <div class="candy-row"><strong>Level 100</strong><br>${formatCandy(calculateCandies(expTo100))}</div>
     `;
   }
