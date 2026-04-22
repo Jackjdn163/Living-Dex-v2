@@ -625,9 +625,9 @@ function setupEventListeners() {
   closeTools.addEventListener("click", () => {
     toolsMenu.classList.remove("open");
   });
-
-  // Click outside to close has been REMOVED as requested
 }
+  // Click outside to close has been REMOVED as requested
+
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
