@@ -567,10 +567,6 @@ function updateTotalProgress() {
   } else if (fillEl) {
     fillEl.classList.remove("complete");
   } 
-  if (percent === 100 && fillEl) {
-    fillEl.classList.add("complete-flash");
-    setTimeout(() => fillEl.classList.remove("complete-flash"), 1500);
-  }
 }
 function setupEventListeners() {
   const searchBar = document.getElementById("search-bar");
