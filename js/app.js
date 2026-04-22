@@ -136,17 +136,20 @@ async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
-  // Force modal to be scrollable and fully visible
+
   const typesDiv = document.getElementById("modal-types");
   const evoDiv = document.getElementById("modal-evo");
   const gamesDiv = document.getElementById("modal-games");
+
   // Clear previous content
   typesDiv.innerHTML = "<strong>Types:</strong><br>";
   evoDiv.innerHTML = "";
   gamesDiv.innerHTML = "<strong>Switch Games:</strong><br>";
-  // Fetch Pokémon data (for types + moves + evo)
+
+  // Fetch Pokémon data
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
+
   // === TYPES ===
   data.types.forEach(t => {
     const color = typeColors[t.type.name] || "#777";
@@ -156,6 +159,7 @@ async function showDetail(p) {
     badge.textContent = t.type.name.toUpperCase();
     typesDiv.appendChild(badge);
   });
+
   // === EVOLUTION CHAIN ===
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
@@ -167,7 +171,7 @@ async function showDetail(p) {
     evoDiv.innerHTML = "No evolution data";
   }
 
-  // ===================== SWITCH GAMES (Base + ALL DLC) =====================
+  // ===================== SWITCH GAMES =====================
   const switchGameMap = {
     "lets-go-pikachu-lets-go-eevee": "Let's Go, Pikachu! / Let's Go, Eevee!",
     "sword-shield": "Sword / Shield",
@@ -185,7 +189,6 @@ async function showDetail(p) {
 
   const gamesSet = new Set();
 
-  // PokéAPI data for base games
   data.moves.forEach(move => {
     move.version_group_details.forEach(detail => {
       const vgName = detail.version_group.name;
@@ -193,67 +196,46 @@ async function showDetail(p) {
     });
   });
 
-  // Full DLC lists (all Pokémon available in each DLC)
-const isleOfArmorDLC = new Set([79,80,199,427,428,440,113,242,174,39,40,824,825,826,753,754,840,841,842,661,662,663,403,404,405,707,624,625,63,64,65,280,281,282,475,98,99,72,73,129,130,223,224,458,226,278,279,451,452,206,626,108,463,833,834,194,195,704,705,706,621,616,617,588,589,1,2,3,7,8,9,543,544,545,590,591,764,114,465,453,454,172,25,26,570,571,765,766,341,342,845,118,119,846,847,120,121,891,892,587,702,877,81,82,462,686,687,746,318,319,506,507,508,128,241,123,212,127,214,557,558,767,768,871,747,748,852,853,90,91,769,770,425,426,339,340,298,183,184,60,61,62,186,54,55,293,294,295,527,528,227,524,525,526,744,745,757,758,559,560,619,620,782,783,784]);
-const crownTundraDLC = new Set([872,873,220,221,473,439,122,866,238,124,239,125,466,240,126,467,531,582,583,584,361,362,478,615,459,460,708,709,333,334,859,860,861,857,858,173,35,36,778,442,339,340,129,130,550,29,30,31,32,33,34,134,135,136,471,470,700,696,697,698,699,436,437,874,875,595,596,850,851,632,631,554,555,359,878,879,885,886,887,371,372,373,443,444,445,621,225,138,139,140,141,142,703,374,375,376,854,855,447,448,633,634,635,246,247,248,712,713,41,42,169,564,565,566,567,343,344,622,623,835,836,877,871,363,364,365,781,829,830,547,876,446,303,837,838,839,345,346,347,348,369,349,350,131,304,305,306,147,148,149,377,378,379,894,895,144,145,146,205,206,207,896,897,898]);
-const tealMaskDLC = new Set([167,168,193,469,195,261,262,313,314,341,342,540,541,542,742,743,23,24,69,70,71,161,162,1011,37,38,60,61,62,186,163,164,190,424,220,221,473,273,274,275,708,709,1012,1013,74,75,76,532,533,534,877,446,143,270,271,272,299,476,736,737,738,27,28,207,472,629,630,782,783,784,109,110,619,620,355,356,477,433,358,218,219,607,608,609,173,35,36,349,350,703,580,581,845,902,901,1014,1015,1016,1017]);
-const indigoDiskDLC = new Set([84,85,102,103,111,112,464,239,125,466,240,126,467,900,522,523,629,630,235,868,869,328,329,330,731,732,733,72,73,116,117,230,546,547,764,43,44,45,182,170,171,686,687,751,752,236,106,107,237,74,75,76,529,530,677,678,774,408,409,410,411,572,573,227,311,312,559,560,622,623,137,233,474,595,596,374,375,376,86,87,131,904,577,578,579,209,210,27,28,37,38,884,1018,1019,1,2,3,4,5,6,7,8,9,152,153,154,155,156,157,158,159,160,252,253,254,255,256,257,258,259,260,387,388,389,390,391,392,393,394,395,495,496,497,498,499,500,501,502,503,650,651,652,653,654,655,656,657,658,722,723,724,725,726,727,728,729,730,810,811,812,813,814,815,816,817,818,1020,1021,1023,1022,1024,1009,1010,1025]);
-const dynamaxFinalBoss = new Set([144,145,146,150,243,244,245,249,250,380,381,382,383,384,480,481,482,483,484,485,487,488,641,642,643,644,645,646,716,717,718,785,786,787,788,791,792,793,794,795,796,797,798,799,800,805,806]);
+  // DLC checks
+  const isleOfArmorDLC = new Set([79,80,199,427,428,440,113,242,174,39,40,824,825,826,753,754,840,841,842,661,662,663,403,404,405,707,624,625,63,64,65,280,281,282,475,98,99,72,73,129,130,223,224,458,226,278,279,451,452,206,626,108,463,833,834,194,195,704,705,706,621,616,617,588,589,1,2,3,7,8,9,543,544,545,590,591,764,114,465,453,454,172,25,26,570,571,765,766,341,342,845,118,119,846,847,120,121,891,892,587,702,877,81,82,462,686,687,746,318,319,506,507,508,128,241,123,212,127,214,557,558,767,768,871,747,748,852,853,90,91,769,770,425,426,339,340,298,183,184,60,61,62,186,54,55,293,294,295,527,528,227,524,525,526,744,745,757,758,559,560,619,620,782,783,784]);
+  const crownTundraDLC = new Set([872,873,220,221,473,439,122,866,238,124,239,125,466,240,126,467,531,582,583,584,361,362,478,615,459,460,708,709,333,334,859,860,861,857,858,173,35,36,778,442,339,340,129,130,550,29,30,31,32,33,34,134,135,136,471,470,700,696,697,698,699,436,437,874,875,595,596,850,851,632,631,554,555,359,878,879,885,886,887,371,372,373,443,444,445,621,225,138,139,140,141,142,703,374,375,376,854,855,447,448,633,634,635,246,247,248,712,713,41,42,169,564,565,566,567,343,344,622,623,835,836,877,871,363,364,365,781,829,830,547,876,446,303,837,838,839,345,346,347,348,369,349,350,131,304,305,306,147,148,149,377,378,379,894,895,144,145,146,205,206,207,896,897,898]);
+  const tealMaskDLC = new Set([167,168,193,469,195,261,262,313,314,341,342,540,541,542,742,743,23,24,69,70,71,161,162,1011,37,38,60,61,62,186,163,164,190,424,220,221,473,273,274,275,708,709,1012,1013,74,75,76,532,533,534,877,446,143,270,271,272,299,476,736,737,738,27,28,207,472,629,630,782,783,784,109,110,619,620,355,356,477,433,358,218,219,607,608,609,173,35,36,349,350,703,580,581,845,902,901,1014,1015,1016,1017]);
+  const indigoDiskDLC = new Set([84,85,102,103,111,112,464,239,125,466,240,126,467,900,522,523,629,630,235,868,869,328,329,330,731,732,733,72,73,116,117,230,546,547,764,43,44,45,182,170,171,686,687,751,752,236,106,107,237,74,75,76,529,530,677,678,774,408,409,410,411,572,573,227,311,312,559,560,622,623,137,233,474,595,596,374,375,376,86,87,131,904,577,578,579,209,210,27,28,37,38,884,1018,1019,1,2,3,4,5,6,7,8,9,152,153,154,155,156,157,158,159,160,252,253,254,255,256,257,258,259,260,387,388,389,390,391,392,393,394,395,495,496,497,498,499,500,501,502,503,650,651,652,653,654,655,656,657,658,722,723,724,725,726,727,728,729,730,810,811,812,813,814,815,816,817,818,1020,1021,1023,1022,1024,1009,1010,1025]);
+  const dynamaxFinalBoss = new Set([144,145,146,150,243,244,245,249,250,380,381,382,383,384,480,481,482,483,484,485,487,488,641,642,643,644,645,646,716,717,718,785,786,787,788,791,792,793,794,795,796,797,798,799,800,805,806]);
 
-if (isleOfArmorDLC.has(p.id)) {
-  gamesSet.add("isle-of-armor");
-  gamesSet.delete("sword-shield");
-}
-if (crownTundraDLC.has(p.id)) {
-  gamesSet.add("crown-tundra");
-  gamesSet.delete("sword-shield");
-}
-if (tealMaskDLC.has(p.id)) {
-  gamesSet.add("teal-mask");
-  gamesSet.delete("scarlet-violet");
-}
-if (indigoDiskDLC.has(p.id)) {
-  gamesSet.add("indigo-disk");
-  gamesSet.delete("scarlet-violet");
-}
-if (dynamaxFinalBoss.has(p.id)) {
-  gamesSet.add("dynamax-adventure");
-  gamesSet.delete("sword-shield");
-}
-  // Legends: Z-A (already in your code)
- const legendsZA = new Set([152,153,154,498,499,500,158,159,160,661,662,663,659,660,664,665,666,13,14,15,16,17,18,179,180,181,504,505,406,315,407,129,130,688,689,120,121,669,670,671,672,673,677,678,667,668,674,675,568,569,702,172,25,26,173,35,36,167,168,23,24,63,64,65,92,93,94,543,544,545,679,680,681,69,70,71,511,512,513,514,515,516,307,308,309,310,280,281,282,475,228,229,333,334,531,682,683,684,685,133,134,135,136,196,197,470,471,700,427,428,353,354,582,583,584,322,323,449,450,529,530,551,552,553,66,67,68,443,444,445,703,302,303,359,447,448,79,80,199,318,319,602,603,604,147,148,149,1,2,3,4,5,6,7,8,9,618,676,686,687,690,691,692,693,704,705,706,225,361,362,478,459,460,712,713,123,212,127,214,587,701,708,709,559,560,714,715,707,607,608,609,142,696,697,698,699,95,208,304,305,306,694,695,710,711,246,247,248,656,657,658,870,650,651,652,227,653,654,655,371,372,373,115,780,374,375,376,716,717,718,719,150]);
-if (legendsZA.has(p.id)) {
-  gamesSet.add("legends-z-a");
-}
+  if (isleOfArmorDLC.has(p.id)) { gamesSet.add("isle-of-armor"); gamesSet.delete("sword-shield"); }
+  if (crownTundraDLC.has(p.id)) { gamesSet.add("crown-tundra"); gamesSet.delete("sword-shield"); }
+  if (tealMaskDLC.has(p.id)) { gamesSet.add("teal-mask"); gamesSet.delete("scarlet-violet"); }
+  if (indigoDiskDLC.has(p.id)) { gamesSet.add("indigo-disk"); gamesSet.delete("scarlet-violet"); }
+  if (dynamaxFinalBoss.has(p.id)) { gamesSet.add("dynamax-adventure"); gamesSet.delete("sword-shield"); }
 
-// Mega Dimension DLC
-const megaDimensionDLC = new Set([56,57,979,52,53,863,83,865,104,105,137,233,474,850,851,957,958,959,967,969,970,479,971,972,769,770,352,973,615,1008,978,996,997,998,999,1000,211,904,252,253,254,255,256,257,258,259,260,349,350,433,358,876,509,510,517,518,538,539,562,563,867,767,768,827,828,852,853,778,900,877,622,623,821,822,823,174,39,40,926,927,396,397,398,325,326,931,739,740,932,933,934,316,317,41,42,169,935,936,937,942,943,848,849,944,945,335,336,439,122,866,590,591,485,721,638,639,640,651,648,649,720,802,808,809,491,380,381,382,383,384,801,807]);
-if (megaDimensionDLC.has(p.id)) {
-  gamesSet.add("mega-dimension");
-}
+  const legendsZA = new Set([152,153,154,498,499,500,158,159,160,661,662,663,659,660,664,665,666,13,14,15,16,17,18,179,180,181,504,505,406,315,407,129,130,688,689,120,121,669,670,671,672,673,677,678,667,668,674,675,568,569,702,172,25,26,173,35,36,167,168,23,24,63,64,65,92,93,94,543,544,545,679,680,681,69,70,71,511,512,513,514,515,516,307,308,309,310,280,281,282,475,228,229,333,334,531,682,683,684,685,133,134,135,136,196,197,470,471,700,427,428,353,354,582,583,584,322,323,449,450,529,530,551,552,553,66,67,68,443,444,445,703,302,303,359,447,448,79,80,199,318,319,602,603,604,147,148,149,1,2,3,4,5,6,7,8,9,618,676,686,687,690,691,692,693,704,705,706,225,361,362,478,459,460,712,713,123,212,127,214,587,701,708,709,559,560,714,715,707,607,608,609,142,696,697,698,699,95,208,304,305,306,694,695,710,711,246,247,248,656,657,658,870,650,651,652,227,653,654,655,371,372,373,115,780,374,375,376,716,717,718,719,150]);
+  if (legendsZA.has(p.id)) gamesSet.add("legends-z-a");
 
-// === Display all games in nice order with YOUR requested colors ===
-const order = ["lets-go-pikachu-lets-go-eevee", "sword-shield", "isle-of-armor", "crown-tundra", "dynamax-adventure", "brilliant-diamond-shining-pearl", "legends-arceus", "scarlet-violet", "teal-mask", "indigo-disk", "legends-z-a", "mega-dimension"];
+  const megaDimensionDLC = new Set([56,57,979,52,53,863,83,865,104,105,137,233,474,850,851,957,958,959,967,969,970,479,971,972,769,770,352,973,615,1008,978,996,997,998,999,1000,211,904,252,253,254,255,256,257,258,259,260,349,350,433,358,876,509,510,517,518,538,539,562,563,867,767,768,827,828,852,853,778,900,877,622,623,821,822,823,174,39,40,926,927,396,397,398,325,326,931,739,740,932,933,934,316,317,41,42,169,935,936,937,942,943,848,849,944,945,335,336,439,122,866,590,591,485,721,638,639,640,651,648,649,720,802,808,809,491,380,381,382,383,384,801,807]);
+  if (megaDimensionDLC.has(p.id)) gamesSet.add("mega-dimension");
 
-order.forEach(key => {
-  if (gamesSet.has(key)) {
-    const badge = document.createElement("span");
-    badge.className = "game-badge";
-    badge.textContent = switchGameMap[key];
+  // === Display badges with correct colors ===
+  const order = ["lets-go-pikachu-lets-go-eevee", "sword-shield", "isle-of-armor", "crown-tundra", "dynamax-adventure", "brilliant-diamond-shining-pearl", "legends-arceus", "scarlet-violet", "teal-mask", "indigo-disk", "legends-z-a", "mega-dimension"];
 
-    // === UPDATED COLORS ===
-  if (key === "lets-go-pikachu-lets-go-eevee") {
-      badge.style.background = "linear-gradient(90deg, #fefce8, #facc15)";   // really light yellow
-      badge.style.color = "#1e2937";                                        // dark text so it's always readable
-    }
-    else if (key === "sword-shield") badge.style.background = "linear-gradient(90deg, #3b82f6, #1e40af)";                    // blue (kept)
-    else if (key === "brilliant-diamond-shining-pearl") badge.style.background = "linear-gradient(90deg, #a5b4fc, #6366f1)";   // blue-purple (kept)
-    else if (key === "legends-arceus") badge.style.background = "linear-gradient(90deg, #c084fc, #a855f7)";                  // vibrant purple
-    else if (key === "scarlet-violet") badge.style.background = "linear-gradient(90deg, #f43f5e, #9f1239)";
-    else if (key === "legends-z-a") badge.style.background = "linear-gradient(90deg, #4ade80, #15803d)";                    // darker emerald green
-    else if (["dynamax-adventure","mega-dimension","isle-of-armor","crown-tundra","teal-mask","indigo-disk"].includes(key)) {
-      badge.style.background = "linear-gradient(90deg, #f59e0b, #d97706)"; // gold for all DLCs
-    }
+  order.forEach(key => {
+    if (gamesSet.has(key)) {
+      const badge = document.createElement("span");
+      badge.className = "game-badge";
+      badge.textContent = switchGameMap[key];
+
+      if (key === "lets-go-pikachu-lets-go-eevee") {
+        badge.style.background = "linear-gradient(90deg, #fefce8, #facc15)";
+        badge.style.color = "#1e2937";
+      } else if (key === "sword-shield") badge.style.background = "linear-gradient(90deg, #3b82f6, #1e40af)";
+      else if (key === "brilliant-diamond-shining-pearl") badge.style.background = "linear-gradient(90deg, #a5b4fc, #6366f1)";
+      else if (key === "legends-arceus") badge.style.background = "linear-gradient(90deg, #c084fc, #a855f7)";
+      else if (key === "scarlet-violet") badge.style.background = "linear-gradient(90deg, #f43f5e, #9f1239)";
+      else if (key === "legends-z-a") badge.style.background = "linear-gradient(90deg, #4ade80, #15803d)";
+      else if (["dynamax-adventure","mega-dimension","isle-of-armor","crown-tundra","teal-mask","indigo-disk"].includes(key)) {
+        badge.style.background = "linear-gradient(90deg, #f59e0b, #d97706)";
+      }
+
       gamesDiv.appendChild(badge);
     }
   });
@@ -266,8 +248,13 @@ order.forEach(key => {
     gamesDiv.appendChild(none);
   }
 
+  // ←←← MODAL SCROLL FIX (this is where it belongs)
+  modal.style.maxHeight = "95vh";
+  modal.style.overflowY = "auto";
+
   modal.style.display = "flex";
   modal.classList.remove("hidden");
+}
 }
 async function buildFullEvoHTML(chain, currentId) {
   let html = `<strong>Evolution Chain:</strong><br>`;
@@ -361,13 +348,11 @@ function setupEventListeners() {
     shinyMode = shinyToggle.checked;
     renderGrid(document.getElementById("search-bar").value);
   });
-  const closeModal = () => {
-    const modal = document.getElementById("modal");
-    modal.style.maxHeight = "95vh";
-    modal.style.overflowY = "auto";
-    
-    modal.style.display = "flex";
-    modal.classList.add("hidden");
+ const closeModal = () => {
+  const modal = document.getElementById("modal");
+  modal.style.display = "none";
+  modal.classList.add("hidden");
+};
   };
   document.getElementById("close-modal").addEventListener("click", closeModal);
   document.getElementById("reset-btn").addEventListener("click", () => {
