@@ -361,3 +361,43 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 [data-theme="dark"] .candy-row {
   background: rgba(255,255,255,0.1);
 }
+/* ===================== RESIZABLE TOOLS MENU ===================== */
+.resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background: transparent;
+  cursor: col-resize;
+  z-index: 10;
+  user-select: none;
+}
+
+.resize-handle::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 80px;
+  background: #ddd;
+  border-radius: 9999px;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.tools-menu:hover .resize-handle::before {
+  background: #fff;
+  opacity: 1;
+}
+
+[data-theme="dark"] .resize-handle::before {
+  background: #555;
+}
+
+/* Disable slide animation while resizing */
+.tools-menu {
+  transition: width 0.1s ease !important;
+}
