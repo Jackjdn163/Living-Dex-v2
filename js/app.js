@@ -61,33 +61,168 @@ async function initApp() {
   setupEventListeners();
   renderGrid();
   renderCompletionBars();
-  // Quick Notes
-const notesTextarea = document.getElementById("quick-notes");
-const savedIndicator = document.getElementById("notes-saved");
 
-if (notesTextarea) {
-  // Load saved notes
-  const savedNotes = localStorage.getItem("quickNotes") || "";
-  notesTextarea.value = savedNotes;
+  // ===================== QUICK NOTES =====================
+  const notesTextarea = document.getElementById("quick-notes");
+  const savedIndicator = document.getElementById("notes-saved");
+  if (notesTextarea) {
+    const savedNotes = localStorage.getItem("quickNotes") || "";
+    notesTextarea.value = savedNotes;
+    let timeout;
+    notesTextarea.addEventListener("input", () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        localStorage.setItem("quickNotes", notesTextarea.value);
+        savedIndicator.classList.add("show");
+        setTimeout(() => savedIndicator.classList.remove("show"), 1200);
+      }, 500);
+    });
+    document.getElementById("clear-notes").addEventListener("click", () => {
+      if (confirm("Clear all quick notes?")) {
+        notesTextarea.value = "";
+        localStorage.removeItem("quickNotes");
+        savedIndicator.classList.add("show");
+        setTimeout(() => savedIndicator.classList.remove("show"), 1200);
+      }
+    });
+  }
 
-  // Auto-save on typing (debounced)
-  let timeout;
-  notesTextarea.addEventListener("input", () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      localStorage.setItem("quickNotes", notesTextarea.value);
-      savedIndicator.classList.add("show");
-      setTimeout(() => savedIndicator.classList.remove("show"), 1200);
-    }, 500);
+  // ===================== EXP CALCULATOR =====================
+  const expSearch = document.getElementById("exp-search");
+  const datalist = document.getElementById("exp-pokemon-list");
+  const calculatorDiv = document.getElementById("exp-calculator");
+  const pokemonNameEl = document.getElementById("exp-pokemon-name");
+  const groupEl = document.getElementById("exp-group");
+  const levelSlider = document.getElementById("current-level");
+  const levelValue = document.getElementById("level-value");
+  const resultsDiv = document.getElementById("exp-results");
+  const candyDiv = document.getElementById("candy-breakdown");
+
+  // Populate datalist
+  allPokemon.forEach(p => {
+    const option = document.createElement("option");
+    option.value = `#${p.id.toString().padStart(4,"0")} ${p.name}`;
+    datalist.appendChild(option);
   });
-}
-  // Clear button
-  document.getElementById("clear-notes").addEventListener("click", () => {
-    if (confirm("Clear all quick notes?")) {
-      notesTextarea.value = "";
-      localStorage.removeItem("quickNotes");
-      savedIndicator.classList.add("show");
-      setTimeout(() => savedIndicator.classList.remove("show"), 1200);
+
+  // Candy EXP values
+  const candyValues = { xs: 100, s: 800, m: 3000, l: 10000, xl: 30000 };
+  const candyNames = ["xl", "l", "m", "s", "xs"];
+
+  function calculateCandies(totalExp) {
+    let remaining = totalExp;
+    const counts = {};
+    candyNames.forEach(size => {
+      const expPer = candyValues[size];
+      counts[size] = Math.floor(remaining / expPer);
+      remaining %= expPer;
+    });
+    return counts;
+  }
+
+  function getCumulativeExp(level, growthRate) {
+    level = Math.max(1, Math.min(100, level));
+    const n = level;
+    switch (growthRate) {
+      case "fast": return Math.floor(0.8 * n * n * n);
+      case "medium-fast": return Math.floor(0.8 * n * n * n);
+      case "medium-slow": return Math.floor(1.25 * n * n * n - 30 * n * n + 300 * n);
+      case "slow": return Math.floor(1.25 * n * n * n);
+      case "erratic":
+        if (n < 50) return Math.floor(n * n * n * (100 - n) / 50);
+        else if (n < 68) return Math.floor(n * n * n * (150 - n) / 100);
+        else if (n < 80) return Math.floor(n * n * n * (200 - n) / 150);
+        else return Math.floor(n * n * n * (250 - n) / 200);
+      case "fluctuating":
+        if (n < 15) return Math.floor(n * n * n * (24 + n) / 50);
+        else if (n < 30) return Math.floor(n * n * n * (36 + n) / 50);
+        else if (n < 50) return Math.floor(n * n * n * (48 + n) / 50);
+        else if (n < 70) return Math.floor(n * n * n * (60 + n) / 50);
+        else return Math.floor(n * n * n * (72 + n) / 50);
+      default: return 0;
+    }
+  }
+
+  expSearch.addEventListener("input", async () => {
+    const term = expSearch.value.trim().toLowerCase();
+    if (!term) {
+      calculatorDiv.style.display = "none";
+      return;
+    }
+
+    const selected = allPokemon.find(p => 
+      `#${p.id.toString().padStart(4,"0")} ${p.name.toLowerCase()}` === term ||
+      p.name.toLowerCase() === term
+    );
+
+    if (!selected) return;
+
+    calculatorDiv.style.display = "block";
+    pokemonNameEl.textContent = `#${selected.id} ${selected.name}`;
+
+    // Fetch growth rate + evolution info
+    const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${selected.id}`);
+    const species = await speciesRes.json();
+    const growthRate = species.growth_rate.name;
+
+    groupEl.textContent = growthRate.replace(/-/g, " ").toUpperCase();
+
+    const currentLevel = parseInt(levelSlider.value);
+
+    const expAtCurrent = getCumulativeExp(currentLevel, growthRate);
+    const expAtNext = getCumulativeExp(currentLevel + 1, growthRate);
+    const expToNextLevel = expAtNext - expAtCurrent;
+
+    const expTo100 = getCumulativeExp(100, growthRate) - expAtCurrent;
+
+    // Simple next-evo check (level-based only)
+    let expToEvo = "N/A (no level evolution)";
+    if (species.evolution_chain) {
+      const chainRes = await fetch(species.evolution_chain.url);
+      const chain = await chainRes.json();
+      // Basic parse for next level evo
+      let node = chain.chain;
+      while (node) {
+        if (node.species.name === selected.name.toLowerCase() && node.evolves_to.length > 0) {
+          const evoDetail = node.evolves_to[0].evolution_details[0];
+          if (evoDetail && evoDetail.min_level) {
+            const expAtEvo = getCumulativeExp(evoDetail.min_level, growthRate);
+            expToEvo = Math.max(0, expAtEvo - expAtCurrent);
+          }
+          break;
+        }
+        node = node.evolves_to && node.evolves_to.length ? node.evolves_to[0] : null;
+      }
+    }
+
+    // Render results
+    resultsDiv.innerHTML = `
+      <p><strong>EXP to next level:</strong> <span style="color:#22c55e;">${expToNextLevel.toLocaleString()}</span></p>
+      <p><strong>EXP until next evolution:</strong> <span style="color:#eab308;">${typeof expToEvo === "number" ? expToEvo.toLocaleString() : expToEvo}</span></p>
+      <p><strong>EXP until level 100:</strong> <span style="color:#a78bfa;">${expTo100.toLocaleString()}</span></p>
+    `;
+
+    // Candy breakdown for each goal
+    candyDiv.innerHTML = `
+      <div class="candy-row"><strong>Next Level</strong><br>${formatCandy(calculateCandies(expToNextLevel))}</div>
+      <div class="candy-row"><strong>Next Evolution</strong><br>${typeof expToEvo === "number" ? formatCandy(calculateCandies(expToEvo)) : "N/A"}</div>
+      <div class="candy-row"><strong>Level 100</strong><br>${formatCandy(calculateCandies(expTo100))}</div>
+    `;
+  });
+
+  function formatCandy(counts) {
+    return Object.entries(counts)
+      .filter(([_, v]) => v > 0)
+      .map(([size, count]) => `${count} ${size.toUpperCase()}`)
+      .join(" + ") || "0";
+  }
+
+  // Update level display
+  levelSlider.addEventListener("input", () => {
+    levelValue.textContent = levelSlider.value;
+    // Re-calculate if a Pokémon is already selected
+    if (calculatorDiv.style.display === "block") {
+      expSearch.dispatchEvent(new Event("input"));
     }
   });
 }
