@@ -568,12 +568,15 @@ function setupEventListeners() {
   const searchBar = document.getElementById("search-bar");
   const debouncedRender = debounce(() => renderGrid(searchBar.value), 150);
   searchBar.addEventListener("input", debouncedRender);
+
   document.getElementById("sort-select").addEventListener("change", () => renderGrid(searchBar.value));
+
   document.getElementById("random-btn").addEventListener("click", () => {
     const uncaught = allPokemon.filter(p => !caught.has(p.id));
     if (uncaught.length === 0) return alert("You caught them all!");
     showDetail(uncaught[Math.floor(Math.random() * uncaught.length)]);
   });
+
   const darkToggle = document.getElementById("dark-toggle");
   darkToggle.checked = document.documentElement.getAttribute("data-theme") === "dark";
   darkToggle.addEventListener("change", () => {
@@ -581,18 +584,21 @@ function setupEventListeners() {
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
   });
+
   const shinyToggle = document.getElementById("shiny-toggle");
   shinyToggle.checked = shinyMode;
   shinyToggle.addEventListener("change", () => {
     shinyMode = shinyToggle.checked;
     renderGrid(document.getElementById("search-bar").value);
   });
- const closeModal = () => {
-  const modal = document.getElementById("modal");
-  modal.style.display = "none";
-  modal.classList.add("hidden");
-};
+
+  const closeModal = () => {
+    const modal = document.getElementById("modal");
+    modal.style.display = "none";
+    modal.classList.add("hidden");
+  };
   document.getElementById("close-modal").addEventListener("click", closeModal);
+
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Reset entire Living Dex?")) {
       caught.clear();
@@ -602,16 +608,22 @@ function setupEventListeners() {
       updateTotalProgress();
     }
   });
-  /* ===================== NEW: TOOLS MENU TOGGLE ===================== */
+
+  /* ===================== TOOLS MENU TOGGLE ===================== */
   const toolsBtn = document.getElementById("tools-btn");
   const toolsMenu = document.getElementById("tools-menu");
   const closeTools = document.getElementById("close-tools");
+
   toolsBtn.addEventListener("click", () => {
     toolsMenu.classList.toggle("open");
   });
+
   closeTools.addEventListener("click", () => {
     toolsMenu.classList.remove("open");
   });
+
+  // Click outside to close has been REMOVED as requested
+}
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
