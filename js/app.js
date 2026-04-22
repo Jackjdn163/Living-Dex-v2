@@ -232,7 +232,7 @@ if (megaDimensionDLC.has(p.id)) {
 }
 
 // === Display all games in nice order with YOUR requested colors ===
-const order = ["lets-go-pikachu-lets-go-eevee", "sword-shield", "isle-of-armor", "crown-tundra", "brilliant-diamond-shining-pearl", "legends-arceus", "scarlet-violet", "teal-mask", "indigo-disk", "legends-z-a", "mega-dimension"];
+const order = ["lets-go-pikachu-lets-go-eevee", "sword-shield", "isle-of-armor", "crown-tundra", "dynamax-adventure", "brilliant-diamond-shining-pearl", "legends-arceus", "scarlet-violet", "teal-mask", "indigo-disk", "legends-z-a", "mega-dimension"];
 
 order.forEach(key => {
   if (gamesSet.has(key)) {
