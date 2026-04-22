@@ -80,7 +80,7 @@ if (notesTextarea) {
       setTimeout(() => savedIndicator.classList.remove("show"), 1200);
     }, 500);
   });
-
+}
   // Clear button
   document.getElementById("clear-notes").addEventListener("click", () => {
     if (confirm("Clear all quick notes?")) {
