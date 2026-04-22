@@ -274,7 +274,8 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 [data-theme="dark"] .game-badge {
   background: linear-gradient(90deg, #10b981, #059669);
 }
-/* ===================== MODAL FIXES (Eevee + tall modals) ===================== */
+\
+/* ===================== FINAL MODAL BACKDROP FIX (no more bottom gap) ===================== */
 .modal {
   position: fixed !important;
   inset: 0 !important;                    /* forces full screen coverage */
@@ -289,27 +290,15 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 }
 
 .modal-content {
-  max-height: 90vh !important;        /* scrollable content */
+  max-height: 90vh !important;
   overflow-y: auto !important;
   margin: 20px !important;
-  padding-bottom: 30px !important;    /* breathing room at bottom */
+  padding-bottom: 40px !important;        /* extra breathing room */
 }
 
-.close {                              /* your X button */
+/* Keeps the X button stuck at the top while scrolling */
+.close {
   position: sticky !important;
   top: 15px !important;
   z-index: 10 !important;
-  background: var(--card) !important;
-  padding: 4px 12px !important;
-  border-radius: 50% !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
-}
-
-/* Optional: nicer scrollbar on dark mode */
-.modal-content::-webkit-scrollbar {
-  width: 8px;
-}
-.modal-content::-webkit-scrollbar-thumb {
-  background: #666;
-  border-radius: 9999px;
 }
