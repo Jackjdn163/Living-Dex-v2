@@ -86,7 +86,50 @@ async function initApp() {
       }
     });
   }
+  // ===================== RESIZABLE TOOLS MENU =====================
+  const toolsMenu = document.getElementById("tools-menu");
+  const resizeHandle = document.getElementById("resize-handle");
 
+  if (toolsMenu && resizeHandle) {
+    let isResizing = false;
+    let startX, startWidth;
+
+    // Load saved width
+    const savedWidth = localStorage.getItem("toolsWidth");
+    if (savedWidth) {
+      toolsMenu.style.width = savedWidth + "px";
+    }
+
+    resizeHandle.addEventListener("mousedown", (e) => {
+      isResizing = true;
+      startX = e.pageX;
+      startWidth = toolsMenu.offsetWidth;
+      toolsMenu.style.transition = "none";
+      document.body.style.cursor = "col-resize";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!isResizing) return;
+
+      const newWidth = startWidth + (startX - e.pageX); // drag left = bigger
+      const minW = 360;
+      const maxW = 720; // exactly fills the space in your screenshot
+
+      if (newWidth >= minW && newWidth <= maxW) {
+        toolsMenu.style.width = newWidth + "px";
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      if (isResizing) {
+        isResizing = false;
+        document.body.style.cursor = "default";
+        toolsMenu.style.transition = "width 0.1s ease";
+        // Save width
+        localStorage.setItem("toolsWidth", toolsMenu.offsetWidth);
+      }
+    });
+  }
    // ===================== EXP CALCULATOR =====================
   const expSearch = document.getElementById("exp-search");
   const datalist = document.getElementById("exp-pokemon-list");
