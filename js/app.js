@@ -612,15 +612,6 @@ function setupEventListeners() {
   closeTools.addEventListener("click", () => {
     toolsMenu.classList.remove("open");
   });
-  // Click outside the menu to close
-  document.addEventListener("click", (e) => {
-    if (toolsMenu.classList.contains("open") &&
-        !toolsMenu.contains(e.target) &&
-        !toolsBtn.contains(e.target)) {
-      toolsMenu.classList.remove("open");
-    }
-  });
-}
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
