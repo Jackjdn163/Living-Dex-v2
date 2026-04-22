@@ -352,7 +352,6 @@ function setupEventListeners() {
   modal.style.display = "none";
   modal.classList.add("hidden");
 };
-  };
   document.getElementById("close-modal").addEventListener("click", closeModal);
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Reset entire Living Dex?")) {
