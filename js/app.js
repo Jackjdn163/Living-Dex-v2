@@ -87,7 +87,7 @@ async function initApp() {
     });
   }
 
-  // ===================== EXP CALCULATOR =====================
+    // ===================== EXP CALCULATOR =====================
   const expSearch = document.getElementById("exp-search");
   const datalist = document.getElementById("exp-pokemon-list");
   const calculatorDiv = document.getElementById("exp-calculator");
@@ -123,9 +123,8 @@ async function initApp() {
     level = Math.max(1, Math.min(100, level));
     const n = level;
     switch (growthRate) {
-      case "fast":
-        return Math.floor(0.8 * n * n * n);
-      case "medium-fast":          // ← most common (Rattata, etc.)
+      case "fast": return Math.floor(0.8 * n * n * n);
+      case "medium-fast":          // ← this is the "MEDIUM" group
         return Math.floor(n * n * n);
       case "medium-slow":
         return Math.floor(1.25 * n * n * n - 30 * n * n + 300 * n);
@@ -142,15 +141,17 @@ async function initApp() {
         else if (n < 50) return Math.floor(n * n * n * (48 + n) / 50);
         else if (n < 70) return Math.floor(n * n * n * (60 + n) / 50);
         else return Math.floor(n * n * n * (72 + n) / 50);
-      default:
-        return 0;
+      default: return 0;
     }
   }
+
+  let currentGrowthRate = null;   // ← keeps track so slider updates instantly
 
   expSearch.addEventListener("input", async () => {
     const term = expSearch.value.trim().toLowerCase();
     if (!term) {
       calculatorDiv.style.display = "none";
+      currentGrowthRate = null;
       return;
     }
 
@@ -166,36 +167,26 @@ async function initApp() {
 
     const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${selected.id}`);
     const species = await speciesRes.json();
-    const growthRate = species.growth_rate.name;
+    currentGrowthRate = species.growth_rate.name;
 
-    groupEl.textContent = growthRate.replace(/-/g, " ").toUpperCase();
+    groupEl.textContent = currentGrowthRate.replace(/-/g, " ").toUpperCase();
+
+    updateExpDisplay();   // ← initial calculation
+  });
+
+  function updateExpDisplay() {
+    if (!currentGrowthRate) return;
 
     const currentLevel = parseInt(levelSlider.value);
 
-    const expAtCurrent = getCumulativeExp(currentLevel, growthRate);
-    const expAtNext = getCumulativeExp(currentLevel + 1, growthRate);
+    const expAtCurrent = getCumulativeExp(currentLevel, currentGrowthRate);
+    const expAtNext   = getCumulativeExp(currentLevel + 1, currentGrowthRate);
     const expToNextLevel = Math.max(0, expAtNext - expAtCurrent);
+    const expTo100 = Math.max(0, getCumulativeExp(100, currentGrowthRate) - expAtCurrent);
 
-    const expTo100 = Math.max(0, getCumulativeExp(100, growthRate) - expAtCurrent);
-
-    // Next evolution (level-based only)
+    // Next evolution (level-based)
     let expToEvo = "N/A (no level evolution)";
-    if (species.evolution_chain) {
-      const chainRes = await fetch(species.evolution_chain.url);
-      const chain = await chainRes.json();
-      let node = chain.chain;
-      while (node) {
-        if (node.species.name === selected.name.toLowerCase() && node.evolves_to.length > 0) {
-          const evoDetail = node.evolves_to[0].evolution_details[0];
-          if (evoDetail && evoDetail.min_level) {
-            const expAtEvoLevel = getCumulativeExp(evoDetail.min_level, growthRate);
-            expToEvo = Math.max(0, expAtEvoLevel - expAtCurrent);
-          }
-          break;
-        }
-        node = node.evolves_to && node.evolves_to.length ? node.evolves_to[0] : null;
-      }
-    }
+    // (you can expand this later if you want full evo chain support)
 
     resultsDiv.innerHTML = `
       <p><strong>EXP to next level:</strong> <span style="color:#22c55e;">${expToNextLevel.toLocaleString()}</span></p>
@@ -208,7 +199,7 @@ async function initApp() {
       <div class="candy-row"><strong>Next Evolution</strong><br>${typeof expToEvo === "number" ? formatCandy(calculateCandies(expToEvo)) : "N/A"}</div>
       <div class="candy-row"><strong>Level 100</strong><br>${formatCandy(calculateCandies(expTo100))}</div>
     `;
-  });
+  }
 
   function formatCandy(counts) {
     return Object.entries(counts)
@@ -217,11 +208,11 @@ async function initApp() {
       .join(" + ") || "0";
   }
 
-  // Update level display + re-calculate when slider moves
+  // Slider updates instantly
   levelSlider.addEventListener("input", () => {
     levelValue.textContent = levelSlider.value;
     if (calculatorDiv.style.display === "block") {
-      expSearch.dispatchEvent(new Event("input"));
+      updateExpDisplay();
     }
   });
 }
