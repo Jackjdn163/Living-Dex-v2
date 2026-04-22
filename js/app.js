@@ -136,6 +136,9 @@ async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
   document.getElementById("modal-sprite").src = getSprite(p);
+  // Force modal to be scrollable and fully visible
+  modal.style.maxHeight = "95vh";
+  modal.style.overflowY = "auto";
   const typesDiv = document.getElementById("modal-types");
   const evoDiv = document.getElementById("modal-evo");
   const gamesDiv = document.getElementById("modal-games");
