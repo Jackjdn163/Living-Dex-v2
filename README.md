@@ -1,6 +1,5 @@
 # Living Dex • 1025 Pokémon
-
-**A beautiful, fully interactive Living Pokédex built for tracking your complete collection of all 1025 Pokémon.**
+**A beautiful, fully interactive Living Pokédex for tracking your complete collection of all 1025 Pokémon.**
 
 Live Demo → **[https://jackjdn163.github.io/Living-Dex-v2/](https://jackjdn163.github.io/Living-Dex-v2/)**
 
@@ -10,70 +9,69 @@ Live Demo → **[https://jackjdn163.github.io/Living-Dex-v2/](https://jackjdn163
 
 ### Core Pokédex Experience
 - **All 1025 Pokémon** from Generation 1 through 9
-- Click any card to **catch / uncatch** it (saved automatically in your browser)
-- Beautiful Pokémon cards with official sprites
-- **Shiny toggle** – instantly switches every sprite to its shiny version
+- Click any card to **catch / uncatch** (progress saved automatically in your browser)
+- Official sprites with **Shiny toggle** that instantly updates every card
 - **Dark / Light mode** toggle (persists between visits)
 
 ### Progress Tracking
 - **Total Living Dex percentage bar** with live fill + count (`0 / 1025`)
 - **Per-generation completion bars** (Gen 1–9) with colored progress
-- Celebration animation when you hit 100% or complete a generation
+- Celebration animation when you complete a generation or the full dex
 - Real-time updates everywhere
 
 ### Navigation & Filters
 - **Search** by name or Pokédex number
-- **Sort** by:
-  - Pokédex Number (default)
-  - Name (A–Z)
-  - Uncaught First
-- **Random Uncaught Pokémon** button – instantly shows a random Pokémon you haven’t caught yet
+- **Sort** by Pokédex Number, Name (A–Z), or Uncaught First
+- **Random Uncaught Pokémon** button – pulls a random Pokémon you haven’t caught yet
 
 ### Details Modal
-- Click the `⋮` menu on any card to open a full detail view
+- Click the `⋮` menu on any card
 - Shows **official typing** with colored badges
-- Complete **evolution chain** with pre-evolution, post-evolution, and exact evolution method (level, item, etc.)
+- Full **evolution chain** with sprites, pre-evolution, post-evolution, and exact method (level, item, etc.)
+- Complete **Switch Games** availability with beautifully colored badges (base games + all DLCs)
 
 ### Loading Experience
 - 5-second animated loading screen with spinning Pokéball
 - Ball shakes, then turns green when ready (or click “Skip Loading”)
 
 ### Tools Menu (Top-right)
-- Hamburger menu (three lines) in the top-right corner
-- Ready for future tools: Export/Import, Shiny Stats, Advanced Filters, etc.
-- Currently shows placeholder text – more features coming soon!
+- Hamburger menu in the top-right corner
+- **Resizable** – drag the left edge to make it bigger or smaller (resets automatically when closed)
+- **Quick Notes** – auto-saving notepad for anything you want to remember
+- **EXP Calculator** – search any Pokémon, adjust level with a slider, see:
+  - EXP to next level
+  - EXP until next evolution (level-based)
+  - EXP until level 100
+  - Candy needed (XS–XL) for each goal
 
 ### Extra Polish
 - Smooth animations on catch, progress bars, and completion
-- Fully responsive (works great on mobile & desktop)
+- Fully responsive (great on mobile and desktop)
 - Everything saved locally in your browser – no account needed
 
 ---
 
 ## How to Use
-
 1. Visit the **[live demo](https://jackjdn163.github.io/Living-Dex-v2/)**
-2. Wait for the Pokéball to finish loading
+2. Wait for the Pokéball loading animation to finish
 3. Start clicking Pokémon to catch them!
-4. Use the toggles, search, sort, and random button to navigate
-5. Open the detail menu (`⋮`) for typing + evolution info
-6. Your progress is automatically saved – come back anytime!
+4. Use the toggles, search, sort, and random button
+5. Open the `⋮` menu on any card for full details
+6. Open the Tools menu (top-right) for Quick Notes and the EXP Calculator
 
-**Reset button** is there if you want to start over.
+Your progress is automatically saved. Use the **Reset** button if you want to start fresh.
 
 ---
 
 ## Tech Stack
-
 - **HTML5**, **CSS3** (with CSS variables for dark/light mode)
 - **Vanilla JavaScript** (no frameworks)
-- [PokéAPI](https://pokeapi.co/) for all data & sprites
+- [PokéAPI](https://pokeapi.co/) for all data, sprites, evolution chains, and growth rates
 - Fully client-side – works offline after first load
 
 ---
 
 ## Running Locally
-
 1. Clone the repo:
    ```bash
    git clone https://github.com/jackjdn163/Living-Dex-v2.git
