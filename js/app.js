@@ -166,9 +166,6 @@ async function showDetail(p) {
   } else {
     evoDiv.innerHTML = "No evolution data";
   }
-  modal.style.maxHeight = "95vh";
-  modal.style.overflowY = "auto";
-  
 
   // ===================== SWITCH GAMES (Base + ALL DLC) =====================
   const switchGameMap = {
@@ -366,7 +363,10 @@ function setupEventListeners() {
   });
   const closeModal = () => {
     const modal = document.getElementById("modal");
-    modal.style.display = "none";
+    modal.style.maxHeight = "95vh";
+    modal.style.overflowY = "auto";
+    
+    modal.style.display = "flex";
     modal.classList.add("hidden");
   };
   document.getElementById("close-modal").addEventListener("click", closeModal);
