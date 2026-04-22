@@ -341,3 +341,23 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   transition: opacity 0.3s;
 }
 .saved-indicator.show { opacity: 1; }
+/* ===================== EXP CALCULATOR ===================== */
+#exp-calculator {
+  background: var(--card);
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+#exp-results p {
+  margin: 8px 0;
+  font-size: 1.05rem;
+}
+.candy-row {
+  background: rgba(0,0,0,0.05);
+  padding: 10px;
+  border-radius: 12px;
+  text-align: center;
+}
+[data-theme="dark"] .candy-row {
+  background: rgba(255,255,255,0.1);
+}
