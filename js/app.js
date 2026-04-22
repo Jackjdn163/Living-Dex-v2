@@ -235,7 +235,10 @@ order.forEach(key => {
     badge.textContent = switchGameMap[key];
 
     // === UPDATED COLORS ===
-   if (key === "lets-go-pikachu-lets-go-eevee") badge.style.background = "linear-gradient(90deg, #fefce8, #fde047)";           // really light yellow (as requested)
+  if (key === "lets-go-pikachu-lets-go-eevee") {
+      badge.style.background = "linear-gradient(90deg, #fefce8, #facc15)";   // really light yellow
+      badge.style.color = "#1e2937";                                        // dark text so it's always readable
+    }
     else if (key === "sword-shield") badge.style.background = "linear-gradient(90deg, #3b82f6, #1e40af)";                    // blue (kept)
     else if (key === "brilliant-diamond-shining-pearl") badge.style.background = "linear-gradient(90deg, #a5b4fc, #6366f1)";   // blue-purple (kept)
     else if (key === "legends-arceus") badge.style.background = "linear-gradient(90deg, #c084fc, #a855f7)";                  // vibrant purple
