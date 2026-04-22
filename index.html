@@ -96,6 +96,27 @@
     <span id="notes-saved" class="saved-indicator">Saved ✓</span>
   </div>
 </div>
+      <!-- EXP CALCULATOR SECTION -->
+<div class="tools-section">
+  <h3>📈 EXP Calculator</h3>
+  <input id="exp-search" list="exp-pokemon-list" placeholder="Search Pokémon..." style="width:100%; padding:12px; border-radius:12px; border:2px solid #ccc; background:var(--card); color:var(--text); margin-bottom:10px;">
+  <datalist id="exp-pokemon-list"></datalist>
+
+  <div id="exp-calculator" style="display:none;">
+    <p><strong>Pokémon:</strong> <span id="exp-pokemon-name"></span></p>
+    <p><strong>EXP Group:</strong> <span id="exp-group"></span></p>
+
+    <label>Current Level: 
+      <input type="range" id="current-level" min="1" max="100" value="50" style="width:100%;">
+      <span id="level-value" style="font-weight:600;">50</span>
+    </label>
+
+    <div id="exp-results" style="margin:15px 0; line-height:1.6;"></div>
+
+    <h4>Candy Needed (XS–XL)</h4>
+    <div id="candy-breakdown" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px;"></div>
+  </div>
+</div>
       <p style="margin-top:40px; font-size:0.9rem; opacity:0.6;">Your Living Dex is saved in your browser.<br>Everything is 100% local!</p>
     </div>
   </div>
