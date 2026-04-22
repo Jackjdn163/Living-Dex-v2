@@ -276,8 +276,15 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 }
 /* ===================== MODAL FIXES (Eevee + tall modals) ===================== */
 .modal {
-  height: 100vh !important;           /* forces full screen height */
-  background: rgba(0, 0, 0, 0.92) !important;  /* slightly darker + no gap */
+  position: fixed !important;
+  inset: 0 !important;                    /* forces full screen coverage */
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.92) !important;   /* slightly darker for better look */
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10000 !important;
   overflow: hidden !important;
 }
 
