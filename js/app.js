@@ -3,52 +3,64 @@ let caught = new Set(JSON.parse(localStorage.getItem("caught")) || []);
 let shinyMode = false;
 const savedTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", savedTheme);
-const typeColors = { normal:"#A8A878", fire:"#F08030", water:"#6890F0", grass:"#78C850", electric:"#F8D030", ice:"#98D8D8", fighting:"#C03028", poison:"#A040A0", ground:"#E0C068", flying:"#A890F0", psychic:"#F85888", bug:"#A8B820", rock:"#B8A038", ghost:"#705898", dragon:"#7038F8", dark:"#705848", steel:"#B8B8D0", fairy:"#EE99AC" };
+
+const typeColors = {
+  normal: "#A8A878", fire: "#F08030", water: "#6890F0", grass: "#78C850",
+  electric: "#F8D030", ice: "#98D8D8", fighting: "#C03028", poison: "#A040A0",
+  ground: "#E0C068", flying: "#A890F0", psychic: "#F85888", bug: "#A8B820",
+  rock: "#B8A038", ghost: "#705898", dragon: "#7038F8", dark: "#705848",
+  steel: "#B8B8D0", fairy: "#EE99AC"
+};
+
 const genRanges = [
   {gen:1, start:1, end:151}, {gen:2, start:152, end:251}, {gen:3, start:252, end:386},
   {gen:4, start:387, end:493}, {gen:5, start:494, end:649}, {gen:6, start:650, end:721},
   {gen:7, start:722, end:809}, {gen:8, start:810, end:905}, {gen:9, start:906, end:1025}
 ];
+
 document.addEventListener("DOMContentLoaded", () => { preloadAllAssets(); });
+
 async function preloadAllAssets() {
   const loading = document.getElementById("loading");
   const pokeball = document.getElementById("pokeball");
   const skipBtn = document.getElementById("skip-loading");
-  // ←←← SKIP BUTTON WORKS IMMEDIATELY (fixed)
+
   skipBtn.addEventListener("click", () => {
     pokeball.classList.remove("shaking");
     pokeball.classList.add("success");
     finishLoading(loading);
   });
-  // Fetch Pokémon list
+
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1025");
   const data = await res.json();
+
   allPokemon = data.results.map((p, i) => ({
     id: i + 1,
     name: p.name.charAt(0).toUpperCase() + p.name.slice(1),
     sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i+1}.png`,
     shiny: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${i+1}.png`
   }));
-  // Proper preloading (so sprites are ready when grid appears)
+
   const preloadPromises = allPokemon.flatMap(p => [
-    new Promise(r => { const img = new Image(); img.src = p.sprite; img.onload = r; }),
-    new Promise(r => { const img = new Image(); img.src = p.shiny; img.onload = r; })
+    new Promise(r => { const img = new Image(); img.src = p.sprite; img.onload = r; img.onerror = r; }),
+    new Promise(r => { const img = new Image(); img.src = p.shiny; img.onload = r; img.onerror = r; })
   ]);
-  // Start the shake animation after a short delay
+
   setTimeout(() => {
     pokeball.classList.add("shaking");
     pokeball.style.animation = "shake 0.6s 3";
   }, 800);
-  // Wait for BOTH the 5-second timer AND all images to preload
+
   await Promise.all([
     new Promise(r => setTimeout(r, 5000)),
     Promise.all(preloadPromises)
   ]);
-  // Finish loading
+
   pokeball.classList.remove("shaking");
   pokeball.classList.add("success");
   finishLoading(loading);
 }
+
 function finishLoading(loading) {
   initApp();
   setTimeout(() => {
@@ -57,6 +69,7 @@ function finishLoading(loading) {
     setTimeout(() => loading.remove(), 800);
   }, 1100);
 }
+
 async function initApp() {
   setupEventListeners();
   renderGrid();
@@ -98,6 +111,7 @@ async function initApp() {
       localStorage.removeItem("toolsWidth");
     };
     resetToolsWidth();
+
     resizeHandle.addEventListener("mousedown", (e) => {
       isResizing = true;
       startX = e.pageX;
@@ -105,6 +119,7 @@ async function initApp() {
       toolsMenu.style.transition = "none";
       document.body.style.cursor = "col-resize";
     });
+
     document.addEventListener("mousemove", (e) => {
       if (!isResizing) return;
       const newWidth = startWidth + (startX - e.pageX);
@@ -114,6 +129,7 @@ async function initApp() {
         toolsMenu.style.width = newWidth + "px";
       }
     });
+
     document.addEventListener("mouseup", () => {
       if (isResizing) {
         isResizing = false;
@@ -121,6 +137,7 @@ async function initApp() {
         toolsMenu.style.transition = "width 0.1s ease";
       }
     });
+
     const closeToolsBtn = document.getElementById("close-tools");
     if (closeToolsBtn) {
       closeToolsBtn.addEventListener("click", () => {
@@ -128,14 +145,6 @@ async function initApp() {
         resetToolsWidth();
       });
     }
-    document.addEventListener("click", (e) => {
-      if (toolsMenu.classList.contains("open") &&
-          !toolsMenu.contains(e.target) &&
-          !document.getElementById("tools-btn").contains(e.target)) {
-        toolsMenu.classList.remove("open");
-        resetToolsWidth();
-      }
-    });
   }
 
   // ===================== EXP CALCULATOR =====================
@@ -204,13 +213,16 @@ async function initApp() {
       nextEvoLevel = null;
       return;
     }
+
     const selected = allPokemon.find(p =>
       `#${p.id.toString().padStart(4,"0")} ${p.name.toLowerCase()}` === term ||
       p.name.toLowerCase() === term
     );
     if (!selected) return;
+
     calculatorDiv.style.display = "block";
     pokemonNameEl.textContent = `#${selected.id} ${selected.name}`;
+
     const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${selected.id}`);
     const species = await speciesRes.json();
     currentGrowthRate = species.growth_rate.name;
@@ -279,8 +291,10 @@ async function initApp() {
       updateExpDisplay();
     }
   });
-}   // ←←← THIS CLOSING BRACE IS NOW CORRECT
+}   // ←←← initApp() is now properly closed
+
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
+
 function debounce(func, delay) {
   let timeout;
   return (...args) => {
@@ -288,6 +302,7 @@ function debounce(func, delay) {
     timeout = setTimeout(() => func(...args), delay);
   };
 }
+
 function renderGrid(filterTerm = "") {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
@@ -322,14 +337,10 @@ function renderGrid(filterTerm = "") {
   });
   updateTotalProgress();
 }
+
 function renderCompletionBars() {
-  console.log("✅ renderCompletionBars() started");
   const gensDiv = document.getElementById("completion-gens");
-  if (!gensDiv) {
-    console.error("❌ #completion-gens element NOT FOUND in the DOM!");
-    return;
-  }
-  console.log("✅ Found #completion-gens, clearing it...");
+  if (!gensDiv) return;
   gensDiv.innerHTML = "";
   const colors = ["#ef4036","#f4a261","#f2c94c","#7ed321","#4a90e2","#9b59b6","#e74c3c","#f1c40f","#8e44ad"];
   genRanges.forEach(g => {
@@ -338,8 +349,7 @@ function renderCompletionBars() {
     const percent = Math.round((genCaught / total) * 100);
     const div = document.createElement("div");
     div.className = "completion-bar";
-    if (percent === 100) div.classList.add("complete");   // ← ADD THIS LINE
-
+    if (percent === 100) div.classList.add("complete");
     div.innerHTML = `
       <span>Gen ${g.gen}</span>
       <div class="progress-bar">
@@ -348,10 +358,9 @@ function renderCompletionBars() {
       <span>${genCaught}/${total} — ${percent}%</span>
     `;
     gensDiv.appendChild(div);
-    console.log(` Gen ${g.gen}: ${genCaught}/${total} (${percent}%)`);
   });
-  console.log("✅ All generation bars added successfully!");
 }
+
 async function showDetail(p) {
   const modal = document.getElementById("modal");
   document.getElementById("modal-name").textContent = `#${p.id} ${p.name}`;
@@ -361,16 +370,13 @@ async function showDetail(p) {
   const evoDiv = document.getElementById("modal-evo");
   const gamesDiv = document.getElementById("modal-games");
 
-  // Clear previous content
   typesDiv.innerHTML = "<strong>Types:</strong><br>";
   evoDiv.innerHTML = "";
   gamesDiv.innerHTML = "<strong>Switch Games:</strong><br>";
 
-  // Fetch Pokémon data
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${p.id}`);
   const data = await res.json();
 
-  // === TYPES ===
   data.types.forEach(t => {
     const color = typeColors[t.type.name] || "#777";
     const badge = document.createElement("span");
@@ -380,7 +386,6 @@ async function showDetail(p) {
     typesDiv.appendChild(badge);
   });
 
-  // === EVOLUTION CHAIN ===
   const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${p.id}`);
   const species = await speciesRes.json();
   if (species.evolution_chain) {
@@ -390,7 +395,6 @@ async function showDetail(p) {
   } else {
     evoDiv.innerHTML = "No evolution data";
   }
-
   // ===================== SWITCH GAMES =====================
   const switchGameMap = {
     "lets-go-pikachu-lets-go-eevee": "Let's Go, Pikachu! / Let's Go, Eevee!",
