@@ -86,7 +86,7 @@ async function initApp() {
       }
     });
   }
-  // ===================== RESIZABLE TOOLS MENU =====================
+   // ===================== RESIZABLE TOOLS MENU =====================
   const toolsMenu = document.getElementById("tools-menu");
   const resizeHandle = document.getElementById("resize-handle");
 
@@ -94,11 +94,14 @@ async function initApp() {
     let isResizing = false;
     let startX, startWidth;
 
-    // Load saved width
-    const savedWidth = localStorage.getItem("toolsWidth");
-    if (savedWidth) {
-      toolsMenu.style.width = savedWidth + "px";
-    }
+    // Reset to default width every time the menu is opened
+    const resetToolsWidth = () => {
+      toolsMenu.style.width = "360px";
+      localStorage.removeItem("toolsWidth");
+    };
+
+    // Initial reset
+    resetToolsWidth();
 
     resizeHandle.addEventListener("mousedown", (e) => {
       isResizing = true;
@@ -110,11 +113,9 @@ async function initApp() {
 
     document.addEventListener("mousemove", (e) => {
       if (!isResizing) return;
-
-      const newWidth = startWidth + (startX - e.pageX); // drag left = bigger
+      const newWidth = startWidth + (startX - e.pageX);
       const minW = 360;
-      const maxW = 720; // exactly fills the space in your screenshot
-
+      const maxW = 720;
       if (newWidth >= minW && newWidth <= maxW) {
         toolsMenu.style.width = newWidth + "px";
       }
@@ -125,8 +126,25 @@ async function initApp() {
         isResizing = false;
         document.body.style.cursor = "default";
         toolsMenu.style.transition = "width 0.1s ease";
-        // Save width
-        localStorage.setItem("toolsWidth", toolsMenu.offsetWidth);
+      }
+    });
+
+    // Reset width whenever the menu is closed
+    const closeToolsBtn = document.getElementById("close-tools");
+    if (closeToolsBtn) {
+      closeToolsBtn.addEventListener("click", () => {
+        toolsMenu.classList.remove("open");
+        resetToolsWidth();
+      });
+    }
+
+    // Also reset on click outside
+    document.addEventListener("click", (e) => {
+      if (toolsMenu.classList.contains("open") &&
+          !toolsMenu.contains(e.target) &&
+          !document.getElementById("tools-btn").contains(e.target)) {
+        toolsMenu.classList.remove("open");
+        resetToolsWidth();
       }
     });
   }
