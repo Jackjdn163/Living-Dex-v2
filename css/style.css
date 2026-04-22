@@ -274,7 +274,6 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 [data-theme="dark"] .game-badge {
   background: linear-gradient(90deg, #10b981, #059669);
 }
-\
 /* ===================== FINAL MODAL BACKDROP FIX (no more bottom gap) ===================== */
 .modal {
   position: fixed !important;
