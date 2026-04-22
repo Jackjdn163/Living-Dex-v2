@@ -105,7 +105,6 @@ async function initApp() {
     datalist.appendChild(option);
   });
 
-  // Candy EXP values
   const candyValues = { xs: 100, s: 800, m: 3000, l: 10000, xl: 30000 };
   const candyNames = ["xl", "l", "m", "s", "xs"];
 
@@ -124,10 +123,14 @@ async function initApp() {
     level = Math.max(1, Math.min(100, level));
     const n = level;
     switch (growthRate) {
-      case "fast": return Math.floor(0.8 * n * n * n);
-      case "medium-fast": return Math.floor(0.8 * n * n * n);
-      case "medium-slow": return Math.floor(1.25 * n * n * n - 30 * n * n + 300 * n);
-      case "slow": return Math.floor(1.25 * n * n * n);
+      case "fast":
+        return Math.floor(0.8 * n * n * n);
+      case "medium-fast":          // ← most common (Rattata, etc.)
+        return Math.floor(n * n * n);
+      case "medium-slow":
+        return Math.floor(1.25 * n * n * n - 30 * n * n + 300 * n);
+      case "slow":
+        return Math.floor(1.25 * n * n * n);
       case "erratic":
         if (n < 50) return Math.floor(n * n * n * (100 - n) / 50);
         else if (n < 68) return Math.floor(n * n * n * (150 - n) / 100);
@@ -139,7 +142,8 @@ async function initApp() {
         else if (n < 50) return Math.floor(n * n * n * (48 + n) / 50);
         else if (n < 70) return Math.floor(n * n * n * (60 + n) / 50);
         else return Math.floor(n * n * n * (72 + n) / 50);
-      default: return 0;
+      default:
+        return 0;
     }
   }
 
@@ -160,7 +164,6 @@ async function initApp() {
     calculatorDiv.style.display = "block";
     pokemonNameEl.textContent = `#${selected.id} ${selected.name}`;
 
-    // Fetch growth rate + evolution info
     const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${selected.id}`);
     const species = await speciesRes.json();
     const growthRate = species.growth_rate.name;
@@ -171,23 +174,22 @@ async function initApp() {
 
     const expAtCurrent = getCumulativeExp(currentLevel, growthRate);
     const expAtNext = getCumulativeExp(currentLevel + 1, growthRate);
-    const expToNextLevel = expAtNext - expAtCurrent;
+    const expToNextLevel = Math.max(0, expAtNext - expAtCurrent);
 
-    const expTo100 = getCumulativeExp(100, growthRate) - expAtCurrent;
+    const expTo100 = Math.max(0, getCumulativeExp(100, growthRate) - expAtCurrent);
 
-    // Simple next-evo check (level-based only)
+    // Next evolution (level-based only)
     let expToEvo = "N/A (no level evolution)";
     if (species.evolution_chain) {
       const chainRes = await fetch(species.evolution_chain.url);
       const chain = await chainRes.json();
-      // Basic parse for next level evo
       let node = chain.chain;
       while (node) {
         if (node.species.name === selected.name.toLowerCase() && node.evolves_to.length > 0) {
           const evoDetail = node.evolves_to[0].evolution_details[0];
           if (evoDetail && evoDetail.min_level) {
-            const expAtEvo = getCumulativeExp(evoDetail.min_level, growthRate);
-            expToEvo = Math.max(0, expAtEvo - expAtCurrent);
+            const expAtEvoLevel = getCumulativeExp(evoDetail.min_level, growthRate);
+            expToEvo = Math.max(0, expAtEvoLevel - expAtCurrent);
           }
           break;
         }
@@ -195,14 +197,12 @@ async function initApp() {
       }
     }
 
-    // Render results
     resultsDiv.innerHTML = `
       <p><strong>EXP to next level:</strong> <span style="color:#22c55e;">${expToNextLevel.toLocaleString()}</span></p>
       <p><strong>EXP until next evolution:</strong> <span style="color:#eab308;">${typeof expToEvo === "number" ? expToEvo.toLocaleString() : expToEvo}</span></p>
       <p><strong>EXP until level 100:</strong> <span style="color:#a78bfa;">${expTo100.toLocaleString()}</span></p>
     `;
 
-    // Candy breakdown for each goal
     candyDiv.innerHTML = `
       <div class="candy-row"><strong>Next Level</strong><br>${formatCandy(calculateCandies(expToNextLevel))}</div>
       <div class="candy-row"><strong>Next Evolution</strong><br>${typeof expToEvo === "number" ? formatCandy(calculateCandies(expToEvo)) : "N/A"}</div>
@@ -217,10 +217,9 @@ async function initApp() {
       .join(" + ") || "0";
   }
 
-  // Update level display
+  // Update level display + re-calculate when slider moves
   levelSlider.addEventListener("input", () => {
     levelValue.textContent = levelSlider.value;
-    // Re-calculate if a Pokémon is already selected
     if (calculatorDiv.style.display === "block") {
       expSearch.dispatchEvent(new Event("input"));
     }
