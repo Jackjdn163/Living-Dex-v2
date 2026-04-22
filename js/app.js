@@ -61,6 +61,35 @@ async function initApp() {
   setupEventListeners();
   renderGrid();
   renderCompletionBars();
+  // Quick Notes
+const notesTextarea = document.getElementById("quick-notes");
+const savedIndicator = document.getElementById("notes-saved");
+
+if (notesTextarea) {
+  // Load saved notes
+  const savedNotes = localStorage.getItem("quickNotes") || "";
+  notesTextarea.value = savedNotes;
+
+  // Auto-save on typing (debounced)
+  let timeout;
+  notesTextarea.addEventListener("input", () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      localStorage.setItem("quickNotes", notesTextarea.value);
+      savedIndicator.classList.add("show");
+      setTimeout(() => savedIndicator.classList.remove("show"), 1200);
+    }, 500);
+  });
+
+  // Clear button
+  document.getElementById("clear-notes").addEventListener("click", () => {
+    if (confirm("Clear all quick notes?")) {
+      notesTextarea.value = "";
+      localStorage.removeItem("quickNotes");
+      savedIndicator.classList.add("show");
+      setTimeout(() => savedIndicator.classList.remove("show"), 1200);
+    }
+  });
 }
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
 function debounce(func, delay) {
