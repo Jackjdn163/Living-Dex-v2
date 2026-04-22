@@ -255,7 +255,6 @@ async function showDetail(p) {
   modal.style.display = "flex";
   modal.classList.remove("hidden");
 }
-}
 async function buildFullEvoHTML(chain, currentId) {
   let html = `<strong>Evolution Chain:</strong><br>`;
   let preNode = chain;
