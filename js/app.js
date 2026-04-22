@@ -86,23 +86,18 @@ async function initApp() {
       }
     });
   }
-   // ===================== RESIZABLE TOOLS MENU =====================
+
+  // ===================== RESIZABLE TOOLS MENU =====================
   const toolsMenu = document.getElementById("tools-menu");
   const resizeHandle = document.getElementById("resize-handle");
-
   if (toolsMenu && resizeHandle) {
     let isResizing = false;
     let startX, startWidth;
-
-    // Reset to default width every time the menu is opened
     const resetToolsWidth = () => {
       toolsMenu.style.width = "360px";
       localStorage.removeItem("toolsWidth");
     };
-
-    // Initial reset
     resetToolsWidth();
-
     resizeHandle.addEventListener("mousedown", (e) => {
       isResizing = true;
       startX = e.pageX;
@@ -110,7 +105,6 @@ async function initApp() {
       toolsMenu.style.transition = "none";
       document.body.style.cursor = "col-resize";
     });
-
     document.addEventListener("mousemove", (e) => {
       if (!isResizing) return;
       const newWidth = startWidth + (startX - e.pageX);
@@ -120,7 +114,6 @@ async function initApp() {
         toolsMenu.style.width = newWidth + "px";
       }
     });
-
     document.addEventListener("mouseup", () => {
       if (isResizing) {
         isResizing = false;
@@ -128,8 +121,6 @@ async function initApp() {
         toolsMenu.style.transition = "width 0.1s ease";
       }
     });
-
-    // Reset width whenever the menu is closed
     const closeToolsBtn = document.getElementById("close-tools");
     if (closeToolsBtn) {
       closeToolsBtn.addEventListener("click", () => {
@@ -137,8 +128,6 @@ async function initApp() {
         resetToolsWidth();
       });
     }
-
-    // Also reset on click outside
     document.addEventListener("click", (e) => {
       if (toolsMenu.classList.contains("open") &&
           !toolsMenu.contains(e.target) &&
@@ -148,7 +137,8 @@ async function initApp() {
       }
     });
   }
-   // ===================== EXP CALCULATOR =====================
+
+  // ===================== EXP CALCULATOR =====================
   const expSearch = document.getElementById("exp-search");
   const datalist = document.getElementById("exp-pokemon-list");
   const calculatorDiv = document.getElementById("exp-calculator");
@@ -159,7 +149,6 @@ async function initApp() {
   const resultsDiv = document.getElementById("exp-results");
   const candyDiv = document.getElementById("candy-breakdown");
 
-  // Populate datalist
   allPokemon.forEach(p => {
     const option = document.createElement("option");
     option.value = `#${p.id.toString().padStart(4,"0")} ${p.name}`;
@@ -205,7 +194,7 @@ async function initApp() {
   }
 
   let currentGrowthRate = null;
-  let nextEvoLevel = null;   // ← this was missing
+  let nextEvoLevel = null;
 
   expSearch.addEventListener("input", async () => {
     const term = expSearch.value.trim().toLowerCase();
@@ -215,24 +204,18 @@ async function initApp() {
       nextEvoLevel = null;
       return;
     }
-
-    const selected = allPokemon.find(p => 
+    const selected = allPokemon.find(p =>
       `#${p.id.toString().padStart(4,"0")} ${p.name.toLowerCase()}` === term ||
       p.name.toLowerCase() === term
     );
-
     if (!selected) return;
-
     calculatorDiv.style.display = "block";
     pokemonNameEl.textContent = `#${selected.id} ${selected.name}`;
-
     const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${selected.id}`);
     const species = await speciesRes.json();
     currentGrowthRate = species.growth_rate.name;
-
     groupEl.textContent = currentGrowthRate.replace(/-/g, " ").toUpperCase();
 
-    // === Find next level-up evolution ===
     nextEvoLevel = null;
     if (species.evolution_chain) {
       const chainRes = await fetch(species.evolution_chain.url);
@@ -249,21 +232,17 @@ async function initApp() {
         node = node.evolves_to && node.evolves_to.length ? node.evolves_to[0] : null;
       }
     }
-
     updateExpDisplay();
   });
 
   function updateExpDisplay() {
     if (!currentGrowthRate) return;
-
     const currentLevel = parseInt(levelSlider.value);
-
     const expAtCurrent = getCumulativeExp(currentLevel, currentGrowthRate);
-    const expAtNext   = getCumulativeExp(currentLevel + 1, currentGrowthRate);
+    const expAtNext = getCumulativeExp(currentLevel + 1, currentGrowthRate);
     const expToNextLevel = Math.max(0, expAtNext - expAtCurrent);
     const expTo100 = Math.max(0, getCumulativeExp(100, currentGrowthRate) - expAtCurrent);
 
-    // Next evolution
     let expToEvoText = "N/A (no level evolution)";
     let expToEvo = 0;
     if (nextEvoLevel && nextEvoLevel > currentLevel) {
@@ -294,14 +273,13 @@ async function initApp() {
       .join(" + ") || "0";
   }
 
-  // Slider updates instantly
   levelSlider.addEventListener("input", () => {
     levelValue.textContent = levelSlider.value;
     if (calculatorDiv.style.display === "block") {
       updateExpDisplay();
     }
   });
-}
+}   // ←←← THIS CLOSING BRACE IS NOW CORRECT
 function getSprite(p) { return shinyMode ? p.shiny : p.sprite; }
 function debounce(func, delay) {
   let timeout;
