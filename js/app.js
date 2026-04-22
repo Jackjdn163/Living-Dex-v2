@@ -360,6 +360,8 @@ function renderCompletionBars() {
     const percent = Math.round((genCaught / total) * 100);
     const div = document.createElement("div");
     div.className = "completion-bar";
+    if (percent === 100) div.classList.add("complete");   // ← ADD THIS LINE
+
     div.innerHTML = `
       <span>Gen ${g.gen}</span>
       <div class="progress-bar">
@@ -559,6 +561,12 @@ function updateTotalProgress() {
   if (percentEl) percentEl.textContent = `${percent}%`;
   if (fillEl) fillEl.style.width = `${percent}%`;
   if (countEl) countEl.textContent = `${count} / ${total}`;
+  if (percent === 100 && fillEl) {
+    fillEl.classList.add("complete");
+    setTimeout(() => fillEl.classList.remove("complete"), 1500);
+  } else if (fillEl) {
+    fillEl.classList.remove("complete");
+  } 
   if (percent === 100 && fillEl) {
     fillEl.classList.add("complete-flash");
     setTimeout(() => fillEl.classList.remove("complete-flash"), 1500);
