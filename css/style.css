@@ -1,7 +1,13 @@
 :root { --bg: #f0f0f0; --text: #222; --card: #fff; }
 [data-theme="dark"] { --bg: #1a1a1a; --text: #eee; --card: #2a2a2a; }
-body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-family:system-ui,sans-serif; }
-/* Fixed left boxes */
+body {
+  margin:0;
+  padding:20px;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,sans-serif;
+  overflow-x: hidden !important; /* prevents sideways scroll */
+}
 .gen-completion {
   position: fixed;
   top: 20px;
