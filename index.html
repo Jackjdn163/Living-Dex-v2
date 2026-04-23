@@ -8,53 +8,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <!-- Your other head content (CSS, etc.) -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
-  <!-- SETTINGS BUTTON + OVERLAY (add this before </body>) -->
-  <button id="settings-btn" class="settings-btn">⚙️</button>
-
-  <div id="settings-overlay" class="settings-overlay hidden">
-    <div class="settings-panel">
-      <div class="settings-header">
-        <h2>Settings</h2>
-        <button id="close-settings" class="close-btn">✕</button>
-      </div>
-
-      <!-- Account -->
-      <div id="auth-section" class="settings-section">
-        <h3>Account</h3>
-        <div id="logged-in-view" class="hidden">
-          <p>Welcome, <strong id="display-email"></strong>!</p>
-          <button id="logout-btn" class="reset-btn">Log Out</button>
-        </div>
-        <div id="login-view">
-          <input type="email" id="email-input" placeholder="Email" class="settings-input">
-          <input type="password" id="password-input" placeholder="Password" class="settings-input">
-          <div class="auth-buttons">
-            <button id="login-btn">Log In</button>
-            <button id="register-btn">Create Account</button>
-          </div>
-          <p id="auth-message" class="auth-message"></p>
-        </div>
-      </div>
-
-      <!-- Appearance -->
-      <div class="settings-section">
-        <h3>Appearance</h3>
-        <label class="switch-label">
-          <span>Dark Mode</span>
-          <label class="switch">
-            <input type="checkbox" id="dark-toggle-settings">
-            <span class="slider"></span>
-          </label>
-        </label>
-      </div>
-
-      <div class="settings-footer">
-        <button id="reset-all-btn" class="reset-btn">Reset All Progress (local only)</button>
-      </div>
-    </div>
-  </div>
 <body>
   <!-- Loading Screen -->
   <div id="loading" class="loading">
@@ -190,6 +145,51 @@
       <!-- NEW: Switch Games Section -->
       <div id="modal-games" class="games-info">
         <strong>Switch Games:</strong><br>
+      </div>
+    </div>
+  </div>
+    <!-- SETTINGS BUTTON + OVERLAY (correctly inside body) -->
+  <button id="settings-btn" class="settings-btn">⚙️</button>
+
+  <div id="settings-overlay" class="settings-overlay hidden">
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button id="close-settings" class="close-btn">✕</button>
+      </div>
+
+      <!-- Account -->
+      <div id="auth-section" class="settings-section">
+        <h3>Account</h3>
+        <div id="logged-in-view" class="hidden">
+          <p>Welcome, <strong id="display-email"></strong>!</p>
+          <button id="logout-btn" class="reset-btn">Log Out</button>
+        </div>
+        <div id="login-view">
+          <input type="email" id="email-input" placeholder="Email" class="settings-input">
+          <input type="password" id="password-input" placeholder="Password" class="settings-input">
+          <div class="auth-buttons">
+            <button id="login-btn">Log In</button>
+            <button id="register-btn">Create Account</button>
+          </div>
+          <p id="auth-message" class="auth-message"></p>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="settings-section">
+        <h3>Appearance</h3>
+        <label class="switch-label">
+          <span>Dark Mode</span>
+          <label class="switch">
+            <input type="checkbox" id="dark-toggle-settings">
+            <span class="slider"></span>
+          </label>
+        </label>
+      </div>
+
+      <div class="settings-footer">
+        <button id="reset-all-btn" class="reset-btn">Reset All Progress (local only)</button>
       </div>
     </div>
   </div>
