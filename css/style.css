@@ -845,3 +845,35 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
 .home-card {
   height: 380px;
 }
+/* ===================== FINAL RELIABLE FIXES ===================== */
+html, body {
+  overflow-x: hidden !important;
+}
+
+#home-view ~ .sidebar,
+#home-view ~ .tools-btn,
+#home-view ~ .settings-btn,
+#home-view ~ .back-to-home {
+  display: none !important;
+}
+
+#dex-view .sidebar {
+  position: fixed !important;
+  top: 20px !important;
+  left: 20px !important;
+  width: 340px !important;
+  z-index: 100 !important;
+  display: block !important;
+}
+
+#dex-view .tools-btn,
+#dex-view .settings-btn {
+  display: block !important;
+}
+
+.back-to-home {
+  position: absolute !important;
+  top: 20px !important;
+  left: 20px !important;
+  z-index: 110 !important;
+}
