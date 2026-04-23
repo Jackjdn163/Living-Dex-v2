@@ -1,3 +1,42 @@
+/* ===================== ULTIMATE FLOATING BOX FIX (put at VERY BOTTOM) ===================== */
+.gen-completion,
+.toggles-box {
+  position: fixed !important;
+  z-index: 99999 !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+.gen-completion {
+  top: 30px !important;
+  left: 30px !important;
+  width: 340px !important;
+}
+
+.toggles-box {
+  bottom: 30px !important;
+  left: 30px !important;
+  width: 220px !important;
+}
+
+/* Extra safety – break any parent traps */
+.main-layout,
+.sidebar,
+.content-area,
+#dex-view,
+.home-view,
+body.dex-mode .sidebar {
+  transform: none !important;
+  position: static !important; /* prevents sidebar conflict */
+}
+
+/* Make sure sidebar no longer fights the boxes */
+body.dex-mode .sidebar {
+  position: static !important;
+  width: auto !important;
+  left: auto !important;
+  top: auto !important;
+}
 :root { --bg: #f0f0f0; --text: #222; --card: #fff; }
 [data-theme="dark"] { --bg: #1a1a1a; --text: #eee; --card: #2a2a2a; }
 body {
