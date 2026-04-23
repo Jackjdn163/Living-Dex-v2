@@ -1,6 +1,15 @@
 :root { --bg: #f0f0f0; --text: #222; --card: #fff; }
 [data-theme="dark"] { --bg: #1a1a1a; --text: #eee; --card: #2a2a2a; }
-body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-family:system-ui,sans-serif; }
+
+body { 
+  margin:0; 
+  padding:20px; 
+  background:var(--bg); 
+  color:var(--text); 
+  font-family:system-ui,sans-serif; 
+  overflow-x: hidden !important; /* prevents sideways scroll */
+}
+
 /* Fixed left boxes */
 .gen-completion {
   position: fixed;
@@ -24,6 +33,7 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
 }
 .gen-completion h2 { margin:0 0 15px 0; font-size:1.3rem; }
 .completion-gens { display:flex; flex-direction:column; gap:12px; }
+
 /* === COMPLETION BARS === */
 .completion-bar {
   display: flex;
@@ -47,7 +57,8 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
   min-width: 6px;
 }
-/* ===================== TOTAL LIVING DEX BAR – MULTICOLOR GRADIENT RESTORED ===================== */
+
+/* TOTAL LIVING DEX BAR */
 .total-completion {
   margin: 20px 0 25px 0;
   padding: 18px 20px;
@@ -76,20 +87,6 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   background: linear-gradient(90deg, #ef4036, #f4a261) !important;
   box-shadow: 0 0 10px rgba(239, 64, 54, 0.6);
 }
-.complete-flash { animation: completeAnim 1.5s ease; }
-@keyframes completeAnim {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.12); }
-  100% { transform: scale(1); }
-}
-#caught-count {
-  text-align: center;
-  margin-top: 12px;
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: var(--text);
-  opacity: 0.9;
-}
 /* ===================== TOOLS MENU – NOW HIDDEN UNTIL CLICKED ===================== */
 .tools-btn {
   position: fixed !important;
@@ -110,18 +107,10 @@ body { margin:0; padding:20px; background:var(--bg); color:var(--text); font-fam
   box-shadow: 0 4px 15px rgba(0,0,0,0.12);
   transition: all 0.3s ease;
 }
-.tools-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
-}
-.hamburger-line {
-  width: 26px;
-  height: 3px;
-  background: var(--text);
-  border-radius: 3px;
-  transition: all 0.3s ease;
-}
+.tools-btn:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+.hamburger-line { width: 26px; height: 3px; background: var(--text); border-radius: 3px; transition: all 0.3s ease; }
 .tools-btn:hover .hamburger-line { background: #ef4036; }
+
 .tools-menu {
   position: fixed !important;
   top: 0 !important;
@@ -817,9 +806,7 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
     transform: scale(1) translateY(0);
   }
 }
-/* ===================== CLEAN FLOATING UI - ONLY IN DEX VIEW ===================== */
-
-/* Hide everything on Home screen */
+/* ===================== RELIABLE VIEW SWITCHING ===================== */
 #home-view ~ .sidebar,
 #home-view ~ .tools-btn,
 #home-view ~ .settings-btn,
@@ -827,78 +814,18 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   display: none !important;
 }
 
-/* Make sure sidebar is fixed and visible only in Dex view */
-#dex-view .sidebar {
-  display: block;
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 340px;
-  z-index: 100;
-}
-
-/* Home button - perfectly above percentage tab, no overlap */
-.back-to-home {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 110;
-  background: #ef4036;
-  color: white;
-  border: none;
-  padding: 10px 22px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 1.05rem;
-  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4);
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.back-to-home:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5);
-}
-
-/* Make sure shiny toggle stays in the toggles box */
-.toggles-box {
-  margin-top: 20px;
-}
-/* ===================== FINAL LAYOUT FIXES (add this at the bottom) ===================== */
-html, body {
-  overflow-x: hidden !important;
-  width: 100% !important;
-}
-
-/* Hide ALL floating UI on Home screen */
-#home-view ~ .sidebar,
-#home-view ~ .tools-btn,
-#home-view ~ .settings-btn,
-#home-view ~ .back-to-home {
-  display: none !important;
-}
-
-/* Dex view only - sidebar, shiny toggle, tools, settings */
-#dex-view .sidebar {
-  position: fixed !important;
-  top: 20px !important;
-  left: 20px !important;
-  width: 340px !important;
-  z-index: 100 !important;
-  display: block !important;
-}
-
+#dex-view .sidebar,
 #dex-view .tools-btn,
-#dex-view .settings-btn {
+#dex-view .settings-btn,
+#dex-view .back-to-home {
   display: block !important;
 }
 
-/* Home button - sits cleanly just above the percentage tab */
 .back-to-home {
-  position: absolute !important;
-  top: 20px !important;
-  left: 20px !important;
-  z-index: 110 !important;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 110;
   background: #ef4036;
   color: white;
   border: none;
@@ -914,55 +841,7 @@ html, body {
   transform: translateY(-2px);
 }
 
-/* Make sure toggles-box stays inside the sidebar */
-.toggles-box {
-  margin-top: 20px;
-}
-/* ===================== RELIABLE VIEW-BASED LAYOUT ===================== */
-body.dex-mode .sidebar,
-body.dex-mode .tools-btn,
-body.dex-mode .settings-btn,
-body.dex-mode .back-to-home {
-  display: block !important;
-}
-
-body:not(.dex-mode) .sidebar,
-body:not(.dex-mode) .tools-btn,
-body:not(.dex-mode) .settings-btn,
-body:not(.dex-mode) .back-to-home {
-  display: none !important;
-}
-
-/* Sidebar positioning - only in Dex mode */
-body.dex-mode .sidebar {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 340px;
-  z-index: 100;
-}
-
-/* Home button - perfectly above the percentage tab */
-.back-to-home {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 110;
-  background: #ef4036;
-  color: white;
-  border: none;
-  padding: 10px 22px;
-  border-radius: 50px;
-  font-weight: 600;
-  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4);
-  cursor: pointer;
-}
-
-.back-to-home:hover {
-  transform: translateY(-2px);
-}
-
-/* Make sure toggles-box stays inside sidebar */
-.toggles-box {
-  margin-top: 20px;
+/* Taller home cards */
+.home-card {
+  height: 380px;
 }
