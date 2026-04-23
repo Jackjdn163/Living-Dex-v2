@@ -425,3 +425,86 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   from { filter: brightness(1); }
   to   { filter: brightness(1.4); }
 }
+/* Game switches - same style as your sidebar toggles */
+.game-switches-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.game-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card);
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+}
+
+.game-switch-row label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.game-switches-container .switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.game-switches-container .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.game-switches-container .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .3s;
+  border-radius: 26px;
+}
+
+.game-switches-container .slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+.game-switches-container input:checked + .slider {
+  background-color: #ffcb05; /* Pokémon yellow */
+}
+
+.game-switches-container input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+/* Highlight animation for uncaught Pokémon in the selected game */
+.pokemon-card.game-highlight {
+  animation: gameHighlightPop 0.6s ease;
+  box-shadow: 0 0 0 4px #ffcb05, 0 0 15px 6px rgba(255, 203, 5, 0.6) !important;
+  border: 3px solid #ffcb05;
+  transform: scale(1.04);
+}
+
+@keyframes gameHighlightPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1.04); }
+}
