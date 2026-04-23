@@ -924,28 +924,28 @@ body.dex-mode .sidebar {
   right: 30px !important;
   z-index: 99999 !important;
 }
-/* ===================== HOME SCREEN CENTERING FIX (prevents snapping left) ===================== */
+/* ===================== HOME SCREEN CENTERING FIX (FINAL - no more leaking) ===================== */
 .home-view {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  padding: 40px 20px !important;
-  min-height: 100vh !important;
-  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  min-height: 100vh;
+  width: 100%;
 }
 
 .home-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 28px !important;
-  max-width: 1100px !important;
-  width: 100% !important;
-  margin: 0 auto !important;
-  justify-content: center !important;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-/* Extra safety so nothing can override it */
-.home-view .home-grid {
-  margin: 0 auto !important;
+/* Extra safety so nothing can leak */
+#home-view {
+  position: relative;
+  z-index: 10;
 }
