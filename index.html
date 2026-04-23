@@ -4,24 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Living Dex v2</title>
-  
+ 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  
+ 
   <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- ===================== HOME SCREEN (Neal.fun style) ===================== -->
+  <!-- ===================== HOME SCREEN ===================== -->
   <div id="home-view" class="home-view">
     <header class="home-header">
       <h1>Living Dex</h1>
       <p class="tagline">Catch 'em all. Track 'em all. Flex on 'em all.</p>
     </header>
-
     <div class="home-grid">
       <!-- Box 1: Full Living Dex -->
       <div onclick="openDex()" class="home-card living-dex-card">
@@ -33,7 +32,6 @@
           <div class="enter-btn">ENTER DEX →</div>
         </div>
       </div>
-
       <!-- Box 2: Shiny Hunter -->
       <div class="home-card shiny-card">
         <div class="card-bg"></div>
@@ -44,7 +42,6 @@
           <div class="enter-btn coming-soon">COMING SOON</div>
         </div>
       </div>
-
       <!-- Box 3: Evolution Lab -->
       <div class="home-card evo-card">
         <div class="card-bg"></div>
@@ -55,7 +52,6 @@
           <div class="enter-btn coming-soon">COMING SOON</div>
         </div>
       </div>
-
       <!-- Box 4: Random Adventure -->
       <div class="home-card random-card">
         <div class="card-bg"></div>
@@ -80,46 +76,40 @@
 
   <!-- ===================== DEX VIEW (your full checklist) ===================== -->
   <div id="dex-view" style="display: none;">
-  <!-- Back to Home Button -->
-  <button onclick="goHome()" class="back-to-home">
-    ← Home
-  </button>
+
     <div class="main-layout">
-      
-<!-- LEFT SIDEBAR - only shows in Dex view -->
-<aside class="sidebar">
-  <!-- Home button - cleanly placed just above the percentage tab -->
-  <button onclick="goHome()" class="back-to-home">
-    ← Home
-  </button>
+      <!-- LEFT SIDEBAR -->
+      <aside class="sidebar">
+        <!-- Home button - cleanly above percentage tab -->
+        <button onclick="goHome()" class="back-to-home">
+          ← Home
+        </button>
 
-  <div class="floating-box gen-completion">
-    <h2>Pokédex Completion</h2>
-    
-    <!-- TOTAL POKEDEX PROGRESS BAR -->
-    <div id="total-completion" class="total-completion">
-      <div class="completion-label">
-        <span>Total Living Dex</span>
-        <span id="total-percentage">0%</span>
-      </div>
-      <div class="progress-bar-bg">
-        <div id="total-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
-      </div>
-      <div id="caught-count">0 / 1025</div>
-    </div>
-    <div id="completion-gens" class="completion-gens"></div>
-  </div>
+        <div class="floating-box gen-completion">
+          <h2>Pokédex Completion</h2>
+          <div id="total-completion" class="total-completion">
+            <div class="completion-label">
+              <span>Total Living Dex</span>
+              <span id="total-percentage">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div id="total-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+            </div>
+            <div id="caught-count">0 / 1025</div>
+          </div>
+          <div id="completion-gens" class="completion-gens"></div>
+        </div>
 
-  <div class="floating-box toggles-box">
-    <div class="toggle-row">
-      <label class="switch-label">Shiny Mode</label>
-      <label class="switch">
-        <input type="checkbox" id="shiny-toggle">
-        <span class="slider"></span>
-      </label>
-    </div>
-  </div>
-</aside>
+        <div class="floating-box toggles-box">
+          <div class="toggle-row">
+            <label class="switch-label">Shiny Mode</label>
+            <label class="switch">
+              <input type="checkbox" id="shiny-toggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </aside>
 
       <!-- Main Content -->
       <div class="content-area">
@@ -154,7 +144,6 @@
         <button id="close-tools" class="close-tools">&times;</button>
       </div>
       <div class="tools-content">
-        <!-- Quick Notes -->
         <div class="tools-section">
           <h3>📝 Quick Notes</h3>
           <textarea id="quick-notes" placeholder="Type anything here... (auto-saves instantly)"></textarea>
@@ -163,7 +152,6 @@
             <span id="notes-saved" class="saved-indicator">Saved ✓</span>
           </div>
         </div>
-        <!-- EXP Calculator -->
         <div class="tools-section">
           <h3>📈 EXP Calculator</h3>
           <input id="exp-search" list="exp-pokemon-list" placeholder="Search Pokémon..." style="width:100%; padding:12px; border-radius:12px; border:2px solid #ccc; background:var(--card); color:var(--text); margin-bottom:10px;">
@@ -177,7 +165,6 @@
             <div id="candy-breakdown" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px;"></div>
           </div>
         </div>
-        <!-- Highlight by Game -->
         <div class="tools-section">
           <h3>Highlight by Game</h3>
           <div id="game-switches" class="game-switches-container"></div>
@@ -203,7 +190,7 @@
     </div>
   </div>
 
-  <!-- SETTINGS BUTTON + OVERLAY -->
+  <!-- SETTINGS OVERLAY -->
   <button id="settings-btn" class="settings-btn">⚙️</button>
   <div id="settings-overlay" class="settings-overlay hidden">
     <div class="settings-panel">
