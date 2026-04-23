@@ -885,3 +885,42 @@ body.dex-mode .sidebar {
   left: auto !important;
   top: auto !important;
 }
+/* ===================== FINAL FLOATING BOXES CSS (paste at VERY BOTTOM) ===================== */
+.floating-box,
+.gen-completion,
+.toggles-box {
+  background: var(--card) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+  padding: 20px !important;
+}
+
+/* Make sure the completion box and toggles look exactly like they used to */
+.gen-completion {
+  top: 90px !important;
+  left: 30px !important;
+  width: 340px !important;
+  z-index: 99999 !important;
+}
+
+.toggles-box {
+  bottom: 30px !important;
+  left: 30px !important;
+  width: 220px !important;
+  z-index: 99999 !important;
+}
+
+/* Home button & Tools button (already working but reinforced) */
+.back-to-home {
+  position: fixed !important;
+  top: 30px !important;
+  left: 30px !important;
+  z-index: 99999 !important;
+}
+
+.tools-btn {
+  position: fixed !important;
+  top: 30px !important;
+  right: 30px !important;
+  z-index: 99999 !important;
+}
