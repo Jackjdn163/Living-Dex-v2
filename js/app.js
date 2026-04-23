@@ -671,14 +671,6 @@ function setupEventListeners() {
     showDetail(uncaught[Math.floor(Math.random() * uncaught.length)]);
   });
 
-  const darkToggle = document.getElementById("dark-toggle-settings"); // now in settings
-  darkToggle.checked = document.documentElement.getAttribute("data-theme") === "dark";
-  darkToggle.addEventListener("change", () => {
-    const newTheme = darkToggle.checked ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-  });
-
   const shinyToggle = document.getElementById("shiny-toggle");
   shinyToggle.checked = shinyMode;
   shinyToggle.addEventListener("change", () => {
@@ -711,15 +703,11 @@ function setupEventListeners() {
   const toolsBtn = document.getElementById("tools-btn");
   const toolsMenu = document.getElementById("tools-menu");
   const closeTools = document.getElementById("close-tools");
-  const settingsBtn = document.getElementById("settings-btn");
+  const settingsBtn = document.getElementById("settings-btn");   // ← declared ONLY ONCE here
 
   toolsBtn.addEventListener("click", () => {
     toolsMenu.classList.toggle("open");
-    if (toolsMenu.classList.contains("open")) {
-      settingsBtn.style.display = "none";
-    } else {
-      settingsBtn.style.display = "block";
-    }
+    settingsBtn.style.display = toolsMenu.classList.contains("open") ? "none" : "block";
   });
 
   closeTools.addEventListener("click", () => {
@@ -727,14 +715,22 @@ function setupEventListeners() {
     settingsBtn.style.display = "block";
   });
 
-  // SETTINGS OVERLAY (already in your file - kept for safety)
-  const settingsBtn = document.getElementById("settings-btn");
+  // SETTINGS OVERLAY
   const overlay = document.getElementById("settings-overlay");
   const closeBtn = document.getElementById("close-settings");
   settingsBtn.addEventListener("click", () => overlay.classList.remove("hidden"));
   closeBtn.addEventListener("click", () => overlay.classList.add("hidden"));
 
-  // Auth buttons (already in your file)
+  // Dark toggle (in settings)
+  const darkToggle = document.getElementById("dark-toggle-settings");
+  darkToggle.checked = document.documentElement.getAttribute("data-theme") === "dark";
+  darkToggle.addEventListener("change", () => {
+    const newTheme = darkToggle.checked ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  });
+
+  // Auth buttons
   document.getElementById("login-btn").addEventListener("click", async () => {
     const email = document.getElementById("email-input").value.trim();
     const pass = document.getElementById("password-input").value;
