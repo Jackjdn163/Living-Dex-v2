@@ -817,59 +817,9 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
     transform: scale(1) translateY(0);
   }
 }
+/* ===================== CLEAN FLOATING UI - ONLY IN DEX VIEW ===================== */
 
-/* Back button styling */
-.back-to-home {
-  position: fixed;
-  top: 25px;
-  left: 25px;
-  z-index: 9999;
-  background: #ef4036;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 1.05rem;
-  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4);
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.back-to-home:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5);
-}
-/* Back to Home Button - sits just above the percentage tab */
-.back-to-home {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
-  background: #ef4036;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 1.05rem;
-  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4);
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.back-to-home:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5);
-}
-
-/* Hide ALL floating UI elements when on Home screen */
+/* Hide everything on Home screen */
 #home-view ~ .sidebar,
 #home-view ~ .tools-btn,
 #home-view ~ .settings-btn,
@@ -877,11 +827,40 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   display: none !important;
 }
 
-/* Make sure sidebar stays fixed only on Dex view */
-.sidebar {
+/* Make sure sidebar is fixed and visible only in Dex view */
+#dex-view .sidebar {
+  display: block;
   position: fixed;
   top: 20px;
   left: 20px;
   width: 340px;
   z-index: 100;
+}
+
+/* Home button - perfectly above percentage tab, no overlap */
+.back-to-home {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 110;
+  background: #ef4036;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.back-to-home:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5);
+}
+
+/* Make sure shiny toggle stays in the toggles box */
+.toggles-box {
+  margin-top: 20px;
 }
