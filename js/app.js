@@ -787,7 +787,6 @@ function goHome() {
   document.getElementById("dex-view").style.display = "none";
   document.getElementById("home-view").style.display = "flex";
 }
-}
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   preloadAllAssets();
