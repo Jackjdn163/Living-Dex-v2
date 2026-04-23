@@ -793,3 +793,53 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   color: white !important;
   border: 3px solid rgba(255,255,255,0.6);
 }
+/* Taller homepage boxes + animation */
+.home-card {
+  height: 380px;                    /* taller so nothing gets cut off */
+}
+
+.home-view {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+/* Animation when opening the Dex */
+#dex-view {
+  animation: dexOpenAnim 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes dexOpenAnim {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Back button styling */
+.back-to-home {
+  position: fixed;
+  top: 25px;
+  left: 25px;
+  z-index: 9999;
+  background: #ef4036;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4);
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-to-home:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5);
+}
