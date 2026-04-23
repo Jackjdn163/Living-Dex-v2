@@ -4,14 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Living Dex v2</title>
-  <!-- Firebase SDK - Compat version -->
+  
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- ===================== HOME SCREEN (Neal.fun style) ===================== -->
+
+  <!-- ===================== HOME SCREEN (Neal.fun style) ===================== -->
   <div id="home-view" class="home-view">
     <header class="home-header">
       <h1>Living Dex</h1>
@@ -64,7 +68,8 @@
       </div>
     </div>
   </div>
-  <!-- Loading Screen -->
+
+  <!-- ===================== LOADING SCREEN ===================== -->
   <div id="loading" class="loading">
     <div class="pokeball-container">
       <div class="pokeball" id="pokeball"></div>
@@ -73,111 +78,105 @@
     <button id="skip-loading" class="skip-btn">Skip Loading</button>
   </div>
 
-  <div class="main-layout">
-    <!-- Left Sidebar -->
-    <aside class="sidebar">
-     <div class="floating-box gen-completion">
-  <h2>Pokédex Completion</h2>
-  
-  <!-- TOTAL POKEDEX PROGRESS BAR -->
-  <div id="total-completion" class="total-completion">
-    <div class="completion-label">
-      <span>Total Living Dex</span>
-      <span id="total-percentage">0%</span>
-    </div>
-    <div class="progress-bar-bg">
-      <div id="total-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
-    </div>
-    <div id="caught-count">0 / 1025</div>
-  </div>
+  <!-- ===================== DEX VIEW (your full checklist) ===================== -->
+  <div id="dex-view" style="display: none;">
 
-  <div id="completion-gens" class="completion-gens"></div>
-</div>
-      <div class="floating-box toggles-box"
-        <div class="toggle-row">
-          <label class="switch-label">Shiny Mode</label>
-          <label class="switch">
-            <input type="checkbox" id="shiny-toggle">
-            <span class="slider"></span>
-          </label>
+    <div class="main-layout">
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div class="floating-box gen-completion">
+          <h2>Pokédex Completion</h2>
+          <div id="total-completion" class="total-completion">
+            <div class="completion-label">
+              <span>Total Living Dex</span>
+              <span id="total-percentage">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div id="total-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+            </div>
+            <div id="caught-count">0 / 1025</div>
+          </div>
+          <div id="completion-gens" class="completion-gens"></div>
+        </div>
+
+        <div class="floating-box toggles-box">
+          <div class="toggle-row">
+            <label class="switch-label">Shiny Mode</label>
+            <label class="switch">
+              <input type="checkbox" id="shiny-toggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="content-area">
+        <header>
+          <h1>Living Dex</h1>
+        </header>
+        <div class="centered-block">
+          <input id="search-bar" type="text" placeholder="Search by name or number...">
+          <select id="sort-select">
+            <option value="number">Sort by Number</option>
+            <option value="name">Sort by Name</option>
+            <option value="uncaught">Uncaught First</option>
+          </select>
+          <button id="random-btn">Random Uncaught</button>
+          <button id="reset-btn">Reset Dex</button>
+          <main id="grid" class="pokemon-grid"></main>
         </div>
       </div>
-    </aside>
+    </div>
 
-    <!-- Centered Main Content -->
-    <div class="content-area">
-      <header>
-        <h1>Living Dex</h1>
-      </header>
-      <div class="centered-block">
-        <input id="search-bar" type="text" placeholder="Search by name or number...">
-        <select id="sort-select">
-          <option value="number">Sort by Number</option>
-          <option value="name">Sort by Name</option>
-          <option value="uncaught">Uncaught First</option>
-        </select>
-        <button id="random-btn">Random Uncaught</button>
-        <button id="reset-btn">Reset Dex</button>
-        <main id="grid" class="pokemon-grid"></main>
+    <!-- Tools Menu -->
+    <button id="tools-btn" class="tools-btn" aria-label="Open Tools">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <div id="tools-menu" class="tools-menu">
+      <div id="resize-handle" class="resize-handle"></div>
+      <div class="tools-header">
+        <h2>Tools</h2>
+        <button id="close-tools" class="close-tools">&times;</button>
+      </div>
+      <div class="tools-content">
+        <!-- Quick Notes -->
+        <div class="tools-section">
+          <h3>📝 Quick Notes</h3>
+          <textarea id="quick-notes" placeholder="Type anything here... (auto-saves instantly)"></textarea>
+          <div class="notes-footer">
+            <button id="clear-notes" class="reset-btn">Clear All Notes</button>
+            <span id="notes-saved" class="saved-indicator">Saved ✓</span>
+          </div>
+        </div>
+        <!-- EXP Calculator -->
+        <div class="tools-section">
+          <h3>📈 EXP Calculator</h3>
+          <input id="exp-search" list="exp-pokemon-list" placeholder="Search Pokémon..." style="width:100%; padding:12px; border-radius:12px; border:2px solid #ccc; background:var(--card); color:var(--text); margin-bottom:10px;">
+          <datalist id="exp-pokemon-list"></datalist>
+          <div id="exp-calculator" style="display:none;">
+            <p><strong>Pokémon:</strong> <span id="exp-pokemon-name"></span></p>
+            <p><strong>EXP Group:</strong> <span id="exp-group"></span></p>
+            <label>Current Level: <input type="range" id="current-level" min="1" max="100" value="50" style="width:100%;"><span id="level-value" style="font-weight:600;">50</span></label>
+            <div id="exp-results" style="margin:15px 0; line-height:1.6;"></div>
+            <h4>Candy Needed (XS–XL)</h4>
+            <div id="candy-breakdown" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px;"></div>
+          </div>
+        </div>
+        <!-- Highlight by Game -->
+        <div class="tools-section">
+          <h3>Highlight by Game</h3>
+          <div id="game-switches" class="game-switches-container"></div>
+          <button id="clear-game-highlight" class="reset-btn" style="margin-top:10px; font-size:0.9rem;">Clear Highlight</button>
+        </div>
       </div>
     </div>
+
   </div>
-
-  <!-- TOOLS HAMBURGER BUTTON – Top Right (always visible) -->
-  <button id="tools-btn" class="tools-btn" aria-label="Open Tools">
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-  </button>
-
-  <!-- TOOLS MENU – completely hidden until clicked -->
-  <div id="tools-menu" class="tools-menu">
-    <div id="resize-handle" class="resize-handle"></div>
-    <div class="tools-header">
-      <h2>Tools</h2>
-      <button id="close-tools" class="close-tools">&times;</button>
-    </div>
-    <div class="tools-content">
-      <!-- QUICK NOTES SECTION -->
-<div class="tools-section">
-  <h3>📝 Quick Notes</h3>
-  <textarea id="quick-notes" placeholder="Type anything here... (auto-saves instantly)"></textarea>
-  <div class="notes-footer">
-    <button id="clear-notes" class="reset-btn">Clear All Notes</button>
-    <span id="notes-saved" class="saved-indicator">Saved ✓</span>
-  </div>
-</div>
-      <!-- EXP CALCULATOR SECTION -->
-<div class="tools-section">
-  <h3>📈 EXP Calculator</h3>
-  <input id="exp-search" list="exp-pokemon-list" placeholder="Search Pokémon..." style="width:100%; padding:12px; border-radius:12px; border:2px solid #ccc; background:var(--card); color:var(--text); margin-bottom:10px;">
-  <datalist id="exp-pokemon-list"></datalist>
-
-  <div id="exp-calculator" style="display:none;">
-    <p><strong>Pokémon:</strong> <span id="exp-pokemon-name"></span></p>
-    <p><strong>EXP Group:</strong> <span id="exp-group"></span></p>
-
-    <label>Current Level: 
-      <input type="range" id="current-level" min="1" max="100" value="50" style="width:100%;">
-      <span id="level-value" style="font-weight:600;">50</span>
-    </label>
-
-    <div id="exp-results" style="margin:15px 0; line-height:1.6;"></div>
-
-    <h4>Candy Needed (XS–XL)</h4>
-    <div id="candy-breakdown" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px;"></div>
-  </div>
-</div>
-          <!-- HIGHLIGHT BY GAME SECTION (new) -->
-     <div class="tools-section">
-     <h3>Highlight by Game</h3>
-     <div id="game-switches" class="game-switches-container"></div>
-     <button id="clear-game-highlight" class="reset-btn" style="margin-top:10px; font-size:0.9rem;">Clear Highlight</button>
-   </div>
-</div>
-      <p style="margin-top:40px; font-size:0.9rem; opacity:0.6;">Your Living Dex is saved in your browser.<br>Everything is 100% local!</p>
-    </div>
-  </div>
+  <!-- End of DEX VIEW -->
 
   <!-- Modal -->
   <div id="modal" class="modal hidden">
@@ -185,26 +184,22 @@
       <span id="close-modal" class="close">&times;</span>
       <h2 id="modal-name"></h2>
       <img id="modal-sprite" alt="">
-           <div id="modal-types" class="types"></div>
+      <div id="modal-types" class="types"></div>
       <div id="modal-evo" class="evo-info"></div>
-      
-      <!-- NEW: Switch Games Section -->
       <div id="modal-games" class="games-info">
         <strong>Switch Games:</strong><br>
       </div>
     </div>
   </div>
-    <!-- SETTINGS BUTTON + OVERLAY (correctly inside body) -->
-  <button id="settings-btn" class="settings-btn">⚙️</button>
 
+  <!-- SETTINGS BUTTON + OVERLAY -->
+  <button id="settings-btn" class="settings-btn">⚙️</button>
   <div id="settings-overlay" class="settings-overlay hidden">
     <div class="settings-panel">
       <div class="settings-header">
         <h2>Settings</h2>
         <button id="close-settings" class="close-btn">✕</button>
       </div>
-
-      <!-- Account -->
       <div id="auth-section" class="settings-section">
         <h3>Account</h3>
         <div id="logged-in-view" class="hidden">
@@ -221,8 +216,6 @@
           <p id="auth-message" class="auth-message"></p>
         </div>
       </div>
-
-      <!-- Appearance -->
       <div class="settings-section">
         <h3>Appearance</h3>
         <label class="switch-label">
@@ -233,12 +226,12 @@
           </label>
         </label>
       </div>
-
       <div class="settings-footer">
         <button id="reset-all-btn" class="reset-btn">Reset All Progress (local only)</button>
       </div>
     </div>
   </div>
+
   <script src="js/app.js"></script>
 </body>
 </html>
