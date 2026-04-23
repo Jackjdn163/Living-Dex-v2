@@ -61,6 +61,7 @@
       </div>
     </div>
   </div>
+
   <!-- ===================== LOADING SCREEN ===================== -->
   <div id="loading" class="loading">
     <div class="pokeball-container">
@@ -69,10 +70,11 @@
     <p id="loading-text">Catching them all...</p>
     <button id="skip-loading" class="skip-btn">Skip Loading</button>
   </div>
+
   <!-- ===================== DEX VIEW (your full checklist) ===================== -->
   <div id="dex-view" style="display: none;">
     <div class="main-layout">
-      <!-- LEFT SIDEBAR - now minimal (only Home button) so floating boxes can be fixed properly -->
+      <!-- LEFT SIDEBAR - now minimal (only Home button) so floating boxes can be truly fixed -->
       <aside class="sidebar" style="width:0; flex:0 0 auto; padding:0; margin:0; overflow:hidden;">
         <!-- Home button - cleanly above percentage tab -->
         <button onclick="goHome()" class="back-to-home">
@@ -95,32 +97,6 @@
           <button id="reset-btn">Reset Dex</button>
           <main id="grid" class="pokemon-grid"></main>
         </div>
-      </div>
-    </div>
-
-    <!-- ===================== FLOATING BOXES - NOW DIRECT CHILDREN OF #dex-view (this fixes the scrolling forever) ===================== -->
-    <div class="floating-box gen-completion">
-      <h2>Pokédex Completion</h2>
-      <div id="total-completion" class="total-completion">
-        <div class="completion-label">
-          <span>Total Living Dex</span>
-          <span id="total-percentage">0%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div id="total-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
-        </div>
-        <div id="caught-count">0 / 1025</div>
-      </div>
-      <div id="completion-gens" class="completion-gens"></div>
-    </div>
-
-    <div class="floating-box toggles-box">
-      <div class="toggle-row">
-        <label class="switch-label">Shiny Mode</label>
-        <label class="switch">
-          <input type="checkbox" id="shiny-toggle">
-          <span class="slider"></span>
-        </label>
       </div>
     </div>
 
@@ -167,6 +143,34 @@
     </div>
   </div>
   <!-- End of DEX VIEW -->
+
+  <!-- ===================== FLOATING BOXES - MOVED OUTSIDE #dex-view (this is the fix) ===================== -->
+  <!-- They are now direct children of <body> so position:fixed works perfectly (no more transform trap from #dex-view) -->
+  <div id="gen-completion-container" class="floating-box gen-completion" style="display: none;">
+    <h2>Pokédex Completion</h2>
+    <div id="total-completion" class="total-completion">
+      <div class="completion-label">
+        <span>Total Living Dex</span>
+        <span id="total-percentage">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div id="total-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+      </div>
+      <div id="caught-count">0 / 1025</div>
+    </div>
+    <div id="completion-gens" class="completion-gens"></div>
+  </div>
+
+  <div id="toggles-container" class="floating-box toggles-box" style="display: none;">
+    <div class="toggle-row">
+      <label class="switch-label">Shiny Mode</label>
+      <label class="switch">
+        <input type="checkbox" id="shiny-toggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
   <!-- Modal -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
@@ -180,6 +184,7 @@
       </div>
     </div>
   </div>
+
   <!-- SETTINGS OVERLAY -->
   <button id="settings-btn" class="settings-btn">⚙️</button>
   <div id="settings-overlay" class="settings-overlay hidden">
@@ -219,6 +224,7 @@
       </div>
     </div>
   </div>
+
   <script src="js/app.js"></script>
 </body>
 </html>
