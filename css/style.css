@@ -507,3 +507,27 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   50% { transform: scale(1.12); }
   100% { transform: scale(1.04); }
 }
+/* Settings button — permanently in bottom right */
+.settings-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background: #ffcb05;
+  color: #1e2937;
+  border: none;
+  border-radius: 50%;
+  font-size: 28px;
+  box-shadow: 0 8px 20px rgba(255, 203, 5, 0.4);
+  z-index: 9999;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: block;
+}
+
+/* Hide Settings button when Tools menu is open */
+.tools-menu.open ~ .settings-btn,
+.tools-menu.open .settings-btn {
+  display: none !important;
+}
