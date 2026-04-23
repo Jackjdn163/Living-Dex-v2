@@ -560,7 +560,7 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 .settings-panel {
   background: var(--card);
   width: 92%;
-  max-width: 560px;
+  max-width: 650px;
   border-radius: 24px;
   padding: 32px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
@@ -637,4 +637,32 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   align-items: center;
   font-size: 1.1rem;
   font-weight: 600;
+}
+/* Consistent button style - matches Log Out & Reset */
+.reset-btn, 
+button:not(.settings-btn):not(.close-btn):not(.close-tools) {
+  background: #ef4036;
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(239, 64, 54, 0.3);
+}
+
+.reset-btn:hover,
+button:not(.settings-btn):not(.close-btn):not(.close-tools):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 64, 54, 0.4);
+}
+
+.auth-buttons button {
+  background: #22c55e;
+}
+
+.auth-buttons button:last-child {
+  background: #3b82f6;
 }
