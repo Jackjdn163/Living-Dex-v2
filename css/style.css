@@ -1,17 +1,15 @@
 :root { --bg: #f0f0f0; --text: #222; --card: #fff; }
 [data-theme="dark"] { --bg: #1a1a1a; --text: #eee; --card: #2a2a2a; }
-
-body { 
-  margin:0; 
-  padding:20px; 
-  background:var(--bg); 
-  color:var(--text); 
-  font-family:system-ui,sans-serif; 
+body {
+  margin:0;
+  padding:20px;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,sans-serif;
   overflow-x: hidden !important; /* prevents sideways scroll */
 }
 .gen-completion h2 { margin:0 0 15px 0; font-size:1.3rem; }
 .completion-gens { display:flex; flex-direction:column; gap:12px; }
-
 /* === COMPLETION BARS === */
 .completion-bar {
   display: flex;
@@ -35,7 +33,6 @@ body {
   transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
   min-width: 6px;
 }
-
 /* TOTAL LIVING DEX BAR */
 .total-completion {
   margin: 20px 0 25px 0;
@@ -88,7 +85,6 @@ body {
 .tools-btn:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
 .hamburger-line { width: 26px; height: 3px; background: var(--text); border-radius: 3px; transition: all 0.3s ease; }
 .tools-btn:hover .hamburger-line { background: #ef4036; }
-
 .tools-menu {
   position: fixed !important;
   top: 0 !important;
@@ -203,7 +199,6 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 @keyframes yellowFlash { from { background:#fff; } to { background:#ffeb3b; } }
 @keyframes limeFlash { 0%,100%{opacity:1} 50%{opacity:0.4} }
 .skip-btn { position:absolute; bottom:40px; right:40px; padding:12px 24px; background:#ef4036; color:white; border:none; border-radius:9999px; font-size:1rem; cursor:pointer; }
-
 /* ===================== NEW FIXES ===================== */
 /* 1. Tools button is now completely hidden while loading screen is active */
 .loading ~ .tools-btn,
@@ -248,20 +243,18 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.92);
-  display: none;                    /* ← removed !important */
+  display: none; /* ← removed !important */
   align-items: center;
   justify-content: center;
   z-index: 10000;
   overflow: hidden;
 }
-
 .modal-content {
   max-height: 90vh !important;
   overflow-y: auto !important;
   margin: 20px !important;
-  padding-bottom: 40px !important;        /* extra breathing room */
+  padding-bottom: 40px !important; /* extra breathing room */
 }
-
 /* Keeps the X button stuck at the top while scrolling */
 .close {
   position: sticky !important;
@@ -339,7 +332,6 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   z-index: 10;
   user-select: none;
 }
-
 .resize-handle::before {
   content: '';
   position: absolute;
@@ -353,16 +345,13 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   opacity: 0.6;
   transition: all 0.2s ease;
 }
-
 .tools-menu:hover .resize-handle::before {
   background: #fff;
   opacity: 1;
 }
-
 [data-theme="dark"] .resize-handle::before {
   background: #555;
 }
-
 /* Disable slide animation while resizing */
 .tools-menu {
   transition: width 0.1s ease !important;
@@ -370,26 +359,24 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 /* ===================== NEON GLOW FOR 100% COMPLETE BARS ===================== */
 .completion-bar.complete .progress-bar-fill,
 .progress-bar-fill.complete {
-  box-shadow: 
+  box-shadow:
     0 0 8px #39ff14,
     0 0 16px #39ff14,
     0 0 24px #22ff88,
     0 0 32px #22ff88;
   animation: neonPulse 1.8s ease-in-out infinite alternate;
 }
-
 .total-completion.complete .progress-bar-fill {
-  box-shadow: 
+  box-shadow:
     0 0 12px #39ff14,
     0 0 24px #39ff14,
     0 0 36px #22ff88,
     0 0 48px #22ff88;
   animation: neonPulse 1.8s ease-in-out infinite alternate;
 }
-
 @keyframes neonPulse {
   from { filter: brightness(1); }
-  to   { filter: brightness(1.4); }
+  to { filter: brightness(1.4); }
 }
 /* Game switches - same style as your sidebar toggles */
 .game-switches-container {
@@ -400,7 +387,6 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   overflow-y: auto;
   padding-right: 8px;
 }
-
 .game-switch-row {
   display: flex;
   align-items: center;
@@ -410,25 +396,21 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   border-radius: 12px;
   border: 2px solid var(--border);
 }
-
 .game-switch-row label {
   font-weight: 600;
   color: var(--text);
 }
-
 .game-switches-container .switch {
   position: relative;
   display: inline-block;
   width: 50px;
   height: 26px;
 }
-
 .game-switches-container .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .game-switches-container .slider {
   position: absolute;
   cursor: pointer;
@@ -440,7 +422,6 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   transition: .3s;
   border-radius: 26px;
 }
-
 .game-switches-container .slider:before {
   position: absolute;
   content: "";
@@ -452,15 +433,12 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   transition: .3s;
   border-radius: 50%;
 }
-
 .game-switches-container input:checked + .slider {
   background-color: #ffcb05; /* Pokémon yellow */
 }
-
 .game-switches-container input:checked + .slider:before {
   transform: translateX(24px);
 }
-
 /* Highlight animation for uncaught Pokémon in the selected game */
 .pokemon-card.game-highlight {
   animation: gameHighlightPop 0.6s ease;
@@ -468,7 +446,6 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   border: 3px solid #ffcb05;
   transform: scale(1.04);
 }
-
 @keyframes gameHighlightPop {
   0% { transform: scale(1); }
   50% { transform: scale(1.12); }
@@ -497,12 +474,10 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
-
 .settings-overlay:not(.hidden) {
   opacity: 1;
   pointer-events: all;
 }
-
 .settings-panel {
   background: var(--card);
   width: 92%;
@@ -522,12 +497,10 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   padding-bottom: 16px;
   border-bottom: 2px solid var(--border);
 }
-
 .settings-header h2 {
   margin: 0;
   font-size: 1.8rem;
 }
-
 .close-btn {
   background: none;
   border: none;
@@ -536,16 +509,13 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   color: var(--text);
   opacity: 0.6;
 }
-
 .close-btn:hover {
   opacity: 1;
   color: #ef4036;
 }
-
 .settings-section {
   margin-bottom: 32px;
 }
-
 .settings-input {
   width: 100%;
   padding: 16px;
@@ -556,20 +526,17 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   color: var(--text);
   font-size: 1.1rem;
 }
-
 .auth-buttons {
   display: flex;
   gap: 12px;
   margin-top: 16px;
 }
-
 .auth-buttons button {
   flex: 1;
   padding: 16px;
   font-size: 1.1rem;
   border-radius: 12px;
 }
-
 .settings-footer {
   margin-top: 20px;
   padding-top: 20px;
@@ -598,14 +565,12 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools) {
   transition: all 0.2s;
   box-shadow: 0 4px 12px rgba(239, 64, 54, 0.3);
 }
-
 .reset-btn:hover,
 .auth-buttons button:hover,
 button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(239, 64, 54, 0.4);
 }
-
 /* Log In & Create Account get their own colors */
 .auth-buttons button:first-child { background: #22c55e; }
 .auth-buttons button:last-child { background: #3b82f6; }
@@ -619,12 +584,10 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   align-items: center;
   padding: 40px 20px;
 }
-
 .home-header {
   text-align: center;
   margin-bottom: 60px;
 }
-
 .home-header h1 {
   font-size: 4rem;
   margin: 0;
@@ -633,13 +596,11 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 40px rgba(255, 203, 5, 0.5);
 }
-
 .tagline {
   font-size: 1.4rem;
   opacity: 0.9;
   margin-top: 8px;
 }
-
 .home-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -647,7 +608,6 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   max-width: 1100px;
   width: 100%;
 }
-
 .home-card {
   height: 320px;
   border-radius: 28px;
@@ -657,12 +617,10 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-
 .home-card:hover {
   transform: scale(1.06) translateY(-12px);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
 }
-
 .card-bg {
   position: absolute;
   inset: 0;
@@ -671,11 +629,9 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   opacity: 0.85;
   transition: opacity 0.3s;
 }
-
 .home-card:hover .card-bg {
   opacity: 1;
 }
-
 .card-content {
   position: relative;
   z-index: 2;
@@ -688,25 +644,21 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   padding: 40px 20px;
   color: white;
 }
-
 .icon {
   font-size: 4.5rem;
   margin-bottom: 16px;
   filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
 }
-
 .home-card h2 {
   font-size: 2.2rem;
   margin: 0 0 12px 0;
   text-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
-
 .home-card p {
   font-size: 1.1rem;
   opacity: 0.95;
   margin-bottom: 24px;
 }
-
 .enter-btn {
   background: rgba(255,255,255,0.95);
   color: #1e2937;
@@ -717,17 +669,14 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   transition: all 0.3s;
 }
-
 .home-card:hover .enter-btn {
   transform: scale(1.1);
 }
-
 /* Specific card backgrounds */
 .living-dex-card .card-bg { background: linear-gradient(135deg, #ef4036, #ffcb05); }
 .shiny-card .card-bg { background: linear-gradient(135deg, #a78bfa, #c026d3); }
 .evo-card .card-bg { background: linear-gradient(135deg, #22c55e, #10b981); }
 .random-card .card-bg { background: linear-gradient(135deg, #3b82f6, #1e40af); }
-
 .coming-soon {
   background: rgba(255,255,255,0.2) !important;
   color: white !important;
@@ -735,18 +684,15 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
 }
 /* Taller homepage boxes + animation */
 .home-card {
-  height: 380px;                    /* taller so nothing gets cut off */
+  height: 380px; /* taller so nothing gets cut off */
 }
-
 .home-view {
   animation: fadeIn 0.6s ease forwards;
 }
-
 /* Animation when opening the Dex */
 #dex-view {
   animation: dexOpenAnim 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
-
 @keyframes dexOpenAnim {
   0% {
     opacity: 0;
@@ -757,13 +703,12 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
     transform: scale(1) translateY(0);
   }
 }
-/* ===================== SIDEBAR VISUAL STYLES (add this here) ===================== */
+/* ===================== SIDEBAR VISUAL STYLES ===================== */
 .sidebar {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-
 .gen-completion,
 .toggles-box,
 .floating-box {
@@ -772,7 +717,6 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   padding: 20px;
 }
-
 /* Back-to-home button styling */
 .back-to-home {
   background: #ef4036;
@@ -786,13 +730,11 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   cursor: pointer;
   transition: all 0.3s;
 }
-
 .back-to-home:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5);
 }
-
-/* Full settings button styling (so it doesn't disappear) */
+/* Full settings button styling */
 .settings-btn {
   position: fixed;
   bottom: 30px;
@@ -812,12 +754,10 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   justify-content: center;
   transition: all 0.3s ease;
 }
-
 .settings-btn:hover {
   transform: scale(1.12) rotate(90deg);
   box-shadow: 0 12px 30px rgba(239, 64, 54, 0.7);
 }
-
 [data-theme="dark"] .settings-btn {
   background: #e11d48;
   border-color: #f1f5f9;
@@ -827,7 +767,6 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
 html, body {
   overflow-x: hidden !important;
 }
-
 /* Only show UI when in Dex mode */
 body.dex-mode .sidebar,
 body.dex-mode .tools-btn,
@@ -835,14 +774,12 @@ body.dex-mode .settings-btn,
 body.dex-mode .back-to-home {
   display: block !important;
 }
-
 body:not(.dex-mode) .sidebar,
 body:not(.dex-mode) .tools-btn,
 body:not(.dex-mode) .settings-btn,
 body:not(.dex-mode) .back-to-home {
   display: none !important;
 }
-
 /* Sidebar stays fixed and on top */
 body.dex-mode .sidebar {
   position: fixed !important;
@@ -851,7 +788,6 @@ body.dex-mode .sidebar {
   width: 340px !important;
   z-index: 300 !important;
 }
-
 /* Home button stays above percentage box */
 body.dex-mode .back-to-home {
   position: absolute !important;
@@ -859,19 +795,16 @@ body.dex-mode .back-to-home {
   left: 20px !important;
   z-index: 310 !important;
 }
-
 /* Tools & Settings buttons stay visible */
 body.dex-mode .tools-btn,
 body.dex-mode .settings-btn {
   position: fixed !important;
   z-index: 9999 !important;
 }
-
 /* Modal always on top of everything */
 .modal {
   z-index: 100000 !important;
 }
-
 /* Make sure main grid has space for sidebar */
 .main-layout {
   padding-left: 380px !important;
@@ -887,7 +820,6 @@ body.dex-mode .sidebar {
   width: 340px !important;
   z-index: 300 !important;
 }
-
 .gen-completion,
 .toggles-box,
 .floating-box {
@@ -896,7 +828,6 @@ body.dex-mode .sidebar {
   box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
   padding: 20px !important;
 }
-
 .back-to-home {
   background: #ef4036 !important;
   color: white !important;
@@ -910,12 +841,10 @@ body.dex-mode .sidebar {
   transition: all 0.3s !important;
   z-index: 310 !important;
 }
-
 .back-to-home:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5) !important;
 }
-
 .tools-btn {
   position: fixed !important;
   top: 20px !important;
@@ -934,12 +863,10 @@ body.dex-mode .sidebar {
   cursor: pointer !important;
   box-shadow: 0 4px 15px rgba(0,0,0,0.12) !important;
 }
-
 .tools-btn:hover {
   transform: scale(1.08) !important;
   box-shadow: 0 6px 20px rgba(0,0,0,0.18) !important;
 }
-
 .settings-btn {
   position: fixed !important;
   bottom: 30px !important;
