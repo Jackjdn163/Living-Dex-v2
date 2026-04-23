@@ -707,12 +707,25 @@ function setupEventListeners() {
   renderGameSwitches();
   document.getElementById("clear-game-highlight").addEventListener("click", clearGameHighlight);
 
-  /* Tools Menu Toggle */
+  /* ===================== TOOLS MENU TOGGLE + HIDE SETTINGS BUTTON ===================== */
   const toolsBtn = document.getElementById("tools-btn");
   const toolsMenu = document.getElementById("tools-menu");
   const closeTools = document.getElementById("close-tools");
-  toolsBtn.addEventListener("click", () => toolsMenu.classList.toggle("open"));
-  closeTools.addEventListener("click", () => toolsMenu.classList.remove("open"));
+  const settingsBtn = document.getElementById("settings-btn");
+
+  toolsBtn.addEventListener("click", () => {
+    toolsMenu.classList.toggle("open");
+    if (toolsMenu.classList.contains("open")) {
+      settingsBtn.style.display = "none";
+    } else {
+      settingsBtn.style.display = "block";
+    }
+  });
+
+  closeTools.addEventListener("click", () => {
+    toolsMenu.classList.remove("open");
+    settingsBtn.style.display = "block";
+  });
 
   // SETTINGS OVERLAY (already in your file - kept for safety)
   const settingsBtn = document.getElementById("settings-btn");
