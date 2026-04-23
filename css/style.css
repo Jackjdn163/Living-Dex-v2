@@ -918,3 +918,51 @@ html, body {
 .toggles-box {
   margin-top: 20px;
 }
+/* ===================== RELIABLE VIEW-BASED LAYOUT ===================== */
+body.dex-mode .sidebar,
+body.dex-mode .tools-btn,
+body.dex-mode .settings-btn,
+body.dex-mode .back-to-home {
+  display: block !important;
+}
+
+body:not(.dex-mode) .sidebar,
+body:not(.dex-mode) .tools-btn,
+body:not(.dex-mode) .settings-btn,
+body:not(.dex-mode) .back-to-home {
+  display: none !important;
+}
+
+/* Sidebar positioning - only in Dex mode */
+body.dex-mode .sidebar {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 340px;
+  z-index: 100;
+}
+
+/* Home button - perfectly above the percentage tab */
+.back-to-home {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 110;
+  background: #ef4036;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4);
+  cursor: pointer;
+}
+
+.back-to-home:hover {
+  transform: translateY(-2px);
+}
+
+/* Make sure toggles-box stays inside sidebar */
+.toggles-box {
+  margin-top: 20px;
+}
