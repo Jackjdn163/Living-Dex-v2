@@ -8,26 +8,47 @@ body {
   font-family:system-ui,sans-serif;
   overflow-x: hidden !important; /* prevents sideways scroll */
 }
+/* ============== FLOATING BOXES – FIXED (this fixes the scrolling + home screen issue) ============== */
 .gen-completion {
-  position: sticky;
-  top: 20px;
-  left: 20px;
+  position: fixed !important;
+  top: 30px;
+  left: 30px;
   width: 340px;
-  z-index: 100;
+  z-index: 5000 !important;
 }
+
 .toggles-box {
-  position: sticky;
-  bottom: 20px;
-  left: 20px;
-  width: 200px;
-  z-index: 100;
+  position: fixed !important;
+  bottom: 30px;
+  left: 30px;
+  width: 220px;
+  z-index: 5000 !important;
 }
+
 .floating-box {
   background:var(--card);
   border-radius:16px;
   box-shadow:0 4px 15px rgba(0,0,0,0.1);
   padding:20px;
 }
+
+/* Also fix the Tools button & menu so they stay floating too */
+.tools-btn {
+  position: fixed !important;
+  top: 30px;
+  right: 30px;
+  z-index: 6000 !important;
+}
+
+.tools-menu {
+  position: fixed !important;
+  top: 0 !important;
+  right: -600px !important;
+  width: 360px;
+  height: 100vh;
+  z-index: 10000 !important;
+}
+.tools-menu.open { right: 0 !important; }
 .gen-completion h2 { margin:0 0 15px 0; font-size:1.3rem; }
 .completion-gens { display:flex; flex-direction:column; gap:12px; }
 /* === COMPLETION BARS === */
