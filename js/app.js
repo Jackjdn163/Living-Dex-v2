@@ -774,6 +774,20 @@ function setupEventListeners() {
     }
   });
 }
+// ===================== HOME ↔ DEX SWITCH =====================
+function openDex() {
+  document.getElementById("home-view").style.display = "none";
+  document.getElementById("dex-view").style.display = "block";
+  // Make sure the dex renders fresh
+  renderGrid();
+  renderCompletionBars();
+  updateTotalProgress();
+}
+
+function goHome() {
+  document.getElementById("dex-view").style.display = "none";
+  document.getElementById("home-view").style.display = "flex";
+}
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   preloadAllAssets();
