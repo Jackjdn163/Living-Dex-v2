@@ -790,15 +790,22 @@ document.getElementById('tools-btn').style.display = 'flex';
 }
 
 function goHome() {
-  document.getElementById("dex-view").style.display = "none";
-  document.getElementById("home-view").style.display = "flex";
-  document.getElementById('gen-completion-container').style.display = 'none';
-document.getElementById('toggles-container').style.display = 'none';
-  document.getElementById('gen-completion-container').style.display = 'none';
-document.getElementById('toggles-container').style.display = 'none';
-document.getElementById('back-to-home-fixed').style.display = 'none';
-document.getElementById('tools-btn').style.display = 'none';
-  document.body.classList.remove("dex-mode");  // ← This is the key line
+  // Hide ALL views
+  document.getElementById('dex-view').style.display = 'none';
+  document.getElementById('organizer-view').style.display = 'none';
+  
+  // Show home
+  document.getElementById('home-view').style.display = 'block';
+  
+  // Hide all floating elements
+  const floating = ['gen-completion-container', 'toggles-container', 'back-to-home-fixed', 'tools-btn'];
+  floating.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  // Force scroll to top so nothing is visible below
+  window.scrollTo(0, 0);
 }
 // ===================== NEW: OPEN POKÉMON HOME ORGANIZER =====================
 function openHomeOrganizer() {
@@ -806,20 +813,19 @@ function openHomeOrganizer() {
   document.getElementById('home-view').style.display = 'none';
   document.getElementById('dex-view').style.display = 'none';
   
-  // Show the new organizer
-  document.getElementById('organizer-view').style.display = 'block';
+  // Show organizer
+  const organizer = document.getElementById('organizer-view');
+  organizer.style.display = 'block';
   
-  // Hide all floating elements while in organizer
-  const floatingElements = [
-    'gen-completion-container',
-    'toggles-container',
-    'back-to-home-fixed',
-    'tools-btn'
-  ];
-  floatingElements.forEach(id => {
+  // Hide all dex floating elements
+  const floating = ['gen-completion-container', 'toggles-container', 'back-to-home-fixed', 'tools-btn'];
+  floating.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+
+  // Reset scroll to top
+  window.scrollTo(0, 0);
 }
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
