@@ -843,3 +843,45 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
   transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5);
 }
+/* Back to Home Button - sits just above the percentage tab */
+.back-to-home {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: #ef4036;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4);
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-to-home:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5);
+}
+
+/* Hide ALL floating UI elements when on Home screen */
+#home-view ~ .sidebar,
+#home-view ~ .tools-btn,
+#home-view ~ .settings-btn,
+#home-view ~ .back-to-home {
+  display: none !important;
+}
+
+/* Make sure sidebar stays fixed only on Dex view */
+.sidebar {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 340px;
+  z-index: 100;
+}
