@@ -507,27 +507,134 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   50% { transform: scale(1.12); }
   100% { transform: scale(1.04); }
 }
-/* Settings button — permanently in bottom right */
+/* SETTINGS BUTTON - matches the rest of your Pokémon theme */
 .settings-btn {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 60px;
-  height: 60px;
-  background: #ffcb05;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #ffcb05, #f5a623);
   color: #1e2937;
-  border: none;
+  border: 4px solid #1e2937;
   border-radius: 50%;
-  font-size: 28px;
-  box-shadow: 0 8px 20px rgba(255, 203, 5, 0.4);
+  font-size: 32px;
+  box-shadow: 0 8px 25px rgba(255, 203, 5, 0.5);
   z-index: 9999;
   cursor: pointer;
-  transition: all 0.3s;
-  display: block;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Hide Settings button when Tools menu is open */
+.settings-btn:hover {
+  transform: scale(1.12) rotate(90deg);
+  box-shadow: 0 12px 30px rgba(255, 203, 5, 0.7);
+}
+
+/* Hide when Tools menu is open */
 .tools-menu.open ~ .settings-btn,
 .tools-menu.open .settings-btn {
   display: none !important;
+}
+/* BIG CENTERED MODAL - Settings */
+.settings-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.settings-overlay:not(.hidden) {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.settings-panel {
+  background: var(--card);
+  width: 92%;
+  max-width: 560px;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  color: var(--text);
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+.settings-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.close-btn:hover {
+  opacity: 1;
+  color: #ef4036;
+}
+
+.settings-section {
+  margin-bottom: 32px;
+}
+
+.settings-input {
+  width: 100%;
+  padding: 16px;
+  margin: 10px 0;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.auth-buttons button {
+  flex: 1;
+  padding: 16px;
+  font-size: 1.1rem;
+  border-radius: 12px;
+}
+
+.settings-footer {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid var(--border);
+}
+.switch-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
