@@ -876,3 +876,73 @@ body.dex-mode .settings-btn {
 .main-layout {
   padding-left: 380px !important;
 }
+/* ===================== MAKE EVERYTHING WORK LIKE THE SETTINGS BUTTON ===================== */
+body.dex-mode .sidebar {
+  display: flex !important;
+  flex-direction: column;
+  gap: 20px;
+  position: fixed !important;
+  top: 20px !important;
+  left: 20px !important;
+  width: 340px !important;
+  z-index: 300 !important;
+}
+
+.gen-completion,
+.toggles-box,
+.floating-box {
+  background: var(--card) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+  padding: 20px !important;
+}
+
+.back-to-home {
+  background: #ef4036 !important;
+  color: white !important;
+  border: none !important;
+  padding: 10px 22px !important;
+  border-radius: 50px !important;
+  font-weight: 600 !important;
+  font-size: 1.05rem !important;
+  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4) !important;
+  cursor: pointer !important;
+  transition: all 0.3s !important;
+  z-index: 310 !important;
+}
+
+.back-to-home:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 25px rgba(239, 64, 54, 0.5) !important;
+}
+
+.tools-btn {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  z-index: 9999 !important;
+  background: var(--card) !important;
+  border: none !important;
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 5px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12) !important;
+}
+
+.tools-btn:hover {
+  transform: scale(1.08) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18) !important;
+}
+
+.settings-btn {
+  position: fixed !important;
+  bottom: 30px !important;
+  right: 30px !important;
+  z-index: 9999 !important;
+}
