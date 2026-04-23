@@ -85,37 +85,41 @@
     ← Home
   </button>
     <div class="main-layout">
-      <!-- Left Sidebar -->
-      <aside class="sidebar">
-        <button onclick="goHome()" class="back-to-home">
-          ← Home
-        </button>
-        
-        <div class="floating-box gen-completion">
-          <h2>Pokédex Completion</h2>
-          <div id="total-completion" class="total-completion">
-            <div class="completion-label">
-              <span>Total Living Dex</span>
-              <span id="total-percentage">0%</span>
-            </div>
-            <div class="progress-bar-bg">
-              <div id="total-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
-            </div>
-            <div id="caught-count">0 / 1025</div>
-          </div>
-          <div id="completion-gens" class="completion-gens"></div>
-        </div>
+      
+<!-- LEFT SIDEBAR - only shows in Dex view -->
+<aside class="sidebar">
+  <!-- Home button - cleanly placed just above the percentage tab -->
+  <button onclick="goHome()" class="back-to-home">
+    ← Home
+  </button>
 
-        <div class="floating-box toggles-box">
-          <div class="toggle-row">
-            <label class="switch-label">Shiny Mode</label>
-            <label class="switch">
-              <input type="checkbox" id="shiny-toggle">
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-      </aside>
+  <div class="floating-box gen-completion">
+    <h2>Pokédex Completion</h2>
+    
+    <!-- TOTAL POKEDEX PROGRESS BAR -->
+    <div id="total-completion" class="total-completion">
+      <div class="completion-label">
+        <span>Total Living Dex</span>
+        <span id="total-percentage">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div id="total-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+      </div>
+      <div id="caught-count">0 / 1025</div>
+    </div>
+    <div id="completion-gens" class="completion-gens"></div>
+  </div>
+
+  <div class="floating-box toggles-box">
+    <div class="toggle-row">
+      <label class="switch-label">Shiny Mode</label>
+      <label class="switch">
+        <input type="checkbox" id="shiny-toggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+</aside>
 
       <!-- Main Content -->
       <div class="content-area">
