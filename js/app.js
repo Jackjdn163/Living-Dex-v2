@@ -800,6 +800,27 @@ document.getElementById('back-to-home-fixed').style.display = 'none';
 document.getElementById('tools-btn').style.display = 'none';
   document.body.classList.remove("dex-mode");  // ← This is the key line
 }
+// ===================== NEW: OPEN POKÉMON HOME ORGANIZER =====================
+function openHomeOrganizer() {
+  // Hide everything else
+  document.getElementById('home-view').style.display = 'none';
+  document.getElementById('dex-view').style.display = 'none';
+  
+  // Show the new organizer
+  document.getElementById('organizer-view').style.display = 'block';
+  
+  // Hide all floating elements while in organizer
+  const floatingElements = [
+    'gen-completion-container',
+    'toggles-container',
+    'back-to-home-fixed',
+    'tools-btn'
+  ];
+  floatingElements.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   preloadAllAssets();
