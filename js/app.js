@@ -776,17 +776,24 @@ function setupEventListeners() {
 }
 // ===================== HOME ↔ DEX SWITCH =====================
 function openDex() {
-  document.getElementById("home-view").style.display = "none";
-  document.getElementById("dex-view").style.display = "block";
-  // Make sure the dex renders fresh
+  const home = document.getElementById("home-view");
+  const dex = document.getElementById("dex-view");
+  
+  home.style.display = "none";
+  dex.style.display = "block";
+  
+  // Trigger animation + refresh dex
   renderGrid();
   renderCompletionBars();
   updateTotalProgress();
 }
 
 function goHome() {
-  document.getElementById("dex-view").style.display = "none";
-  document.getElementById("home-view").style.display = "flex";
+  const home = document.getElementById("home-view");
+  const dex = document.getElementById("dex-view");
+  
+  dex.style.display = "none";
+  home.style.display = "flex";
 }
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
