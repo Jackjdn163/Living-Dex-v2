@@ -11,6 +11,59 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- ===================== HOME SCREEN (Neal.fun style) ===================== -->
+  <div id="home-view" class="home-view">
+    <header class="home-header">
+      <h1>Living Dex</h1>
+      <p class="tagline">Catch 'em all. Track 'em all. Flex on 'em all.</p>
+    </header>
+
+    <div class="home-grid">
+      <!-- Box 1: Full Living Dex -->
+      <div onclick="openDex()" class="home-card living-dex-card">
+        <div class="card-bg"></div>
+        <div class="card-content">
+          <div class="icon">📱</div>
+          <h2>Living Dex</h2>
+          <p>1025 Pokémon • Check 'em off • Track everything</p>
+          <div class="enter-btn">ENTER DEX →</div>
+        </div>
+      </div>
+
+      <!-- Box 2: Shiny Hunter -->
+      <div class="home-card shiny-card">
+        <div class="card-bg"></div>
+        <div class="card-content">
+          <div class="icon">✨</div>
+          <h2>Shiny Hunter</h2>
+          <p>Track your shiny collection • Odds calculator coming soon</p>
+          <div class="enter-btn coming-soon">COMING SOON</div>
+        </div>
+      </div>
+
+      <!-- Box 3: Evolution Lab -->
+      <div class="home-card evo-card">
+        <div class="card-bg"></div>
+        <div class="card-content">
+          <div class="icon">🧬</div>
+          <h2>Evolution Lab</h2>
+          <p>Simulate evolutions • See chains • Level up your team</p>
+          <div class="enter-btn coming-soon">COMING SOON</div>
+        </div>
+      </div>
+
+      <!-- Box 4: Random Adventure -->
+      <div class="home-card random-card">
+        <div class="card-bg"></div>
+        <div class="card-content">
+          <div class="icon">🎲</div>
+          <h2>Random Adventure</h2>
+          <p>Random Pokémon challenges • Daily quests • Fun modes</p>
+          <div class="enter-btn coming-soon">COMING SOON</div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Loading Screen -->
   <div id="loading" class="loading">
     <div class="pokeball-container">
