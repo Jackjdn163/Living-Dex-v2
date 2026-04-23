@@ -774,27 +774,46 @@ function setupEventListeners() {
     }
   });
 }
+// ===================== OPEN LIVING DEX =====================
 function openDex() {
-  document.getElementById("home-view").style.display = "none";
-  document.getElementById("dex-view").style.display = "block";
+  document.getElementById('home-view').style.display = 'none';
+  document.getElementById('organizer-view').style.display = 'none';
+  
+  const dex = document.getElementById('dex-view');
+  dex.style.display = 'block';
+  
+  // Show dex floating elements
   document.getElementById('gen-completion-container').style.display = 'block';
-document.getElementById('toggles-container').style.display = 'block';
-  document.getElementById('gen-completion-container').style.display = 'block';
-document.getElementById('toggles-container').style.display = 'block';
-document.getElementById('back-to-home-fixed').style.display = 'flex';
-document.getElementById('tools-btn').style.display = 'flex';
-  document.body.classList.add("dex-mode");     // ← This is the key line
-  renderGrid();
-  renderCompletionBars();
-  updateTotalProgress();
+  document.getElementById('toggles-container').style.display = 'block';
+  document.getElementById('back-to-home-fixed').style.display = 'flex';
+  document.getElementById('tools-btn').style.display = 'flex';
+  
+  window.scrollTo(0, 0);
 }
 
+// ===================== OPEN POKÉMON HOME ORGANIZER =====================
+function openHomeOrganizer() {
+  document.getElementById('home-view').style.display = 'none';
+  document.getElementById('dex-view').style.display = 'none';
+  
+  const organizer = document.getElementById('organizer-view');
+  organizer.style.display = 'block';
+  
+  // Hide dex floating elements
+  const floating = ['gen-completion-container', 'toggles-container', 'back-to-home-fixed', 'tools-btn'];
+  floating.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  
+  window.scrollTo(0, 0);
+}
+
+// ===================== GO HOME (now forces everything to hide properly) =====================
 function goHome() {
-  // Hide ALL views
   document.getElementById('dex-view').style.display = 'none';
   document.getElementById('organizer-view').style.display = 'none';
   
-  // Show home
   document.getElementById('home-view').style.display = 'block';
   
   // Hide all floating elements
@@ -803,28 +822,7 @@ function goHome() {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
-
-  // Force scroll to top so nothing is visible below
-  window.scrollTo(0, 0);
-}
-// ===================== NEW: OPEN POKÉMON HOME ORGANIZER =====================
-function openHomeOrganizer() {
-  // Hide everything else
-  document.getElementById('home-view').style.display = 'none';
-  document.getElementById('dex-view').style.display = 'none';
   
-  // Show organizer
-  const organizer = document.getElementById('organizer-view');
-  organizer.style.display = 'block';
-  
-  // Hide all dex floating elements
-  const floating = ['gen-completion-container', 'toggles-container', 'back-to-home-fixed', 'tools-btn'];
-  floating.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-
-  // Reset scroll to top
   window.scrollTo(0, 0);
 }
 document.addEventListener("DOMContentLoaded", () => {
