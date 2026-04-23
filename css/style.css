@@ -669,3 +669,127 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
 /* Log In & Create Account get their own colors */
 .auth-buttons button:first-child { background: #22c55e; }
 .auth-buttons button:last-child { background: #3b82f6; }
+/* ===================== NEAL.FUN STYLE HOME SCREEN ===================== */
+.home-view {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e2937, #334155);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.home-header h1 {
+  font-size: 4rem;
+  margin: 0;
+  background: linear-gradient(90deg, #ffcb05, #ef4036);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 40px rgba(255, 203, 5, 0.5);
+}
+
+.tagline {
+  font-size: 1.4rem;
+  opacity: 0.9;
+  margin-top: 8px;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.home-card {
+  height: 320px;
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.home-card:hover {
+  transform: scale(1.06) translateY(-12px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+
+.home-card:hover .card-bg {
+  opacity: 1;
+}
+
+.card-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+  color: white;
+}
+
+.icon {
+  font-size: 4.5rem;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+.home-card h2 {
+  font-size: 2.2rem;
+  margin: 0 0 12px 0;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.home-card p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  margin-bottom: 24px;
+}
+
+.enter-btn {
+  background: rgba(255,255,255,0.95);
+  color: #1e2937;
+  padding: 14px 32px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  transition: all 0.3s;
+}
+
+.home-card:hover .enter-btn {
+  transform: scale(1.1);
+}
+
+/* Specific card backgrounds */
+.living-dex-card .card-bg { background: linear-gradient(135deg, #ef4036, #ffcb05); }
+.shiny-card .card-bg { background: linear-gradient(135deg, #a78bfa, #c026d3); }
+.evo-card .card-bg { background: linear-gradient(135deg, #22c55e, #10b981); }
+.random-card .card-bg { background: linear-gradient(135deg, #3b82f6, #1e40af); }
+
+.coming-soon {
+  background: rgba(255,255,255,0.2) !important;
+  color: white !important;
+  border: 3px solid rgba(255,255,255,0.6);
+}
