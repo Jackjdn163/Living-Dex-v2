@@ -1,6 +1,10 @@
 let allPokemon = [];
 let caught = new Set(JSON.parse(localStorage.getItem("caught")) || []);
 let shinyMode = false;
+let currentUser = null;
+let db = null;
+let auth = null;
+
 const savedTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", savedTheme);
 
@@ -67,6 +71,64 @@ async function getGamesForPokemon(id) {
   return gamesSet;
 }
 
+// ===================== FIREBASE (YOUR REAL CONFIG) =====================
+const firebaseConfig = {
+  apiKey: "AIzaSyBmWidiv1M6OPTCuYoSbt8dtQvp0YZTNf4",
+  authDomain: "living-dex-v2.firebaseapp.com",
+  projectId: "living-dex-v2",
+  storageBucket: "living-dex-v2.firebasestorage.app",
+  messagingSenderId: "734882304238",
+  appId: "1:734882304238:web:ac7da357e16fcc85fa63ff",
+  measurementId: "G-L3D7DZXME1"
+};
+
+function initFirebase() {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  auth = firebase.auth();
+  db = firebase.firestore();
+
+  auth.onAuthStateChanged(async (user) => {
+    currentUser = user;
+    if (user) {
+      document.getElementById("logged-in-view").classList.remove("hidden");
+      document.getElementById("login-view").classList.add("hidden");
+      document.getElementById("display-email").textContent = user.email;
+      await loadUserDataFromCloud();
+    } else {
+      document.getElementById("logged-in-view").classList.add("hidden");
+      document.getElementById("login-view").classList.remove("hidden");
+    }
+  });
+}
+
+async function loadUserDataFromCloud() {
+  if (!currentUser) return;
+  const docRef = db.collection("users").doc(currentUser.uid);
+  const doc = await docRef.get();
+  if (doc.exists) {
+    const data = doc.data();
+    caught = new Set(data.caught || []);
+    localStorage.setItem("quickNotes", data.notes || "");
+    renderGrid();
+    renderCompletionBars();
+    updateTotalProgress();
+  } else {
+    await saveUserDataToCloud();
+  }
+}
+
+async function saveUserDataToCloud() {
+  if (!currentUser) return;
+  const docRef = db.collection("users").doc(currentUser.uid);
+  await docRef.set({
+    caught: [...caught],
+    notes: localStorage.getItem("quickNotes") || "",
+    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+}
+
 async function preloadAllAssets() {
   const loading = document.getElementById("loading");
   const pokeball = document.getElementById("pokeball");
@@ -81,7 +143,6 @@ async function preloadAllAssets() {
     shiny: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${i+1}.png`
   }));
 
-  // Preload game data while loading screen runs
   console.log("Preloading game availability for all 1025 Pokémon...");
   await Promise.all(allPokemon.map(p => getGamesForPokemon(p.id)));
   console.log("Game data ready!");
@@ -131,6 +192,7 @@ async function initApp() {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         localStorage.setItem("quickNotes", notesTextarea.value);
+        if (currentUser) saveUserDataToCloud();
         savedIndicator.classList.add("show");
         setTimeout(() => savedIndicator.classList.remove("show"), 1200);
       }, 500);
@@ -139,6 +201,7 @@ async function initApp() {
       if (confirm("Clear all quick notes?")) {
         notesTextarea.value = "";
         localStorage.removeItem("quickNotes");
+        if (currentUser) saveUserDataToCloud();
         savedIndicator.classList.add("show");
         setTimeout(() => savedIndicator.classList.remove("show"), 1200);
       }
@@ -357,7 +420,6 @@ function renderGrid(filterTerm = "") {
     const card = document.createElement("div");
     card.className = `pokemon-card ${isCaught ? "caught" : ""}`;
 
-    // Game highlight using pre-cached data
     if (currentHighlightedGame && !isCaught) {
       const gamesSet = gameAvailabilityCache.get(p.id);
       if (gamesSet && gamesSet.has(currentHighlightedGame)) {
@@ -436,7 +498,7 @@ async function showDetail(p) {
     evoDiv.innerHTML = "No evolution data";
   }
 
-  // Switch Games (using global constants)
+  // Switch Games
   const gamesSet = new Set();
   data.moves.forEach(move => {
     move.version_group_details.forEach(detail => {
@@ -487,7 +549,6 @@ async function showDetail(p) {
   modal.style.display = "flex";
   modal.classList.remove("hidden");
 }
-
 async function buildFullEvoHTML(chain, currentId) {
   let html = `<strong>Evolution Chain:</strong><br>`;
   let preNode = chain;
@@ -543,8 +604,8 @@ function toggleCaught(id) {
   const genCaught = [...caught].filter(i => i >= genRanges[gen-1].start && i <= genRanges[gen-1].end).length;
   const genTotal = genRanges[gen-1].end - genRanges[gen-1].start + 1;
   if (genCaught === genTotal) alert(`You completed Generation ${gen}!`);
+  if (currentUser) saveUserDataToCloud();
 }
-
 function updateTotalProgress() {
   const total = 1025;
   const count = caught.size;
@@ -610,7 +671,7 @@ function setupEventListeners() {
     showDetail(uncaught[Math.floor(Math.random() * uncaught.length)]);
   });
 
-  const darkToggle = document.getElementById("dark-toggle");
+  const darkToggle = document.getElementById("dark-toggle-settings"); // now in settings
   darkToggle.checked = document.documentElement.getAttribute("data-theme") === "dark";
   darkToggle.addEventListener("change", () => {
     const newTheme = darkToggle.checked ? "dark" : "light";
@@ -652,6 +713,59 @@ function setupEventListeners() {
   const closeTools = document.getElementById("close-tools");
   toolsBtn.addEventListener("click", () => toolsMenu.classList.toggle("open"));
   closeTools.addEventListener("click", () => toolsMenu.classList.remove("open"));
-}
 
-document.addEventListener("DOMContentLoaded", () => { preloadAllAssets(); });
+  // SETTINGS OVERLAY (already in your file - kept for safety)
+  const settingsBtn = document.getElementById("settings-btn");
+  const overlay = document.getElementById("settings-overlay");
+  const closeBtn = document.getElementById("close-settings");
+  settingsBtn.addEventListener("click", () => overlay.classList.remove("hidden"));
+  closeBtn.addEventListener("click", () => overlay.classList.add("hidden"));
+
+  // Auth buttons (already in your file)
+  document.getElementById("login-btn").addEventListener("click", async () => {
+    const email = document.getElementById("email-input").value.trim();
+    const pass = document.getElementById("password-input").value;
+    try {
+      await auth.signInWithEmailAndPassword(email, pass);
+      document.getElementById("auth-message").style.color = "#22c55e";
+      document.getElementById("auth-message").textContent = "Logged in successfully!";
+    } catch (e) {
+      document.getElementById("auth-message").style.color = "#ef4444";
+      document.getElementById("auth-message").textContent = e.message;
+    }
+  });
+
+  document.getElementById("register-btn").addEventListener("click", async () => {
+    const email = document.getElementById("email-input").value.trim();
+    const pass = document.getElementById("password-input").value;
+    try {
+      await auth.createUserWithEmailAndPassword(email, pass);
+      document.getElementById("auth-message").style.color = "#22c55e";
+      document.getElementById("auth-message").textContent = "Account created! You are now logged in.";
+    } catch (e) {
+      document.getElementById("auth-message").style.color = "#ef4444";
+      document.getElementById("auth-message").textContent = e.message;
+    }
+  });
+
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    auth.signOut();
+    document.getElementById("settings-overlay").classList.add("hidden");
+  });
+
+  // Reset all (local only)
+  document.getElementById("reset-all-btn").addEventListener("click", () => {
+    if (confirm("Reset ALL progress locally? (Cloud data stays safe)")) {
+      caught.clear();
+      localStorage.removeItem("caught");
+      localStorage.removeItem("quickNotes");
+      renderGrid(document.getElementById("search-bar").value);
+      renderCompletionBars();
+      updateTotalProgress();
+    }
+  });
+}
+document.addEventListener("DOMContentLoaded", () => {
+  initFirebase();
+  preloadAllAssets();
+});("DOMContentLoaded", () => { preloadAllAssets(); });
