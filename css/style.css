@@ -287,7 +287,6 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   z-index: 10000;
   overflow: hidden;
 }
-}
 
 .modal-content {
   max-height: 90vh !important;
