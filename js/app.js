@@ -777,6 +777,8 @@ function setupEventListeners() {
 function openDex() {
   document.getElementById("home-view").style.display = "none";
   document.getElementById("dex-view").style.display = "block";
+  document.getElementById('gen-completion-container').style.display = 'block';
+document.getElementById('toggles-container').style.display = 'block';
   document.body.classList.add("dex-mode");     // ← This is the key line
   renderGrid();
   renderCompletionBars();
@@ -786,6 +788,8 @@ function openDex() {
 function goHome() {
   document.getElementById("dex-view").style.display = "none";
   document.getElementById("home-view").style.display = "flex";
+  document.getElementById('gen-completion-container').style.display = 'none';
+document.getElementById('toggles-container').style.display = 'none';
   document.body.classList.remove("dex-mode");  // ← This is the key line
 }
 document.addEventListener("DOMContentLoaded", () => {
