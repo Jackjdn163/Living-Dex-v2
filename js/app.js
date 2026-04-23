@@ -768,4 +768,4 @@ function setupEventListeners() {
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   preloadAllAssets();
-});("DOMContentLoaded", () => { preloadAllAssets(); });
+});
