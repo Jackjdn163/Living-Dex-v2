@@ -864,3 +864,57 @@ button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover
 .toggles-box {
   margin-top: 20px;
 }
+/* ===================== FINAL LAYOUT FIXES (add this at the bottom) ===================== */
+html, body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+/* Hide ALL floating UI on Home screen */
+#home-view ~ .sidebar,
+#home-view ~ .tools-btn,
+#home-view ~ .settings-btn,
+#home-view ~ .back-to-home {
+  display: none !important;
+}
+
+/* Dex view only - sidebar, shiny toggle, tools, settings */
+#dex-view .sidebar {
+  position: fixed !important;
+  top: 20px !important;
+  left: 20px !important;
+  width: 340px !important;
+  z-index: 100 !important;
+  display: block !important;
+}
+
+#dex-view .tools-btn,
+#dex-view .settings-btn {
+  display: block !important;
+}
+
+/* Home button - sits cleanly just above the percentage tab */
+.back-to-home {
+  position: absolute !important;
+  top: 20px !important;
+  left: 20px !important;
+  z-index: 110 !important;
+  background: #ef4036;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: 0 6px 20px rgba(239, 64, 54, 0.4);
+  cursor: pointer;
+}
+
+.back-to-home:hover {
+  transform: translateY(-2px);
+}
+
+/* Make sure toggles-box stays inside the sidebar */
+.toggles-box {
+  margin-top: 20px;
+}
