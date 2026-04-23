@@ -11,8 +11,11 @@ const typeColors = {
   rock: "#B8A038", ghost: "#705898", dragon: "#7038F8", dark: "#705848",
   steel: "#B8B8D0", fairy: "#EE99AC"
 };
-
+// Game highlight system
+let currentHighlightedGame = null;
+let gameAvailabilityCache = new Map(); // pokemonId → Set of game keys
 const genRanges = [
+  
   {gen:1, start:1, end:151}, {gen:2, start:152, end:251}, {gen:3, start:252, end:386},
   {gen:4, start:387, end:493}, {gen:5, start:494, end:649}, {gen:6, start:650, end:721},
   {gen:7, start:722, end:809}, {gen:8, start:810, end:905}, {gen:9, start:906, end:1025}
@@ -24,7 +27,10 @@ async function preloadAllAssets() {
   const loading = document.getElementById("loading");
   const pokeball = document.getElementById("pokeball");
   const skipBtn = document.getElementById("skip-loading");
-
+// Preload game data in background while the pokeball spins
+console.log("Preloading game availability for all 1025 Pokémon...");
+await Promise.all(allPokemon.map(p => getGamesForPokemon(p.id)));
+console.log("Game data ready!");
   skipBtn.addEventListener("click", () => {
     pokeball.classList.remove("shaking");
     pokeball.classList.add("success");
@@ -322,6 +328,13 @@ function renderGrid(filterTerm = "") {
     const isCaught = caught.has(p.id);
     const card = document.createElement("div");
     card.className = `pokemon-card ${isCaught ? "caught" : ""}`;
+    // NEW: Game highlight
+if (currentHighlightedGame && !caught.has(p.id)) {
+  const gamesSet = await getGamesForPokemon(p.id); // cached after first use
+  if (gamesSet.has(currentHighlightedGame)) {
+    card.classList.add("game-highlight");
+  }
+}
     card.innerHTML = `
       <button class="menu-btn">⋮</button>
       <img src="${getSprite(p)}" alt="${p.name}">
@@ -456,7 +469,70 @@ async function showDetail(p) {
       gamesDiv.appendChild(badge);
     }
   });
+// Reusable function to compute which games a Pokémon is in (exact same logic as modal)
+async function getGamesForPokemon(id) {
+  if (gameAvailabilityCache.has(id)) return gameAvailabilityCache.get(id);
 
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+  const data = await res.json();
+
+  const gamesSet = new Set();
+  data.moves.forEach(move => {
+    move.version_group_details.forEach(detail => {
+      const vgName = detail.version_group.name;
+      if (switchGameMap[vgName]) gamesSet.add(vgName);
+    });
+  });
+
+  // DLC overrides (same as your modal)
+  if (isleOfArmorDLC.has(id)) { gamesSet.add("isle-of-armor"); gamesSet.delete("sword-shield"); }
+  if (crownTundraDLC.has(id)) { gamesSet.add("crown-tundra"); gamesSet.delete("sword-shield"); }
+  if (tealMaskDLC.has(id)) { gamesSet.add("teal-mask"); gamesSet.delete("scarlet-violet"); }
+  if (indigoDiskDLC.has(id)) { gamesSet.add("indigo-disk"); gamesSet.delete("scarlet-violet"); }
+
+  gameAvailabilityCache.set(id, gamesSet);
+  return gamesSet;
+}
+
+// Render all game toggles (called once on load)
+function renderGameSwitches() {
+  const container = document.getElementById("game-switches");
+  container.innerHTML = "";
+
+  Object.entries(switchGameMap).forEach(([key, name]) => {
+    const row = document.createElement("div");
+    row.className = "game-switch-row";
+    row.innerHTML = `
+      <label>${name}</label>
+      <label class="switch">
+        <input type="checkbox" id="game-toggle-${key}">
+        <span class="slider"></span>
+      </label>
+    `;
+    container.appendChild(row);
+
+    const checkbox = row.querySelector(`#game-toggle-${key}`);
+    checkbox.addEventListener("change", async () => {
+      if (checkbox.checked) {
+        // Only one game active
+        document.querySelectorAll("#game-switches input[type=checkbox]").forEach(cb => {
+          if (cb !== checkbox) cb.checked = false;
+        });
+        currentHighlightedGame = key;
+      } else {
+        currentHighlightedGame = null;
+      }
+      renderGrid(document.getElementById("search-bar").value); // refresh with highlight
+    });
+  });
+}
+
+// Clear button handler
+function clearGameHighlight() {
+  currentHighlightedGame = null;
+  document.querySelectorAll("#game-switches input[type=checkbox]").forEach(cb => cb.checked = false);
+  renderGrid(document.getElementById("search-bar").value);
+}
   if (gamesSet.size === 0) {
     const none = document.createElement("span");
     none.style.opacity = "0.6";
@@ -590,6 +666,9 @@ function setupEventListeners() {
       updateTotalProgress();
     }
   });
+  // Game highlight setup
+renderGameSwitches();
+document.getElementById("clear-game-highlight").addEventListener("click", clearGameHighlight);
 
   /* ===================== TOOLS MENU TOGGLE ===================== */
   const toolsBtn = document.getElementById("tools-btn");
