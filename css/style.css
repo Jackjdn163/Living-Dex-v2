@@ -508,18 +508,19 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   100% { transform: scale(1.04); }
 }
 /* SETTINGS BUTTON - matches the rest of your Pokémon theme */
+/* SETTINGS BUTTON - No more yellow, now matches your red theme */
 .settings-btn {
   position: fixed;
   bottom: 30px;
   right: 30px;
   width: 64px;
   height: 64px;
-  background: linear-gradient(135deg, #ffcb05, #f5a623);
-  color: #1e2937;
+  background: #ef4036;                    /* same red as Reset button */
+  color: white;
   border: 4px solid #1e2937;
   border-radius: 50%;
   font-size: 32px;
-  box-shadow: 0 8px 25px rgba(255, 203, 5, 0.5);
+  box-shadow: 0 8px 25px rgba(239, 64, 54, 0.5);
   z-index: 9999;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -530,13 +531,18 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 
 .settings-btn:hover {
   transform: scale(1.12) rotate(90deg);
-  box-shadow: 0 12px 30px rgba(255, 203, 5, 0.7);
+  box-shadow: 0 12px 30px rgba(239, 64, 54, 0.7);
 }
 
 /* Hide when Tools menu is open */
 .tools-menu.open ~ .settings-btn,
 .tools-menu.open .settings-btn {
   display: none !important;
+}
+[data-theme="dark"] .settings-btn {
+  background: #e11d48;
+  border-color: #f1f5f9;
+  box-shadow: 0 8px 25px rgba(225, 29, 72, 0.5);
 }
 /* BIG CENTERED MODAL - Settings */
 .settings-overlay {
@@ -560,16 +566,14 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
 .settings-panel {
   background: var(--card);
   width: 92%;
-  max-width: 650px;
+  max-width: 620px;
   border-radius: 24px;
-  padding: 32px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  padding: 40px 32px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
   color: var(--text);
   max-height: 92vh;
   overflow-y: auto;
-  position: relative;
 }
-
 .settings-header {
   display: flex;
   justify-content: space-between;
@@ -638,9 +642,11 @@ header h1 { margin:0 0 25px 0; font-size:2.4rem; text-align:center; }
   font-size: 1.1rem;
   font-weight: 600;
 }
-/* Consistent button style - matches Log Out & Reset */
-.reset-btn, 
-button:not(.settings-btn):not(.close-btn):not(.close-tools) {
+/* Consistent button style — matches Log Out & Reset buttons */
+/* Does NOT affect the ⋮ three-dots menu buttons */
+.reset-btn,
+.auth-buttons button,
+button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools) {
   background: #ef4036;
   color: white;
   border: none;
@@ -654,15 +660,12 @@ button:not(.settings-btn):not(.close-btn):not(.close-tools) {
 }
 
 .reset-btn:hover,
-button:not(.settings-btn):not(.close-btn):not(.close-tools):hover {
+.auth-buttons button:hover,
+button:not(.menu-btn):not(.settings-btn):not(.close-btn):not(.close-tools):hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(239, 64, 54, 0.4);
 }
 
-.auth-buttons button {
-  background: #22c55e;
-}
-
-.auth-buttons button:last-child {
-  background: #3b82f6;
-}
+/* Log In & Create Account get their own colors */
+.auth-buttons button:first-child { background: #22c55e; }
+.auth-buttons button:last-child { background: #3b82f6; }
