@@ -924,3 +924,28 @@ body.dex-mode .sidebar {
   right: 30px !important;
   z-index: 99999 !important;
 }
+/* ===================== HOME SCREEN CENTERING FIX (prevents snapping left) ===================== */
+.home-view {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 40px 20px !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+}
+
+.home-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 28px !important;
+  max-width: 1100px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  justify-content: center !important;
+}
+
+/* Extra safety so nothing can override it */
+.home-view .home-grid {
+  margin: 0 auto !important;
+}
