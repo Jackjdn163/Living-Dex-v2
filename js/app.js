@@ -779,6 +779,10 @@ function openDex() {
   document.getElementById("dex-view").style.display = "block";
   document.getElementById('gen-completion-container').style.display = 'block';
 document.getElementById('toggles-container').style.display = 'block';
+  document.getElementById('gen-completion-container').style.display = 'block';
+document.getElementById('toggles-container').style.display = 'block';
+document.getElementById('back-to-home-fixed').style.display = 'flex';
+document.getElementById('tools-btn').style.display = 'flex';
   document.body.classList.add("dex-mode");     // ← This is the key line
   renderGrid();
   renderCompletionBars();
@@ -790,6 +794,10 @@ function goHome() {
   document.getElementById("home-view").style.display = "flex";
   document.getElementById('gen-completion-container').style.display = 'none';
 document.getElementById('toggles-container').style.display = 'none';
+  document.getElementById('gen-completion-container').style.display = 'none';
+document.getElementById('toggles-container').style.display = 'none';
+document.getElementById('back-to-home-fixed').style.display = 'none';
+document.getElementById('tools-btn').style.display = 'none';
   document.body.classList.remove("dex-mode");  // ← This is the key line
 }
 document.addEventListener("DOMContentLoaded", () => {
