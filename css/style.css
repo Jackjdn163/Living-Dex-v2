@@ -1008,9 +1008,9 @@ body.dex-mode .sidebar {
 .box-grid {
   display: grid !important;
   grid-template-columns: repeat(6, 1fr) !important;
-  gap: 80px !important;
   grid-template-rows: repeat(5, 1fr) !important;
-  gap: 40px !important;                 /* tight like real Pokémon Home */
+   column-gap: 40px !important;
+  row-gap: 40px !important;                 /* tight like real Pokémon Home */
   height: 440px !important;
 }
 
