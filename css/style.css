@@ -1009,7 +1009,7 @@ body.dex-mode .sidebar {
   display: grid !important;
   grid-template-columns: repeat(6, 1fr) !important;
   grid-template-rows: repeat(5, 1fr) !important;                 /* tight like real Pokémon Home */
-  height: 440px !important;
+  height: 460px !important;
 }
 
 .slot {
@@ -1019,7 +1019,6 @@ body.dex-mode .sidebar {
   align-items: center !important;
   justify-content: center !important;
   position: relative !important;
-  overflow: hidden !important;
   transition: all 0.2s ease !important;
 }
 
