@@ -793,14 +793,14 @@ function openDex() {
 }
 
 // ===================== OPEN POKÉMON HOME ORGANIZER =====================
-function openHomeOrganizer() {
+function openHomeOrganizer();{
   // Hide EVERYTHING else
   document.getElementById('home-view').style.display = 'none';
   document.getElementById('dex-view').style.display = 'none';
 
   // Show Organizer
   document.getElementById('organizer-view').style.display = 'block';
-
+initOrganizer()
   // Hide dex floating elements
   const floating = ['gen-completion-container', 'toggles-container', 'back-to-home-fixed', 'tools-btn'];
   floating.forEach(id => {
@@ -829,6 +829,73 @@ function goHome() {
 
   window.scrollTo(0, 0);
 }
+// ===================== POKÉMON HOME ORGANIZER LOGIC =====================
+let currentBox = 1;
+const totalBoxes = 12;                    // change this number anytime
+let boxes = Array.from({ length: totalBoxes }, () => Array(30).fill(null)); // 30 empty slots per box
+
+function renderBox() {
+  const grid = document.getElementById('box-grid');
+  grid.innerHTML = '';
+
+  const currentSlots = boxes[currentBox - 1];
+
+  for (let i = 0; i < 30; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    
+    if (currentSlots[i]) {
+      // Later we’ll put real Pokémon sprites here
+      slot.innerHTML = `<span style="font-size:2.8rem;">${currentSlots[i]}</span>`;
+    } else {
+      slot.innerHTML = `<span style="opacity:0.15; font-size:3rem;">●</span>`;
+    }
+    
+    grid.appendChild(slot);
+  }
+}
+
+function updateBoxDropdown() {
+  const select = document.getElementById('box-select');
+  select.innerHTML = '';
+  for (let i = 1; i <= totalBoxes; i++) {
+    const option = document.createElement('option');
+    option.value = i;
+    option.textContent = `Box ${i}`;
+    if (i === currentBox) option.selected = true;
+    select.appendChild(option);
+  }
+}
+
+function jumpToBox(boxNum) {
+  currentBox = parseInt(boxNum);
+  renderBox();
+}
+
+function prevBox() {
+  if (currentBox > 1) {
+    currentBox--;
+    document.getElementById('box-select').value = currentBox;
+    renderBox();
+  }
+}
+
+function nextBox() {
+  if (currentBox < totalBoxes) {
+    currentBox++;
+    document.getElementById('box-select').value = currentBox;
+    renderBox();
+  }
+}
+
+// Initialize when organizer opens
+function initOrganizer() {
+  updateBoxDropdown();
+  renderBox();
+}
+
+// Make sure initOrganizer runs when organizer opens
+// (add this line inside your openHomeOrganizer() function)
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
   preloadAllAssets();
