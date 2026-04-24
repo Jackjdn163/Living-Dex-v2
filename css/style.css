@@ -1048,10 +1048,10 @@ body.dex-mode .sidebar {
 /* ===================== TIGHTER HORIZONTAL CIRCLES (left-right only) ===================== */
 .box-grid {
   column-gap: 4px !important;   /* ← this is what makes left-right closer */
-  row-gap: 40px !important;     /* keeps your preferred vertical spacing */
+  row-gap: 60px !important;     /* keeps your preferred vertical spacing */
 }
 
 .slot::before {
   width: 30% !important;        /* makes the green circles a bit bigger */
-  height: 72% !important;
+  height: 100% !important;
 }
