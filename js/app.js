@@ -810,17 +810,19 @@ initOrganizer()
 
   window.scrollTo(0, 0);
 }
-
-// ===================== GO HOME (forces clean return) =====================
-function goHome() {
-  // Hide EVERYTHING
+// ===================== OPEN POKÉMON HOME ORGANIZER =====================
+function openHomeOrganizer() {
+  // Hide EVERYTHING else
+  document.getElementById('home-view').style.display = 'none';
   document.getElementById('dex-view').style.display = 'none';
-  document.getElementById('organizer-view').style.display = 'none';
 
-  // Show Home
-  document.getElementById('home-view').style.display = 'block';
+  // Show Organizer
+  document.getElementById('organizer-view').style.display = 'block';
+  
+  // Initialize the box (dropdown + grid)
+  initOrganizer();
 
-  // Hide all floating elements
+  // Hide dex floating elements
   const floating = ['gen-completion-container', 'toggles-container', 'back-to-home-fixed', 'tools-btn'];
   floating.forEach(id => {
     const el = document.getElementById(id);
