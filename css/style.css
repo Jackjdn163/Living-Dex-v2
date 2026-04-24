@@ -949,7 +949,7 @@ body.dex-mode .sidebar {
   position: relative;
   z-index: 10;
 }
-/* ===================== POKÉMON HOME ORGANIZER BOX ===================== */
+/* ===================== POKÉMON HOME ORGANIZER BOX (updated - circles + no dead space) ===================== */
 .box-header {
   display: flex;
   align-items: center;
@@ -998,42 +998,56 @@ body.dex-mode .sidebar {
 }
 
 .pokemon-home-box {
-  background: #e0f2e0;           /* light green like real Pokémon Home */
+  background: #e0f2e0;           /* exact Pokémon Home light green */
   border-radius: 24px;
-  padding: 40px 30px;
+  padding: 25px 25px 35px;       /* much tighter - no dead space */
   box-shadow: 0 25px 70px rgba(0,0,0,0.4);
-  min-height: 620px;
+  min-height: 580px;
 }
 
 .box-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  gap: 14px;
-  height: 520px;
+  gap: 12px;                     /* tighter spacing */
+  height: 480px;                 /* better fit */
 }
 
 .slot {
-  background: rgba(255,255,255,0.85);
-  border-radius: 16px;
+  background: rgba(255,255,255,0.92);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
-  box-shadow: inset 0 4px 12px rgba(0,0,0,0.1);
-  transition: all 0.2s;
   position: relative;
   overflow: hidden;
+  box-shadow: inset 0 3px 8px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
 }
 
 .slot:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 0 6px #22c55e;
+  transform: scale(1.06);
+  box-shadow: 0 0 0 5px #22c55e;
 }
 
+/* Real Pokémon Home empty slot circles */
+.slot::before {
+  content: '';
+  position: absolute;
+  width: 52%;
+  height: 52%;
+  background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.6;
+  z-index: 1;
+}
+
+/* Filled slot content */
 .slot img {
-  width: 85%;
-  height: 85%;
+  width: 82%;
+  height: 82%;
   object-fit: contain;
   image-rendering: pixelated;
+  z-index: 2;
+  position: relative;
 }
