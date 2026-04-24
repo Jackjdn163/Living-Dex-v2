@@ -793,7 +793,7 @@ function openDex() {
 }
 
 // ===================== OPEN POKÉMON HOME ORGANIZER =====================
-function openHomeOrganizer();{
+function openHomeOrganizer() {
   // Hide EVERYTHING else
   document.getElementById('home-view').style.display = 'none';
   document.getElementById('dex-view').style.display = 'none';
