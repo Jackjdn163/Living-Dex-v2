@@ -949,13 +949,13 @@ body.dex-mode .sidebar {
   position: relative;
   z-index: 10;
 }
-/* ===================== POKÉMON HOME ORGANIZER – CLEAN FINAL VERSION (no circles, no dead space) ===================== */
+/* ===================== POKÉMON HOME ORGANIZER – CIRCLES ONLY (final fix) ===================== */
 .box-header {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 20px !important;
-  margin-bottom: 30px !important;
+  margin-bottom: 25px !important;
 }
 
 .box-arrow {
@@ -994,15 +994,14 @@ body.dex-mode .sidebar {
   padding: 4px 20px !important;
   cursor: pointer !important;
   outline: none !important;
-  width: 180px !important;
 }
 
 .pokemon-home-box {
   background: #e0f2e0 !important;
   border-radius: 24px !important;
-  padding: 25px 25px 35px !important;
+  padding: 20px 20px 30px !important;   /* much tighter */
   box-shadow: 0 25px 70px rgba(0,0,0,0.4) !important;
-  min-height: 560px !important;
+  min-height: 540px !important;
   margin: 0 auto !important;
 }
 
@@ -1010,30 +1009,42 @@ body.dex-mode .sidebar {
   display: grid !important;
   grid-template-columns: repeat(6, 1fr) !important;
   grid-template-rows: repeat(5, 1fr) !important;
-  gap: 12px !important;
-  height: 460px !important;
+  gap: 10px !important;                 /* tight like real Pokémon Home */
+  height: 440px !important;
 }
 
 .slot {
-  background: rgba(255,255,255,0.95) !important;
+  background: transparent !important;   /* no white boxes */
   border-radius: 14px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: inset 0 4px 12px rgba(0,0,0,0.1) !important;
-  transition: all 0.2s ease !important;
   position: relative !important;
   overflow: hidden !important;
+  transition: all 0.2s ease !important;
 }
 
 .slot:hover {
-  transform: scale(1.06) !important;
-  box-shadow: 0 0 0 6px #22c55e !important;
+  transform: scale(1.08) !important;
 }
 
+/* Green circle for empty slots (exactly like your screenshot) */
+.slot::before {
+  content: '' !important;
+  position: absolute !important;
+  width: 58% !important;
+  height: 58% !important;
+  background: radial-gradient(circle, rgba(34,197,94,0.25) 0%, transparent 70%) !important;
+  border-radius: 50% !important;
+  z-index: 1 !important;
+}
+
+/* Pokémon sprite when filled */
 .slot img {
   width: 82% !important;
   height: 82% !important;
   object-fit: contain !important;
   image-rendering: pixelated !important;
+  z-index: 2 !important;
+  position: relative !important;
 }
