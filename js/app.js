@@ -776,14 +776,10 @@ function setupEventListeners() {
 }
 // ===================== OPEN LIVING DEX =====================
 function openDex() {
-  // Hide EVERYTHING else
   document.getElementById('home-view').style.display = 'none';
   document.getElementById('organizer-view').style.display = 'none';
-
-  // Show Dex
   document.getElementById('dex-view').style.display = 'block';
 
-  // Show only dex floating elements
   document.getElementById('gen-completion-container').style.display = 'block';
   document.getElementById('toggles-container').style.display = 'block';
   document.getElementById('back-to-home-fixed').style.display = 'flex';
@@ -794,14 +790,27 @@ function openDex() {
 
 // ===================== OPEN POKÉMON HOME ORGANIZER =====================
 function openHomeOrganizer() {
-  // Hide EVERYTHING else
   document.getElementById('home-view').style.display = 'none';
   document.getElementById('dex-view').style.display = 'none';
-
-  // Show Organizer
   document.getElementById('organizer-view').style.display = 'block';
-initOrganizer()
-  // Hide dex floating elements
+  
+  initOrganizer();
+
+  const floating = ['gen-completion-container', 'toggles-container', 'back-to-home-fixed', 'tools-btn'];
+  floating.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  window.scrollTo(0, 0);
+}
+
+// ===================== GO HOME (this was missing!) =====================
+function goHome() {
+  document.getElementById('dex-view').style.display = 'none';
+  document.getElementById('organizer-view').style.display = 'none';
+  document.getElementById('home-view').style.display = 'block';
+
   const floating = ['gen-completion-container', 'toggles-container', 'back-to-home-fixed', 'tools-btn'];
   floating.forEach(id => {
     const el = document.getElementById(id);
