@@ -1008,9 +1008,7 @@ body.dex-mode .sidebar {
 .box-grid {
   display: grid !important;
   grid-template-columns: repeat(6, 1fr) !important;
-  grid-template-rows: repeat(5, 1fr) !important;
-  column-gap: 1px !important;
-  row-gap: 40px !important;                 /* tight like real Pokémon Home */
+  grid-template-rows: repeat(5, 1fr) !important;                 /* tight like real Pokémon Home */
   height: 440px !important;
 }
 
@@ -1033,8 +1031,6 @@ body.dex-mode .sidebar {
 .slot::before {
   content: '' !important;
   position: absolute !important;
-  width: 58% !important;
-  height: 100% !important;
   background: radial-gradient(circle, rgba(34,197,94,0.25) 0%, transparent 70%) !important;
   border-radius: 50% !important;
   z-index: 1 !important;
@@ -1048,4 +1044,14 @@ body.dex-mode .sidebar {
   image-rendering: pixelated !important;
   z-index: 2 !important;
   position: relative !important;
+}
+/* ===================== TIGHTER HORIZONTAL CIRCLES (left-right only) ===================== */
+.box-grid {
+  column-gap: 4px !important;   /* ← this is what makes left-right closer */
+  row-gap: 40px !important;     /* keeps your preferred vertical spacing */
+}
+
+.slot::before {
+  width: 72% !important;        /* makes the green circles a bit bigger */
+  height: 72% !important;
 }
