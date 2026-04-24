@@ -1052,6 +1052,6 @@ body.dex-mode .sidebar {
 }
 
 .slot::before {
-  width: 72% !important;        /* makes the green circles a bit bigger */
+  width: 30% !important;        /* makes the green circles a bit bigger */
   height: 72% !important;
 }
