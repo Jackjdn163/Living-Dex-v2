@@ -96,28 +96,33 @@
       </div>
     </div>
   </div>
-
-  <!-- ===================== POKÉMON HOME ORGANIZER - FULL SCREEN VIEW ===================== -->
+   <!-- ===================== POKÉMON HOME ORGANIZER - FULL SCREEN ===================== -->
   <div id="organizer-view" style="display: none;">
-    <!-- Fixed Back Button -->
     <button onclick="goHome()" class="back-to-home" style="position: fixed; top: 30px; left: 30px; z-index: 10000;">
       ← Home
     </button>
 
     <div style="min-height: 100vh; background: linear-gradient(135deg, #1e2937, #334155); padding: 110px 40px 80px; color: white;">
       <div style="max-width: 1400px; margin: 0 auto; width: 100%;">
-        <h1 style="font-size: 4rem; text-align: center; margin: 0 0 12px 0; background: linear-gradient(90deg, #ffcb05, #ef4036); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 40px rgba(255,203,5,0.5);">
-          Pokémon Home Organizer
-        </h1>
-        <p style="text-align: center; font-size: 1.45rem; opacity: 0.9; margin-bottom: 70px;">
-          Sort • Store • Master your boxes
-        </p>
 
-        <!-- Main scrollable canvas area -->
-        <div id="organizer-canvas" style="background: var(--card); color: var(--text); border-radius: 28px; padding: 50px; min-height: 680px; box-shadow: 0 25px 70px rgba(0,0,0,0.4);">
-          <h2 style="text-align:center; font-size: 2.4rem; color: #ef4036; margin-bottom: 30px;">Welcome to Pokémon Home Organizer ✨</h2>
-          <p style="text-align:center; font-size: 1.2rem; opacity: 0.8;">This is now a clean, full-screen dedicated page.<br>You can scroll down as much as you want — perfect for building box layouts, tools, etc.</p>
+        <!-- ==================== BOX HEADER ==================== -->
+        <div class="box-header">
+          <button onclick="prevBox()" class="box-arrow">‹</button>
+          
+          <div class="box-name-container">
+            <select id="box-select" onchange="jumpToBox(this.value)" class="box-dropdown">
+              <!-- JS will fill this -->
+            </select>
+          </div>
+
+          <button onclick="nextBox()" class="box-arrow">›</button>
         </div>
+
+        <!-- ==================== THE ACTUAL BOX (6x5 grid) ==================== -->
+        <div id="pokemon-box" class="pokemon-home-box">
+          <div id="box-grid" class="box-grid"></div>
+        </div>
+
       </div>
     </div>
   </div>
