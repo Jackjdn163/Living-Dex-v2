@@ -1009,7 +1009,7 @@ body.dex-mode .sidebar {
   display: grid !important;
   grid-template-columns: repeat(6, 1fr) !important;
   grid-template-rows: repeat(5, 1fr) !important;
-   column-gap: 40px !important;
+  column-gap: 10px !important;
   row-gap: 40px !important;                 /* tight like real Pokémon Home */
   height: 440px !important;
 }
