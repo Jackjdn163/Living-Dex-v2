@@ -1024,7 +1024,7 @@ body.dex-mode .sidebar {
 }
 
 .slot:hover {
-  transform: scale(1.08) !important;
+  transform: scale(1) !important;
 }
 
 /* Green circle for empty slots (exactly like your screenshot) */
@@ -1052,6 +1052,6 @@ body.dex-mode .sidebar {
 }
 
 .slot::before {
-  width: 30% !important;        /* makes the green circles a bit bigger */
-  height: 100% !important;
+  width: 60% !important;        /* makes the green circles a bit bigger */
+  height: 200% !important;
 }
